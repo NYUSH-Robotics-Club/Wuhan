@@ -26,39 +26,19 @@
 using namespace vex;
 competition Competition;
 
-motor_group leftDriveMotors = motor_group(L1, L2, L3);
-motor_group rightDriveMotors = motor_group(R1, R2, R3);
 
 float ringColor;
 
 bool wallStakeFeedFwdDis, isRed, ringSortDisable = true, ringDetectOverride;
 
-Drive chassis(
-    ZERO_TRACKER_NO_ODOM,
-    leftDriveMotors,
-    rightDriveMotors,
-    //inertial port
-    PORT14,
-    3.25,
-    0.75,
-    360, 
+#define is_on_red_alliance isRed
+#define is_on_blue_alliance !isRed
 
-    PORT1, -PORT2,
-    PORT3, -PORT4,
-    3,
-    2.75,
-    -2,
-    1,
-    -2.75,
-    5.5
-
-);
-
-motor_group intakeMain = motor_group(roller, conveyor);
-motor_group admMain = motor_group(L1, R1, L2, R2, L3, R3);
+motor_group conveyorAndRoller = motor_group(roller, conveyor);
+motor_group all_drive_motors = motor_group(L1, R1, L2, R2, L3, R3);
 // motor wallStake = motor(PORT1, ratio18_1, false);
 
-int current_auton_selection = 0, conveyorPosition;
+int current_auton_selection = 0, conveyorPositionPrev;
 bool auto_started = false;
 
 void pre_auton(void) {
@@ -101,7 +81,7 @@ void pre_auton(void) {
         wait(10, msec);
       }
       current_auton_selection++;
-    } else if (current_auton_selection == 8) {
+    } else if (current_auton_selection > 7) { // wrap
       current_auton_selection = 0;
     }
     task::sleep(10);
@@ -157,7 +137,7 @@ void autonomous(void) {
 
 
 
-int whenStarted1() {
+int initialize() {
   // Zero wallStake
   wallStake.setStopping(hold);
   wallStakeFeedFwdDis = false;
@@ -169,7 +149,7 @@ int whenStarted1() {
   wallStake.setPosition(0, degrees);
   wallStake.stop();
   // Set drive motor stopping to coast
-  admMain.setStopping(coast);
+  all_drive_motors.setStopping(coast);
 
   colorDetect.setLight(ledState::on);
   colorDetect.setLightPower(100, percent);
@@ -183,10 +163,11 @@ int whenStarted1() {
 void colorSort() {
    
    //ANTI-JAM ANTIJAM ANTI JAM
-   while(1){
-      wait(10, msec);
+  while(1){
+    
+    wait(10, msec);
   
-      if((conveyor.velocity(rpm) == 0) && (conveyor.current(amp) > 2.1)) {
+    if((conveyor.velocity(rpm) == 0) && (conveyor.current(amp) > 2.1)) {
       conveyor.spin(reverse, 12, volt);
       wait(.2, seconds);
       conveyor.spin(forward, 9, volt);
@@ -201,17 +182,17 @@ void colorSort() {
   if (ringDist.objectDistance(inches) > 1.5 || ringSortDisable) continue;
 
     //print ringColor on controller screen (removed bc printing to controller screen takes 200ms)
-    ringColor = colorDetect.hue();
+    ringColor = colorDetect.hue(); //TODO MAKE THIS CRGB
     // Controller1.Screen.setCursor(3, 14);
     // Controller1.Screen.print(ringColor);
 
-    conveyorPosition = conveyor.position(degrees);
+    conveyorPositionPrev = conveyor.position(degrees);
     
-    if(!isRed && (ringColor > 360 || 20 > ringColor)) {
+    if(is_on_blue_alliance && (ringColor > 360 || 20 > ringColor)) {
       //wait(.09, sec);
       //printf("Launching red\n");
       conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + 250);
+      waitUntil(conveyor.position(degrees) > conveyorPositionPrev + 250);
       //wait(10 * conveyor.current(amp), msec);
       conveyor.spin(reverse, 12 ,volt);
       wait(.2, sec);
@@ -219,11 +200,11 @@ void colorSort() {
       Controller1.rumble("..");
       wait(200, msec);
     }
-    else if (isRed && (ringColor > 180 && 260 > ringColor)) {
+    else if (is_on_red_alliance && (ringColor > 180 && 260 > ringColor)) {
       //wait(.09, sec);
       //printf("Launching blue\n");
       conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + 250);
+      waitUntil(conveyor.position(degrees) > conveyorPositionPrev + 250);
       //wait(10 * conveyor.current(amp), msec);
       conveyor.spin(reverse, 12 ,volt);
       wait(.2, sec);
@@ -239,7 +220,7 @@ void colorSort() {
 }
 
 
-void wallStakeAutoHold() {
+void wallStakeAutoHold() { //TODO RENAME
   colorDetect.setLight(ledState::on);
   colorDetect.setLightPower(100, percent);
   wallStake.setVelocity(100, percent);
@@ -254,9 +235,9 @@ void wallStakeAutoHold() {
   wallStake.setPosition(0, degrees);
   wallStake.stop();
   // Set drive motor stopping to coast
-  admMain.setStopping(coast);
+  all_drive_motors.setStopping(coast);
   
-  while (1) {
+  while (1) { // TODO MUTEX
     Brain.Screen.setCursor(1, 1);
     Brain.Screen.print(wallStake.position(degrees));
     Brain.Screen.print("   ");
@@ -271,7 +252,7 @@ void wallStakeAutoHold() {
 
 void usercontrol(void) {
   ringSortDisable = true;
-  admMain.setStopping(coast);
+  all_drive_motors.setStopping(coast);
 }
 
 void updateDrivetrainVelocity() {
@@ -288,16 +269,16 @@ void updateDrivetrainVelocity() {
 
 // intake control
 void onevent_Controller1ButtonL1_pressed_0() {
-  //intakeMain.spin(forward, 9, volt);
+  //conveyorAndRoller.spin(forward, 9, volt);
   conveyor.spin(fwd, 9, volt);
   roller.spin(fwd, 12, volt);
 }
 
 void onevent_Controller1ButtonL2_pressed_0() {
-  intakeMain.spin(reverse, 12, volt);
+  conveyorAndRoller.spin(reverse, 12, volt);
 }
 
-void onevent_Controller1ButtonL2_released_0() { intakeMain.stop(); }
+void onevent_Controller1ButtonL2_released_0() { conveyorAndRoller.stop(); }
 
 void toggleDoinker() { doinker.set(!doinker.value()); }
 
@@ -308,7 +289,7 @@ void onR1Pressed() {
   conveyor.spinFor(reverse, 100, degrees);
 }
 
-void onYPressed() {
+void onYPressed() { //TODO MUTEX
   wallStakeFeedFwdDis = true;
   wallStake.setVelocity(100, percent);
   wallStake.spinToPosition(210, degrees, true);
@@ -343,7 +324,7 @@ void onAPressed() {
 
   
   if (!ringDetectOverride) {
-    intakeMain.stop();
+    conveyorAndRoller.stop();
     conveyor.stop();
   }
   roller.spin(fwd, 8, volt);
@@ -351,7 +332,7 @@ void onAPressed() {
 
 void enableRingDetectOverride() { ringDetectOverride = true; }
 
-void onAxis2Changed() {
+void onAxis2Changed() { //TODO MUTEX
   int position = Controller1.Axis2.position();
   if (abs(position) < 50) {
     wallStake.stop(hold);
@@ -367,6 +348,7 @@ void onAxis2Changed() {
 //}
 
 int main() {
+  initialize();
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
 

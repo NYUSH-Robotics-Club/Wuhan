@@ -33,6 +33,34 @@ digital_out doinker = digital_out(Brain.ThreeWirePort.B);
 digital_out ringChuck = digital_out(Brain.ThreeWirePort.C);
 digital_in ringSwitch1 = digital_in(Brain.ThreeWirePort.E);
 
+
+motor_group leftDriveMotors = motor_group(L1, L2, L3);
+motor_group rightDriveMotors = motor_group(R1, R2, R3);
+
+
+
+Drive chassis(
+    ZERO_TRACKER_NO_ODOM,
+    leftDriveMotors,
+    rightDriveMotors,
+    //inertial port
+    PORT14,
+    3.25,
+    0.75,
+    360, 
+
+    PORT1, -PORT2,
+    PORT3, -PORT4,
+    3,
+    2.75,
+    -2,
+    1,
+    -2.75,
+    5.5
+
+);
+
+
 // VEXcode generated functions
 // define variable for remote controller enable/disable
 bool RemoteControlCodeEnabled = true;
