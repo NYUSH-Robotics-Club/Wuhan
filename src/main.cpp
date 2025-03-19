@@ -34,6 +34,7 @@ competition Competition;
 #define CONTROLLER_R_X_AXIS Controller1.Axis1.position()
 
 float ringColor;
+double ringDetectDist = 9999999;
 
 bool wallStakeFeedFwdDis, isRed, ringSortDisable = true, ringDetectOverride;
 
@@ -41,17 +42,20 @@ bool wallStakeFeedFwdDis, isRed, ringSortDisable = true, ringDetectOverride;
 #define is_on_blue_alliance !isRed
 #define DRIVE_SCALAR 120
 
-motor_group conveyorAndRoller = motor_group(roller, conveyor);
+motor_group conveyorAndRollerMG = motor_group(roller, conveyor);
 motor_group all_drive_motors = motor_group(L1, R1, L2, R2, L3, R3);
 // motor wallStake = motor(PORT1, ratio18_1, false);
 
 int current_auton_selection = 0, conveyorPositionPrev;
 bool auto_started = false;
 
+
+
 //fn protos
 bool has_red_ring();
 bool has_blue_ring();
-
+bool has_ring();
+///////////////////////////////////
 
 
 void pre_auton(void) {
@@ -185,17 +189,18 @@ void colorSort() {
       conveyor.spin(forward, 9, volt);
       wait(.2, seconds);
     }
-
+    
+  ringDetectDist = ringDist.objectDistance(inches);
 
   //print distance away on brain screen
   Brain.Screen.setCursor(1, 30);
-  Brain.Screen.print(ringDist.objectDistance(inches));
+  Brain.Screen.print(ringDetectDist);
 
-  if (ringDist.objectDistance(inches) > 1.5 || ringSortDisable) continue;
+  if (!has_ring() || ringSortDisable) continue;
 
     //print ringColor on controller screen (removed bc printing to controller screen takes 200ms)
     //(it was a blocking routine)
-    ringColor = colorDetect.hue(); //update ringcolor
+    ringColor = colorDetect.hue(); //update ringcolor once we care about it
     // Controller1.Screen.setCursor(3, 14);
     // Controller1.Screen.print(ringColor);
     
@@ -207,10 +212,10 @@ void colorSort() {
       conveyor.spin(forward, 12, volt);
       waitUntil(conveyor.position(degrees) > conveyorPositionPrev + 250);
       //wait(10 * conveyor.current(amp), msec);
-      conveyor.spin(reverse, 12 ,volt);
+      conveyor.spin(reverse, 12, volt);
       wait(.2, sec);
       conveyor.spin(forward, 9, volt);
-      Controller1.rumble("..");
+      Controller1.rumble("-.");
       wait(200, msec);
     }
     else if (is_on_red_alliance && has_blue_ring()) { // throw a blue ring
@@ -222,7 +227,7 @@ void colorSort() {
       conveyor.spin(reverse, 12 ,volt);
       wait(.2, sec);
       conveyor.spin(forward, 9, volt);
-      Controller1.rumble(".");
+      Controller1.rumble("-.");
       wait(200, msec);
     }
 
@@ -232,13 +237,17 @@ void colorSort() {
   }
 }
 
+bool has_ring() {
+  return ringDetectDist <= 1.5;
+}
+
 bool has_red_ring() {
-  ringColor = colorDetect.hue(); //TODO MAKE THIS CRGB
+  ringColor = colorDetect.hue(); 
   return (ringColor > 360 || 20 > ringColor);
 }
 
 bool has_blue_ring() {
-  ringColor = colorDetect.hue(); //TODO MAKE THIS CRGB
+  ringColor = colorDetect.hue(); 
   return (ringColor > 180 && 260 > ringColor);
 }
 
@@ -296,16 +305,16 @@ void updateDrivetrainVelocity() {
 
 // intake control
 void enableConveyor() {
-  //conveyorAndRoller.spin(forward, 9, volt);
+  //conveyorAndRollerMG.spin(forward, 9, volt);
   conveyor.spin(fwd, 9, volt);
   roller.spin(fwd, 12, volt);
 }
 
 void reverseConveyor() {
-  conveyorAndRoller.spin(reverse, 12, volt);
+  conveyorAndRollerMG.spin(reverse, 12, volt);
 }
 
-void disableConveyor() { conveyorAndRoller.stop(); }
+void disableConveyor() { conveyorAndRollerMG.stop(); }
 
 void toggleDoinker() { doinker.set(!doinker.value()); }
 
@@ -362,7 +371,7 @@ void loadRing() {
 
   
   if (!ringDetectOverride) {
-    conveyorAndRoller.stop();
+    conveyorAndRollerMG.stop();
     conveyor.stop();
   }
   roller.spin(fwd, 8, volt);

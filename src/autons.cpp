@@ -1,6 +1,6 @@
 #include "vex.h"
 #include "robot-config.h"
-
+using namespace vex;
 motor_group adm = motor_group(L1, R1, L2, R2, L3, R3);
 motor_group intake = motor_group(roller, conveyor);
 
