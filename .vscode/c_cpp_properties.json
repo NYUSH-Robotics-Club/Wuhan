@@ -29,7 +29,7 @@
 			"includePath": [
 				"${vex_sdkIncludes}"
 			],
-			"compilerPath": "${vex_compilerPath}",
+			"compilerPath": "/usr/bin/gcc",
 			"cStandard": "gnu99",
 			"cppStandard": "gnu++11",
 			"intelliSenseMode": "macos-clang-x86"
