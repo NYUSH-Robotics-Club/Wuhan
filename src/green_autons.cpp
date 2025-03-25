@@ -1,0 +1,1 @@
+//This contains all auto routines for the green bot

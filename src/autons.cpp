@@ -1,5 +1,8 @@
 #include "vex.h"
 #include "robot-config.h"
+
+#include "robot_type.h"
+
 using namespace vex;
 motor_group adm = motor_group(L1, R1, L2, R2, L3, R3);
 motor_group intake = motor_group(roller, conveyor);
@@ -9,7 +12,17 @@ float autoRingColor, autoConveyorPosition;
 //autoIsRed = True means we are sorting OUT blue, meaning we are on the red alliance.
 bool autoIsRed = false;
 
-/*void autoColorSort() {
+#ifdef GREEN
+  #include "green_autons.h"
+#else
+  #ifdef GOLD 
+    #include "gold_autons.h"
+  #endif
+#endif
+
+
+/*
+void autoColorSort() {
   while (1) {
     wait(20, msec);
     
@@ -50,7 +63,8 @@ bool autoIsRed = false;
     }
   }
   }
-}*/
+}
+*/
 
 void drive_for_time(int timeMs, directionType direction, int maxVoltage) 
 {
@@ -84,7 +98,7 @@ void default_constants(){
   //Calibrate inertial sensor
   inertialSensor.calibrate();
   wait(2000, msec);
-  Controller1.rumble("--");
+  Controller1.rumble("-..");
 
 
   wallStake.setVelocity(100, percent);

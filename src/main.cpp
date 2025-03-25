@@ -34,9 +34,13 @@ competition Competition;
 #define CONTROLLER_R_X_AXIS Controller1.Axis1.position()
 
 float ringColor;
-double ringDetectDist = 9999999;
+double ringDetectDist = 9999999; //initialized to a massive number for init condition
 
-bool wallStakeFeedFwdDis, isRed, ringSortDisable = true, ringDetectOverride;
+bool wallStakeFeedFwdDis;
+bool isRed;
+bool ringDetectOverride;
+
+bool ringSortDisable = true;
 
 #define is_on_red_alliance isRed
 #define is_on_blue_alliance !isRed
@@ -46,7 +50,9 @@ motor_group conveyorAndRollerMG = motor_group(roller, conveyor);
 motor_group all_drive_motors = motor_group(L1, R1, L2, R2, L3, R3);
 // motor wallStake = motor(PORT1, ratio18_1, false);
 
-int current_auton_selection = 0, conveyorPositionPrev;
+int current_auton_selection = 0;
+int conveyorPositionPrev = 0;
+
 bool auto_started = false;
 
 
