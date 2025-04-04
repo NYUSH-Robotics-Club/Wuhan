@@ -4,8 +4,10 @@
 #include "robot_type.h"
 
 using namespace vex;
-motor_group adm = motor_group(L1, R1, L2, R2, L3, R3);
+
 motor_group intake = motor_group(roller, conveyor);
+
+motor_group all_drive_motors = motor_group(L1, L2, L3, R1, R2, R3);
 
 float autoRingColor, autoConveyorPosition;
 
@@ -21,7 +23,7 @@ bool autoIsRed = false;
 #endif
 
 
-/*
+
 void autoColorSort() {
   while (1) {
     wait(20, msec);
@@ -64,13 +66,13 @@ void autoColorSort() {
   }
   }
 }
-*/
+
 
 void drive_for_time(int timeMs, directionType direction, int maxVoltage) 
 {
-  adm.spin(direction, maxVoltage, volt);
+  all_drive_motors.spin(direction, maxVoltage, volt);
   wait(timeMs, msec);
-  adm.stop();
+  all_drive_motors.stop();
 }
 
 void drive_for_time(int timeMs, directionType direction) 
@@ -426,10 +428,10 @@ void odom_test(){
 
 
   //swing test
-  /*chassis.right_swing_to_angle(45);
+  chassis.right_swing_to_angle(45);
   chassis.left_swing_to_angle(0);
   chassis.right_swing_to_angle(90);
-  chassis.left_swing_to_angle(0);*/
+  chassis.left_swing_to_angle(0);
 }
 
 void holonomic_odom_test(){

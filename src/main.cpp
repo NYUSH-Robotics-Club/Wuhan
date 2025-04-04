@@ -2,7 +2,7 @@
 
 // What I changed since the last version of code:
 
-// Changes in code since last time:
+// lb code + one button mogo mech
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration ****SMALL BOT****:
@@ -23,46 +23,49 @@
 // colorDetect          optical       21
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-
-
 using namespace vex;
 competition Competition;
 
-#define CONTROLLER_L_Y_AXIS Controller1.Axis3.position()
-#define CONTROLLER_L_X_AXIS Controller1.Axis4.position()
-#define CONTROLLER_R_Y_AXIS Controller1.Axis2.position()
-#define CONTROLLER_R_X_AXIS Controller1.Axis1.position()
+motor_group leftDriveMotors = motor_group(L1, L2, L3);
+motor_group rightDriveMotors = motor_group(R1, R2, R3);
 
 float ringColor;
-double ringDetectDist = 9999999; //initialized to a massive number for init condition
 
-bool wallStakeFeedFwdDis;
-bool isRed;
-bool ringDetectOverride;
+bool wallStakeFeedFwdDis, isRed, ringSortDisable = true, ringDetectOverride, antijamDisable = true;
 
-bool ringSortDisable = true;
+thread wsThread;
 
-#define is_on_red_alliance isRed
-#define is_on_blue_alliance !isRed
-#define DRIVE_SCALAR 120
+#define LOADING 1
+#define PRESCORING 2
+#define SCORING 3
 
-motor_group conveyorAndRollerMG = motor_group(roller, conveyor);
-motor_group all_drive_motors = motor_group(L1, R1, L2, R2, L3, R3);
+Drive chassis(
+    ZERO_TRACKER_NO_ODOM,
+    leftDriveMotors,
+    rightDriveMotors,
+    //inertial port
+    PORT14,
+    3.25,
+    0.75,
+    360, 
+
+    PORT1, -PORT2,
+    PORT3, -PORT4,
+    3,
+    2.75,
+    -2,
+    1,
+    -2.75,
+    5.5
+
+);
+
+motor_group intakeMain = motor_group(roller, conveyor);
+motor_group admMain = motor_group(L1, R1, L2, R2, L3, R3);
 // motor wallStake = motor(PORT1, ratio18_1, false);
 
-int current_auton_selection = 0;
-int conveyorPositionPrev = 0;
-
+int current_auton_selection = 0, conveyorPosition, wallStakeState = 0;
 bool auto_started = false;
-
-
-
-//fn protos
-bool has_red_ring();
-bool has_blue_ring();
-bool has_ring();
-///////////////////////////////////
-
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
@@ -104,7 +107,7 @@ void pre_auton(void) {
         wait(10, msec);
       }
       current_auton_selection++;
-    } else if (current_auton_selection > 7) { // wrap
+    } else if (current_auton_selection == 8) {
       current_auton_selection = 0;
     }
     task::sleep(10);
@@ -125,14 +128,16 @@ void autonomous(void) {
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
     blueAuto();
+
     break;
   case 2:
     AWP_Plus_One();
     break;
   case 3:
     Prog_Skills();
-    isRed = true;
-    ringSortDisable = false;
+      isRed = true;
+      ringSortDisable = false;
+
     break;
   case 4:
     odom_test();
@@ -156,22 +161,21 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-mutex wallStakeMutex = mutex();
 
-int initialize() {
-  // Zero wallStake
-  wallStake.setStopping(hold);
-  wallStakeFeedFwdDis = false;
-  wallStake.setVelocity(80, rpm);
-  while (!(wallStake.current(amp) > 1.4)) {
-    wallStake.spin(reverse);
-    wait(10, msec);
-  }
-  wallStake.setPosition(0, degrees);
-  wallStake.stop();
-  
+
+int whenStarted1() {
+  // // Zero wallStake
+  // wallStake.setStopping(hold);
+  // wallStakeFeedFwdDis = false;
+  // wallStake.setVelocity(80, rpm);
+  // while (!(wallStake.current(amp) > 1.4)) {
+  //   wallStake.spin(reverse);
+  //   wait(10, msec);
+  // }
+  // wallStake.setPosition(0, degrees);
+  // wallStake.stop();
   // Set drive motor stopping to coast
-  all_drive_motors.setStopping(coast);
+  admMain.setStopping(coast);
 
   colorDetect.setLight(ledState::on);
   colorDetect.setLightPower(100, percent);
@@ -184,56 +188,54 @@ int initialize() {
 //**RING SORTING**
 void colorSort() {
    
-   //ANTI-JAM ANTIJAM ANTI JAM
+  //  ANTI-JAM ANTIJAM ANTI JAM
+  //  while(!antijamDisable){
+  //     wait(10, msec);
+
+  //     if((conveyor.velocity(rpm) == 0) && (conveyor.current(amp) > 2.1)) {
+  //     conveyor.spin(reverse, 12, volt);
+  //     wait(.2, seconds);
+  //     conveyor.spin(forward, 9, volt);
+  //     wait(.2, seconds);
+  //   }
   while(1){
-    
     wait(10, msec);
   
-    if((conveyor.velocity(rpm) == 0) && (conveyor.current(amp) > 2.1)) { // dejamming
-      conveyor.spin(reverse, 12, volt);
-      wait(.2, seconds);
-      conveyor.spin(forward, 9, volt);
-      wait(.2, seconds);
-    }
-    
-  ringDetectDist = ringDist.objectDistance(inches);
-
   //print distance away on brain screen
   Brain.Screen.setCursor(1, 30);
-  Brain.Screen.print(ringDetectDist);
+  Brain.Screen.print(ringDist.objectDistance(inches));
 
-  if (!has_ring() || ringSortDisable) continue;
+  if (ringDist.objectDistance(inches) > 1.5 || ringSortDisable) continue;
 
     //print ringColor on controller screen (removed bc printing to controller screen takes 200ms)
-    //(it was a blocking routine)
-    ringColor = colorDetect.hue(); //update ringcolor once we care about it
+    ringColor = colorDetect.hue();
     // Controller1.Screen.setCursor(3, 14);
     // Controller1.Screen.print(ringColor);
+
+    conveyorPosition = conveyor.position(degrees);
     
-    conveyorPositionPrev = conveyor.position(degrees);
-    
-    if(is_on_blue_alliance && has_red_ring()) { // throw a red ring
+    if(!isRed && (ringColor > 360 || 20 > ringColor)) {
       //wait(.09, sec);
       //printf("Launching red\n");
       conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPositionPrev + 250);
-      //wait(10 * conveyor.current(amp), msec);
-      conveyor.spin(reverse, 12, volt);
-      wait(.2, sec);
-      conveyor.spin(forward, 9, volt);
-      Controller1.rumble("-.");
-      wait(200, msec);
-    }
-    else if (is_on_red_alliance && has_blue_ring()) { // throw a blue ring
-      //wait(.09, sec);
-      //printf("Launching blue\n");
-      conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPositionPrev + 250);
+      waitUntil(conveyor.position(degrees) > conveyorPosition + 100);
       //wait(10 * conveyor.current(amp), msec);
       conveyor.spin(reverse, 12 ,volt);
       wait(.2, sec);
       conveyor.spin(forward, 9, volt);
-      Controller1.rumble("-.");
+      Controller1.rumble("..");
+      wait(200, msec);
+    }
+    else if (isRed && (ringColor > 180 && 260 > ringColor)) {
+      //wait(.09, sec);
+      //printf("Launching blue\n");
+      conveyor.spin(forward, 12, volt);
+      waitUntil(conveyor.position(degrees) > conveyorPosition + 100);
+      //wait(10 * conveyor.current(amp), msec);
+      conveyor.spin(reverse, 12 ,volt);
+      wait(.2, sec);
+      conveyor.spin(forward, 9, volt);
+      Controller1.rumble(".");
       wait(200, msec);
     }
 
@@ -243,65 +245,43 @@ void colorSort() {
   }
 }
 
-bool has_ring() {
-  return ringDetectDist <= 1.5;
-}
 
-bool has_red_ring() {
-  ringColor = colorDetect.hue(); 
-  return (ringColor > 360 || 20 > ringColor);
-}
-
-bool has_blue_ring() {
-  ringColor = colorDetect.hue(); 
-  return (ringColor > 180 && 260 > ringColor);
-}
-
-void wallStakeAutoHold() { //TODO RENAME
+void wallStakeAutoHold() {
   colorDetect.setLight(ledState::on);
   colorDetect.setLightPower(100, percent);
   wallStake.setVelocity(100, percent);
-  // Zero wallStake
   wallStake.setStopping(hold);
   wallStakeFeedFwdDis = false;
-  wallStake.setVelocity(80, rpm);
-  while (!(wallStake.current(amp) > 1.4)) {
-    wallStake.spin(reverse);
-    wait(10, msec);
-  }
-  wallStake.setPosition(0, degrees);
-  wallStake.stop();
   // Set drive motor stopping to coast
-  all_drive_motors.setStopping(coast);
+  admMain.setStopping(coast);
   
-  while (1) { // TODO MUTEX
-    wallStakeMutex.lock();
+  while (1) {
     Brain.Screen.setCursor(1, 1);
     Brain.Screen.print(wallStake.position(degrees));
     Brain.Screen.print("   ");
-
-    if (!wallStakeFeedFwdDis && wallStake.position(degrees) < 100) {
-      wallStake.spin(reverse, 1, volt);
-    } else {
-      
+    if(Controller1.ButtonDown.pressing()){
+      wallStake.setPosition(0, degrees);
     }
-    wallStakeMutex.unlock();
+
+    // if (!wallStakeFeedFwdDis && wallStake.position(degrees) < 100) {
+    //   wallStake.spin(reverse, 1, volt);
+    // }
 
     wait(20, msec);
-    
   }
 }
 
 void usercontrol(void) {
   ringSortDisable = true;
-  all_drive_motors.setStopping(coast);
+  antijamDisable = true;
+  admMain.setStopping(coast);
 }
 
 void updateDrivetrainVelocity() {
   int leftVelocity =
-      (CONTROLLER_L_Y_AXIS + CONTROLLER_R_X_AXIS) * DRIVE_SCALAR;
+      (Controller1.Axis3.position() + (Controller1.Axis1.position() / 1)) * 120;
   int rightVelocity =
-      (CONTROLLER_L_Y_AXIS - CONTROLLER_R_X_AXIS) * DRIVE_SCALAR;
+      (Controller1.Axis3.position() - (Controller1.Axis1.position() / 1)) * 120;
 
   motor_group(L1, L2, L3)
       .spin(vex::forward, leftVelocity, vex::voltageUnits::mV);
@@ -310,55 +290,107 @@ void updateDrivetrainVelocity() {
 }
 
 // intake control
-void enableConveyor() {
-  //conveyorAndRollerMG.spin(forward, 9, volt);
+void onevent_Controller1ButtonL1_pressed_0() {
+  //intakeMain.spin(forward, 9, volt);
   conveyor.spin(fwd, 9, volt);
   roller.spin(fwd, 12, volt);
 }
 
-void reverseConveyor() {
-  conveyorAndRollerMG.spin(reverse, 12, volt);
+void onevent_Controller1ButtonL2_pressed_0() {
+  intakeMain.spin(reverse, 12, volt);
 }
 
-void disableConveyor() { conveyorAndRollerMG.stop(); }
+void onevent_Controller1ButtonL2_released_0() { intakeMain.stop(); }
 
 void toggleDoinker() { doinker.set(!doinker.value()); }
 
-void grabMogo() { mogoMech.set(true); }
-
-void releaseMogo() {
-  mogoMech.set(false);
-  conveyor.spinFor(reverse, 100, degrees);
+void onR2Pressed()
+{ 
+  mogoMech.set(!mogoMech.value()); 
 }
 
-void scoreWallstake() { //TODO MUTEX
-  wallStakeMutex.lock();
-  
-  wallStakeFeedFwdDis = true;
-  wallStake.setVelocity(100, percent);
-  wallStake.spinToPosition(210, degrees, true);
-  
-  wallStakeMutex.unlock();
+void wsSpinToPosition(int position, double kP, double kD, double tolerance)
+{  
+  // double kP = 200;
+  // double kD = 1000;
 
-  wait(0.2, seconds);
+  rotationWallStake.resetPosition();
 
-  wallStakeMutex.lock();
-  
-  wallStake.spinToPosition(-5, degrees, true);
-  wallStakeFeedFwdDis = false;
-  
-  wallStakeMutex.unlock();
-  
+  double startPos = rotationWallStake.position(deg);
+  double target = startPos + position;
+
+  double error = target - rotationWallStake.position(deg);
+  double lastError = 0;
+
+  while(fabs(error) > tolerance)
+  {
+    error = target - rotationWallStake.position(deg);
+    wallStake.spin(fwd, (error * kP) + ((error - lastError) * kD), vex::voltageUnits::mV);
+    lastError = error;
+    wait(10, msec);
+  }
+
+  wallStake.stop(hold);
 }
 
-void switchToBlueAlliance() {
+int wsState = 0;
+
+void onR1Pressed() {
+  wsState = ++wsState & 3;
+
+  wsThread.interrupt();
+
+  
+  if (wsState == LOADING)
+  {
+    wsThread = thread([](){
+      wsSpinToPosition(21, 200, 0, 1);
+      waitUntil(conveyor.current(amp) > 2.3 && conveyor.velocity(rpm) < 2);
+      conveyor.spin(fwd, 2, volt);
+      wallStake.stop(coast);
+    });
+  
+    roller.spin(fwd, 12, volt);
+    conveyor.spin(fwd, 9, volt);
+  } else if (wsState == PRESCORING)
+  {
+    wsThread = thread([](){
+      conveyor.spin(reverse, 4, volt);
+      wsSpinToPosition(100, 250, 0, 3);
+      conveyor.stop();
+      if (Controller1.ButtonY.pressing())
+      {
+        wsSpinToPosition(90, 200, 0, 2);
+        wallStake.spin(reverse, 12, volt);
+        wait(500, msec);
+        wallStake.stop(coast);
+        wsState = 0;
+      }
+      
+    });
+  } else if (wsState == SCORING)
+  {
+    wsThread = thread([](){
+      wsState = 0;
+      wsSpinToPosition(55, 200, 0, 5);
+      wallStake.spin(reverse, 12, volt);
+      wait(400, msec);
+      wallStake.stop(coast);
+    });
+    
+  }
+  
+  antijamDisable = false;
+}
+
+void onRightPressed() {
   ringSortDisable = false;
   isRed = false;
   Controller1.Screen.setCursor(3, 1);
-  Controller1.Screen.print("chuck red");
+  Controller1.Screen.print("chuck red ");
 }
 
-void switchToRedAlliance() {
+void onLeftPressed() {
 
   ringSortDisable = false;
   isRed = true;
@@ -366,18 +398,18 @@ void switchToRedAlliance() {
   Controller1.Screen.print("chuck blue");
 }
 
-void loadRing() {
+void onAPressed() {
   ringDetectOverride = false;
   Controller1.rumble("-");
-  while (!(((ringDist.objectDistance(inches) < 2.0)) || ringDetectOverride)) {
+  while (!(((ringDist.objectDistance(inches) < 2)) || ringDetectOverride)) {
     roller.spin(forward, 12, volt);
-    conveyor.spin(forward, 9, volt);
+    conveyor.spin(forward, 7, volt);
     wait(10, msec);
   }
 
   
   if (!ringDetectOverride) {
-    conveyorAndRollerMG.stop();
+    intakeMain.stop();
     conveyor.stop();
   }
   roller.spin(fwd, 8, volt);
@@ -385,16 +417,16 @@ void loadRing() {
 
 void enableRingDetectOverride() { ringDetectOverride = true; }
 
-void manualWallstake() { //TODO MUTEX
-  wallStakeMutex.lock();
-  int position = CONTROLLER_R_Y_AXIS;
+void onAxis2Changed() {
+  int position = Controller1.Axis2.position();
   if (abs(position) < 50) {
-    wallStake.stop(hold);
     wallStakeFeedFwdDis = false;
+    wallStake.stop(brake);
     return;
-  } else {
-    wallStakeMutex.unlock();
   }
+  wsThread.interrupt();
+  wsState = 0;
+  conveyor.stop();
   wallStakeFeedFwdDis = true;
   wallStake.spin(fwd, position * 0.12, volt);
 }
@@ -404,35 +436,30 @@ void manualWallstake() { //TODO MUTEX
 //}
 
 int main() {
-  initialize();
+
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
 
+  rotationWallStake.setPosition(0, degrees);
+
   colorDetect.integrationTime(5);
 
-  Controller1.ButtonL1.pressed(enableConveyor);
-  Controller1.ButtonL2.pressed(reverseConveyor);
-  Controller1.ButtonL2.released(disableConveyor);
+  Controller1.ButtonL1.pressed(onevent_Controller1ButtonL1_pressed_0);
+  Controller1.ButtonL2.pressed(onevent_Controller1ButtonL2_pressed_0);
+  Controller1.ButtonL2.released(onevent_Controller1ButtonL2_released_0);
   Controller1.Axis1.changed(updateDrivetrainVelocity);
   Controller1.Axis3.changed(updateDrivetrainVelocity);
-  Controller1.Axis2.changed(manualWallstake);
-  Controller1.ButtonY.pressed(scoreWallstake);
+  Controller1.Axis2.changed(onAxis2Changed);
   Controller1.ButtonB.pressed(toggleDoinker);
   Controller1.ButtonL1.pressed(enableRingDetectOverride);
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
-  Controller1.ButtonLeft.pressed(switchToRedAlliance);
-  Controller1.ButtonRight.pressed(switchToBlueAlliance);
-  Controller1.ButtonR1.pressed(releaseMogo);
-  Controller1.ButtonR2.pressed(grabMogo);
-  Controller1.ButtonA.pressed(loadRing);
+  Controller1.ButtonLeft.pressed(onLeftPressed);
+  Controller1.ButtonRight.pressed(onRightPressed);
+  Controller1.ButtonR1.pressed(onR1Pressed);
+  Controller1.ButtonR2.pressed(onR2Pressed);
+  Controller1.ButtonA.pressed(onAPressed);
 
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
   pre_auton();
-
-  // Prevent main from exiting with an infinite loop.
-  while (true) {
-    wait(100, msec);
-  }
-
 }
