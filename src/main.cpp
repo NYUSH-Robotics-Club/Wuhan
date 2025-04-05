@@ -37,40 +37,10 @@ thread wsThread;
 #define PRESCORING 2
 #define SCORING 3
 
-/*
-
-motor_group leftDriveMotors = motor_group(L1, L2, L3);
-motor_group rightDriveMotors = motor_group(R1, R2, R3);
-
-Drive chassis(
-    ZERO_TRACKER_NO_ODOM,
-    leftDriveMotors,
-    rightDriveMotors,
-    PORT14, //inertial port
-    3.25,
-    0.75,
-    360,
-
-    PORT1, -PORT2,
-    PORT3, -PORT4,
-    3,
-    2.75,
-    -2,
-    1,
-    -2.75,
-    5.5
-
-);
-*/
-
-// motor wallStake = motor(PORT1, ratio18_1, false);
-
 int current_auton_selection = 0, conveyorPosition, wallStakeState = 0;
 bool auto_started = false;
 
 void pre_auton(void) {
-  // Initializing Robot Configuration. DO NOT REMOVE!
-  vexcodeInit();
   default_constants();
 
   while (auto_started == false) {
@@ -398,7 +368,6 @@ void disableMogo() { mogoMech.set(false); }
 //}
 
 int main() {
-  // vexcodeInit();
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
 

@@ -33,11 +33,3 @@ extern motor_group allDriveMotors;
 extern motor_group intakeMotors;
 
 extern Drive chassis;
-
-
-/**
- * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
- * 
- * This should be called at the start of your int main function.
- */
-void  vexcodeInit( void );

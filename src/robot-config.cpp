@@ -65,21 +65,5 @@ motor_group intakeMotors(roller, conveyor);
 
 Drive chassis(ZERO_TRACKER_NO_ODOM, leftDriveMotors, rightDriveMotors,
               // inertial port
-              PORT14, 3.25, 0.75, 360,
-
-              PORT1, -PORT2, PORT3, -PORT4, 3, 2.75, -2, 1, -2.75, 5.5
-
-);
-
-// VEXcode generated functions
-// define variable for remote controller enable/disable
-bool RemoteControlCodeEnabled = true;
-
-/**
- * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
- *
- * This should be called at the start of your int main function.
- */
-void vexcodeInit(void) {
-  // nothing to initialize
-}
+              PORT14, 3.25, 0.75, 360, PORT1, -PORT2, PORT3, -PORT4, 3, 2.75,
+              -2, 1, -2.75, 5.5);
