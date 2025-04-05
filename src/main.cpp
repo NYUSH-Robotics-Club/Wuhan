@@ -42,6 +42,7 @@ thread wsThread;
 #define LOADING 1
 #define PRESCORING 2
 #define SCORING 3
+#define LOWER_SCORING 0
 
 int current_auton_selection = 0, conveyorPosition, wallStakeState = 0;
 bool auto_started = false;
@@ -298,7 +299,7 @@ void manualWallstakeCtrl() {
     return;
   }
   wsThread.interrupt();
-  wsState = 0;
+  wsState = LOWER_SCORING;
   conveyor.stop();
   wallStakeFeedFwdDis = true;
   wallStake.spin(fwd, position * 0.12, volt);
