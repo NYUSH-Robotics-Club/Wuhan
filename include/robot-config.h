@@ -25,20 +25,14 @@ extern digital_out mogoMech;
 extern digital_out doinker;
 extern digital_out ringChuck;
 extern digital_in ringSwitch1;
-// extern motor_group leftDriveMotors;
-// extern motor_group rightDriveMotors;
-// extern motor_group allDriveMotors;
 extern rotation rotationWallStake;
-
-
-extern Drive chassis;
-
-
-extern motor_group all_drive_motors;
 
 extern motor_group leftDriveMotors;
 extern motor_group rightDriveMotors;
+extern motor_group allDriveMotors;
+extern motor_group intakeMotors;
 
+extern Drive chassis;
 
 
 /**

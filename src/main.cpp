@@ -1,5 +1,5 @@
-#include "vex.h"
 #include "robot_type.h"
+#include "vex.h"
 // What I changed since the last version of code:
 
 // lb code + one button mogo mech
@@ -26,18 +26,18 @@
 using namespace vex;
 competition Competition;
 
-
-
 float ringColor;
 
-bool wallStakeFeedFwdDis, isRed, ringSortDisable = true, ringDetectOverride, antijamDisable = true;
+bool wallStakeFeedFwdDis, isRed, ringSortDisable = true, ringDetectOverride,
+                                 antijamDisable = true;
 
 thread wsThread;
 
 #define LOADING 1
 #define PRESCORING 2
 #define SCORING 3
-///*
+
+/*
 
 motor_group leftDriveMotors = motor_group(L1, L2, L3);
 motor_group rightDriveMotors = motor_group(R1, R2, R3);
@@ -49,7 +49,7 @@ Drive chassis(
     PORT14, //inertial port
     3.25,
     0.75,
-    360, 
+    360,
 
     PORT1, -PORT2,
     PORT3, -PORT4,
@@ -61,10 +61,8 @@ Drive chassis(
     5.5
 
 );
-//*/
+*/
 
-motor_group intakeMain = motor_group(roller, conveyor);
-motor_group admMain = motor_group(L1, R1, L2, R2, L3, R3);
 // motor wallStake = motor(PORT1, ratio18_1, false);
 
 int current_auton_selection = 0, conveyorPosition, wallStakeState = 0;
@@ -138,8 +136,8 @@ void autonomous(void) {
     break;
   case 3:
     Prog_Skills();
-      isRed = true;
-      ringSortDisable = false;
+    isRed = true;
+    ringSortDisable = false;
 
     break;
   case 4:
@@ -154,10 +152,9 @@ void autonomous(void) {
   }
 }
 
-
 //**RING SORTING**
 void colorSort() {
-   
+
   //  ANTI-JAM ANTIJAM ANTI JAM
   //  while(!antijamDisable){
   //     wait(10, msec);
@@ -168,41 +165,42 @@ void colorSort() {
   //     conveyor.spin(forward, 9, volt);
   //     wait(.2, seconds);
   //   }
-  while(1){
+  while (1) {
     wait(10, msec);
-  
-  //print distance away on brain screen
-  Brain.Screen.setCursor(1, 30);
-  Brain.Screen.print(ringDist.objectDistance(inches));
 
-  if (ringDist.objectDistance(inches) > 1.5 || ringSortDisable) continue;
+    // print distance away on brain screen
+    Brain.Screen.setCursor(1, 30);
+    Brain.Screen.print(ringDist.objectDistance(inches));
 
-    //print ringColor on controller screen (removed bc printing to controller screen takes 200ms)
+    if (ringDist.objectDistance(inches) > 1.5 || ringSortDisable)
+      continue;
+
+    // print ringColor on controller screen (removed bc printing to controller
+    // screen takes 200ms)
     ringColor = colorDetect.hue();
     // Controller1.Screen.setCursor(3, 14);
     // Controller1.Screen.print(ringColor);
 
     conveyorPosition = conveyor.position(degrees);
-    
-    if(!isRed && (ringColor > 360 || 20 > ringColor)) {
-      //wait(.09, sec);
-      //printf("Launching red\n");
+
+    if (!isRed && (ringColor > 360 || 20 > ringColor)) {
+      // wait(.09, sec);
+      // printf("Launching red\n");
       conveyor.spin(forward, 12, volt);
       waitUntil(conveyor.position(degrees) > conveyorPosition + 100);
-      //wait(10 * conveyor.current(amp), msec);
-      conveyor.spin(reverse, 12 ,volt);
+      // wait(10 * conveyor.current(amp), msec);
+      conveyor.spin(reverse, 12, volt);
       wait(.2, sec);
       conveyor.spin(forward, 9, volt);
       Controller1.rumble("..");
       wait(200, msec);
-    }
-    else if (isRed && (ringColor > 180 && 260 > ringColor)) {
-      //wait(.09, sec);
-      //printf("Launching blue\n");
+    } else if (isRed && (ringColor > 180 && 260 > ringColor)) {
+      // wait(.09, sec);
+      // printf("Launching blue\n");
       conveyor.spin(forward, 12, volt);
       waitUntil(conveyor.position(degrees) > conveyorPosition + 100);
-      //wait(10 * conveyor.current(amp), msec);
-      conveyor.spin(reverse, 12 ,volt);
+      // wait(10 * conveyor.current(amp), msec);
+      conveyor.spin(reverse, 12, volt);
       wait(.2, sec);
       conveyor.spin(forward, 9, volt);
       Controller1.rumble(".");
@@ -211,10 +209,8 @@ void colorSort() {
 
     // Controller1.Screen.setCursor(3, 14);
     // Controller1.Screen.print(ringColor);
-    
   }
 }
-
 
 void wallStakeAutoHold() {
   colorDetect.setLight(ledState::on);
@@ -223,13 +219,13 @@ void wallStakeAutoHold() {
   wallStake.setStopping(hold);
   wallStakeFeedFwdDis = false;
   // Set drive motor stopping to coast
-  admMain.setStopping(coast);
-  
+  allDriveMotors.setStopping(coast);
+
   while (1) {
     Brain.Screen.setCursor(1, 1);
     Brain.Screen.print(wallStake.position(degrees));
     Brain.Screen.print("   ");
-    if(Controller1.ButtonDown.pressing()){
+    if (Controller1.ButtonDown.pressing()) {
       wallStake.setPosition(0, degrees);
     }
 
@@ -244,7 +240,7 @@ void wallStakeAutoHold() {
 void usercontrol(void) {
   ringSortDisable = true;
   antijamDisable = true;
-  admMain.setStopping(coast);
+  allDriveMotors.setStopping(coast);
 }
 
 void updateDrivetrainVelocity() {
@@ -257,8 +253,7 @@ void updateDrivetrainVelocity() {
   */
 
   chassis.control_arcade();
-  
-  
+
   /*
   motor_group(L1, L2, L3)
       .spin(vex::forward, leftVelocity, vex::voltageUnits::mV);
@@ -269,26 +264,20 @@ void updateDrivetrainVelocity() {
 
 // intake control
 void enableConveyor() {
-  //intakeMain.spin(forward, 9, volt);
+  // intakeMain.spin(forward, 9, volt);
   conveyor.spin(fwd, 9, volt);
   roller.spin(fwd, 12, volt);
 }
 
-void reverseConveyor() {
-  intakeMain.spin(reverse, 12, volt);
-}
+void reverseConveyor() { intakeMotors.spin(reverse, 12, volt); }
 
-void stopConveyor() { intakeMain.stop(); }
+void stopConveyor() { intakeMotors.stop(); }
 
 void toggleDoinker() { doinker.set(!doinker.value()); }
 
-void toggleMogo()
-{ 
-  mogoMech.set(!mogoMech.value()); 
-}
+void toggleMogo() { mogoMech.set(!mogoMech.value()); }
 
-void wsSpinToPosition(int position, double kP, double kD, double tolerance)
-{  
+void wsSpinToPosition(int position, double kP, double kD, double tolerance) {
   // double kP = 200;
   // double kD = 1000;
 
@@ -300,10 +289,10 @@ void wsSpinToPosition(int position, double kP, double kD, double tolerance)
   double error = target - rotationWallStake.position(deg);
   double lastError = 0;
 
-  while(fabs(error) > tolerance)
-  {
+  while (fabs(error) > tolerance) {
     error = target - rotationWallStake.position(deg);
-    wallStake.spin(fwd, (error * kP) + ((error - lastError) * kD), vex::voltageUnits::mV);
+    wallStake.spin(fwd, (error * kP) + ((error - lastError) * kD),
+                   vex::voltageUnits::mV);
     lastError = error;
     wait(10, msec);
   }
@@ -318,46 +307,39 @@ void scoreLB() {
 
   wsThread.interrupt();
 
-  
-  if (wsState == LOADING)
-  {
-    wsThread = thread([](){
+  if (wsState == LOADING) {
+    wsThread = thread([]() {
       wsSpinToPosition(21, 200, 0, 1);
       waitUntil(conveyor.current(amp) > 2.3 && conveyor.velocity(rpm) < 2);
       conveyor.spin(fwd, 2, volt);
       wallStake.stop(coast);
     });
-  
+
     roller.spin(fwd, 12, volt);
     conveyor.spin(fwd, 9, volt);
-  } else if (wsState == PRESCORING)
-  {
-    wsThread = thread([](){
+  } else if (wsState == PRESCORING) {
+    wsThread = thread([]() {
       conveyor.spin(reverse, 4, volt);
       wsSpinToPosition(100, 250, 0, 3);
       conveyor.stop();
-      if (Controller1.ButtonY.pressing())
-      {
+      if (Controller1.ButtonY.pressing()) {
         wsSpinToPosition(90, 200, 0, 2);
         wallStake.spin(reverse, 12, volt);
         wait(500, msec);
         wallStake.stop(coast);
         wsState = 0;
       }
-      
     });
-  } else if (wsState == SCORING)
-  {
-    wsThread = thread([](){
+  } else if (wsState == SCORING) {
+    wsThread = thread([]() {
       wsState = 0;
       wsSpinToPosition(55, 200, 0, 5);
       wallStake.spin(reverse, 12, volt);
       wait(400, msec);
       wallStake.stop(coast);
     });
-    
   }
-  
+
   antijamDisable = false;
 }
 
@@ -385,9 +367,8 @@ void loadRing() {
     wait(10, msec);
   }
 
-  
   if (!ringDetectOverride) {
-    intakeMain.stop();
+    intakeMotors.stop();
     conveyor.stop();
   }
   roller.spin(fwd, 8, volt);
@@ -409,28 +390,23 @@ void manualWallstakeCtrl() {
   wallStake.spin(fwd, position * 0.12, volt);
 }
 
-void enableMogo(){
-  mogoMech.set(true);
-}
-void disableMogo(){
-  mogoMech.set(false);
-}
+void enableMogo() { mogoMech.set(true); }
+void disableMogo() { mogoMech.set(false); }
 
-
-//void autonomousRoutine() {
-  // Code here
+// void autonomousRoutine() {
+//  Code here
 //}
 
 int main() {
-  //vexcodeInit();
+  // vexcodeInit();
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
 
   rotationWallStake.setPosition(0, degrees);
 
   colorDetect.integrationTime(5);
-  
-  #ifdef GREEN
+
+#ifdef GREEN
   Controller1.ButtonL1.pressed(enableConveyor);
   Controller1.ButtonL2.pressed(reverseConveyor);
   Controller1.ButtonL2.released(stopConveyor);
@@ -445,9 +421,9 @@ int main() {
   Controller1.ButtonR1.pressed(scoreLB);
   Controller1.ButtonR2.pressed(toggleMogo);
   Controller1.ButtonA.pressed(loadRing);
-  #endif
+#endif
 
-  #ifdef GOLD
+#ifdef GOLD
   Controller1.ButtonL1.pressed(enableConveyor);
   Controller1.ButtonL2.pressed(reverseConveyor);
   Controller1.ButtonL2.released(stopConveyor);
@@ -459,13 +435,13 @@ int main() {
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
   Controller1.ButtonLeft.pressed(throwBlue);
   Controller1.ButtonRight.pressed(throwRed);
-  //Controller1.ButtonR1.pressed(scoreLB);
-  //Controller1.ButtonR2.pressed(toggleMogo);
+  // Controller1.ButtonR1.pressed(scoreLB);
+  // Controller1.ButtonR2.pressed(toggleMogo);
   Controller1.ButtonR1.pressed(enableMogo);
   Controller1.ButtonR2.pressed(disableMogo);
   Controller1.ButtonY.pressed(scoreLB);
   Controller1.ButtonA.pressed(loadRing);
-  #endif
+#endif
 
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
