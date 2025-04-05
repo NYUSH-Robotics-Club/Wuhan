@@ -105,13 +105,15 @@ void default_constants(){
 
   wallStake.setVelocity(100, percent);
 
-  /*chassis.set_drive_constants(10, 1.5, 0, 10, 0);
+  /*
+  chassis.set_drive_constants(10, 1.5, 0, 10, 0);
   chassis.set_heading_constants(6, .4, 0, 1, 0);
   chassis.set_turn_constants(12, .4, .03, 3, 15);
   chassis.set_swing_constants(12, .3, .001, 2, 15);
   chassis.set_drive_exit_conditions(1.5, 300, 1000);
   chassis.set_turn_exit_conditions(1, 300, 3000);
-  chassis.set_swing_exit_conditions(1, 300, 3000);*/
+  chassis.set_swing_exit_conditions(1, 300, 3000);
+  */
 }
 
 void odom_constants(){

@@ -46,8 +46,7 @@ Drive chassis(
     ZERO_TRACKER_NO_ODOM,
     leftDriveMotors,
     rightDriveMotors,
-    //inertial port
-    PORT14,
+    PORT14, //inertial port
     3.25,
     0.75,
     360, 
@@ -423,7 +422,7 @@ void disableMogo(){
 //}
 
 int main() {
-
+  //vexcodeInit();
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
 
