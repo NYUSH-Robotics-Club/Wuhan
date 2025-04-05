@@ -67,11 +67,11 @@ digital_out doinker = digital_out(Brain.ThreeWirePort.B);
 digital_out ringChuck = digital_out(Brain.ThreeWirePort.C);
 digital_in ringSwitch1 = digital_in(Brain.ThreeWirePort.E);
 #endif
-
-//motor_group leftDriveMotors = motor_group(L1, L2, L3);
-//motor_group rightDriveMotors = motor_group(R1, R2, R3);
-
 /*
+motor_group leftDriveMotors = motor_group(L1, L2, L3);
+motor_group rightDriveMotors = motor_group(R1, R2, R3);
+
+
 Drive chassis(
     ZERO_TRACKER_NO_ODOM,
     leftDriveMotors,

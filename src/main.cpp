@@ -1,5 +1,5 @@
 #include "vex.h"
-
+#include "robot_type.h"
 // What I changed since the last version of code:
 
 // lb code + one button mogo mech
@@ -26,8 +26,7 @@
 using namespace vex;
 competition Competition;
 
-motor_group leftDriveMotors = motor_group(L1, L2, L3);
-motor_group rightDriveMotors = motor_group(R1, R2, R3);
+
 
 float ringColor;
 
@@ -38,6 +37,10 @@ thread wsThread;
 #define LOADING 1
 #define PRESCORING 2
 #define SCORING 3
+///*
+
+motor_group leftDriveMotors = motor_group(L1, L2, L3);
+motor_group rightDriveMotors = motor_group(R1, R2, R3);
 
 Drive chassis(
     ZERO_TRACKER_NO_ODOM,
@@ -59,6 +62,7 @@ Drive chassis(
     5.5
 
 );
+//*/
 
 motor_group intakeMain = motor_group(roller, conveyor);
 motor_group admMain = motor_group(L1, R1, L2, R2, L3, R3);
@@ -149,39 +153,6 @@ void autonomous(void) {
     worlds_auton();
     break;
   }
-}
-
-/*---------------------------------------------------------------------------*/
-/*                                                                           */
-/*                              User Control Task                            */
-/*                                                                           */
-/*  This task is used to control your robot during the user control phase of */
-/*  a VEX Competition.                                                       */
-/*                                                                           */
-/*  You must modify the code to add your own robot specific commands here.   */
-/*---------------------------------------------------------------------------*/
-
-
-
-int whenStarted1() {
-  // // Zero wallStake
-  // wallStake.setStopping(hold);
-  // wallStakeFeedFwdDis = false;
-  // wallStake.setVelocity(80, rpm);
-  // while (!(wallStake.current(amp) > 1.4)) {
-  //   wallStake.spin(reverse);
-  //   wait(10, msec);
-  // }
-  // wallStake.setPosition(0, degrees);
-  // wallStake.stop();
-  // Set drive motor stopping to coast
-  admMain.setStopping(coast);
-
-  colorDetect.setLight(ledState::on);
-  colorDetect.setLightPower(100, percent);
-  wallStake.setVelocity(100, percent);
-
-  return 0;
 }
 
 
@@ -278,33 +249,41 @@ void usercontrol(void) {
 }
 
 void updateDrivetrainVelocity() {
+  /*
   int leftVelocity =
       (Controller1.Axis3.position() + (Controller1.Axis1.position() / 1)) * 120;
   int rightVelocity =
       (Controller1.Axis3.position() - (Controller1.Axis1.position() / 1)) * 120;
 
+  */
+
+  chassis.control_arcade();
+  
+  
+  /*
   motor_group(L1, L2, L3)
       .spin(vex::forward, leftVelocity, vex::voltageUnits::mV);
   motor_group(R1, R2, R3)
       .spin(vex::forward, rightVelocity, vex::voltageUnits::mV);
+      */
 }
 
 // intake control
-void onevent_Controller1ButtonL1_pressed_0() {
+void enableConveyor() {
   //intakeMain.spin(forward, 9, volt);
   conveyor.spin(fwd, 9, volt);
   roller.spin(fwd, 12, volt);
 }
 
-void onevent_Controller1ButtonL2_pressed_0() {
+void reverseConveyor() {
   intakeMain.spin(reverse, 12, volt);
 }
 
-void onevent_Controller1ButtonL2_released_0() { intakeMain.stop(); }
+void stopConveyor() { intakeMain.stop(); }
 
 void toggleDoinker() { doinker.set(!doinker.value()); }
 
-void onR2Pressed()
+void toggleMogo()
 { 
   mogoMech.set(!mogoMech.value()); 
 }
@@ -335,7 +314,7 @@ void wsSpinToPosition(int position, double kP, double kD, double tolerance)
 
 int wsState = 0;
 
-void onR1Pressed() {
+void scoreLB() {
   wsState = ++wsState & 3;
 
   wsThread.interrupt();
@@ -383,14 +362,14 @@ void onR1Pressed() {
   antijamDisable = false;
 }
 
-void onRightPressed() {
+void throwRed() {
   ringSortDisable = false;
   isRed = false;
   Controller1.Screen.setCursor(3, 1);
   Controller1.Screen.print("chuck red ");
 }
 
-void onLeftPressed() {
+void throwBlue() {
 
   ringSortDisable = false;
   isRed = true;
@@ -398,7 +377,7 @@ void onLeftPressed() {
   Controller1.Screen.print("chuck blue");
 }
 
-void onAPressed() {
+void loadRing() {
   ringDetectOverride = false;
   Controller1.rumble("-");
   while (!(((ringDist.objectDistance(inches) < 2)) || ringDetectOverride)) {
@@ -417,7 +396,7 @@ void onAPressed() {
 
 void enableRingDetectOverride() { ringDetectOverride = true; }
 
-void onAxis2Changed() {
+void manualWallstakeCtrl() {
   int position = Controller1.Axis2.position();
   if (abs(position) < 50) {
     wallStakeFeedFwdDis = false;
@@ -431,6 +410,14 @@ void onAxis2Changed() {
   wallStake.spin(fwd, position * 0.12, volt);
 }
 
+void enableMogo(){
+  mogoMech.set(true);
+}
+void disableMogo(){
+  mogoMech.set(false);
+}
+
+
 //void autonomousRoutine() {
   // Code here
 //}
@@ -443,21 +430,43 @@ int main() {
   rotationWallStake.setPosition(0, degrees);
 
   colorDetect.integrationTime(5);
-
-  Controller1.ButtonL1.pressed(onevent_Controller1ButtonL1_pressed_0);
-  Controller1.ButtonL2.pressed(onevent_Controller1ButtonL2_pressed_0);
-  Controller1.ButtonL2.released(onevent_Controller1ButtonL2_released_0);
+  
+  #ifdef GREEN
+  Controller1.ButtonL1.pressed(enableConveyor);
+  Controller1.ButtonL2.pressed(reverseConveyor);
+  Controller1.ButtonL2.released(stopConveyor);
   Controller1.Axis1.changed(updateDrivetrainVelocity);
   Controller1.Axis3.changed(updateDrivetrainVelocity);
-  Controller1.Axis2.changed(onAxis2Changed);
+  Controller1.Axis2.changed(manualWallstakeCtrl);
   Controller1.ButtonB.pressed(toggleDoinker);
   Controller1.ButtonL1.pressed(enableRingDetectOverride);
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
-  Controller1.ButtonLeft.pressed(onLeftPressed);
-  Controller1.ButtonRight.pressed(onRightPressed);
-  Controller1.ButtonR1.pressed(onR1Pressed);
-  Controller1.ButtonR2.pressed(onR2Pressed);
-  Controller1.ButtonA.pressed(onAPressed);
+  Controller1.ButtonLeft.pressed(throwBlue);
+  Controller1.ButtonRight.pressed(throwRed);
+  Controller1.ButtonR1.pressed(scoreLB);
+  Controller1.ButtonR2.pressed(toggleMogo);
+  Controller1.ButtonA.pressed(loadRing);
+  #endif
+
+  #ifdef GOLD
+  Controller1.ButtonL1.pressed(enableConveyor);
+  Controller1.ButtonL2.pressed(reverseConveyor);
+  Controller1.ButtonL2.released(stopConveyor);
+  Controller1.Axis1.changed(updateDrivetrainVelocity);
+  Controller1.Axis3.changed(updateDrivetrainVelocity);
+  Controller1.Axis2.changed(manualWallstakeCtrl);
+  Controller1.ButtonB.pressed(toggleDoinker);
+  Controller1.ButtonL1.pressed(enableRingDetectOverride);
+  Controller1.ButtonL2.pressed(enableRingDetectOverride);
+  Controller1.ButtonLeft.pressed(throwBlue);
+  Controller1.ButtonRight.pressed(throwRed);
+  //Controller1.ButtonR1.pressed(scoreLB);
+  //Controller1.ButtonR2.pressed(toggleMogo);
+  Controller1.ButtonR1.pressed(enableMogo);
+  Controller1.ButtonR2.pressed(disableMogo);
+  Controller1.ButtonY.pressed(scoreLB);
+  Controller1.ButtonA.pressed(loadRing);
+  #endif
 
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
