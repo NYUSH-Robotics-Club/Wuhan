@@ -1,1 +1,0 @@
-// This contains all auto routines for the gold bot

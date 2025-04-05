@@ -1,3 +1,5 @@
+#include "auto/autons.h"
+#include "auto/utils.h"
 #include "robot_type.h"
 #include "vex.h"
 // What I changed since the last version of code:
@@ -92,32 +94,32 @@ void autonomous(void) {
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
-    redAuto();
+    auton_red();
     break;
   case 1:
     isRed = false;
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
-    blueAuto();
+    auton_blue();
 
     break;
   case 2:
-    AWP_Plus_One();
+    auton_awp();
     break;
   case 3:
-    Prog_Skills();
+    auton_skills();
     isRed = true;
     ringSortDisable = false;
 
     break;
   case 4:
-    odom_test();
+    auton_odom_test();
     break;
   case 5:
-    safe_worlds_auton();
+    // TODO implement this auton
     break;
   case 6:
-    worlds_auton();
+    // TODO implement this auton
     break;
   }
 }
