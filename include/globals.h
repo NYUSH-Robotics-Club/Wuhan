@@ -37,3 +37,4 @@ extern Drive chassis;
 extern bool isRed;
 
 extern bool ringSortDisable;
+extern bool ringDetectOverride;

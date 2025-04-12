@@ -1,7 +1,7 @@
 #include "robot/mogo.h"
 #include "vex.h"
 #include "globals.h"
-#include "robot-config.h"
+//#include "robot-config.h"
 
 class Mogo {
     public:

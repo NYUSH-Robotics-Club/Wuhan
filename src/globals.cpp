@@ -69,4 +69,7 @@ Drive chassis(ZERO_TRACKER_NO_ODOM, leftDriveMotors, rightDriveMotors,
               PORT14, 3.25, 0.75, 360, PORT1, -PORT2, PORT3, -PORT4, 3, 2.75,
               -2, 1, -2.75, 5.5);
 bool isRed = true;
+
+
 bool ringSortDisable = true;
+bool ringDetectOverride = false;
