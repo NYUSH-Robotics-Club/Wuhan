@@ -263,22 +263,6 @@ void wallStakeAutoHold() {
 
 
 
-void throwRed() {
-  ringSortDisable = false;
-  isRed = false;
-  Controller1.Screen.setCursor(3, 1);
-  Controller1.Screen.print("chuck red ");
-}
-
-void throwBlue() {
-
-  ringSortDisable = false;
-  isRed = true;
-  Controller1.Screen.setCursor(3, 1);
-  Controller1.Screen.print("chuck blue");
-}
-
-
 
 
 int main() {

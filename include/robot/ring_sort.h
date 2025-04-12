@@ -1,7 +1,8 @@
 #define is_blue_alliance !isRed
 #define is_red_alliance isRed
 
-
+void throwBlue();
+void throwRed();
 
 void colorSort();
 

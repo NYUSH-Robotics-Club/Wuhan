@@ -83,3 +83,21 @@ void loadRing() {
 
 
 void enableRingDetectOverride() { ringDetectOverride = true; }
+
+
+
+void throwRed() {
+  ringSortDisable = false;
+  isRed = false;
+  Controller1.Screen.setCursor(3, 1);
+  Controller1.Screen.print("chuck red ");
+}
+
+void throwBlue() {
+
+  ringSortDisable = false;
+  isRed = true;
+  Controller1.Screen.setCursor(3, 1);
+  Controller1.Screen.print("chuck blue");
+}
+
