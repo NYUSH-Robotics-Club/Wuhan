@@ -151,9 +151,10 @@ void stopConveyor() { intakeMotors.stop(); }
 
 void toggleDoinker() { doinker.toggle(); }
 
-void toggleMogo() { mogoMech.set(!mogoMech.value()); }
+void toggleMogo() { mogo.toggle(); }
 
-#ifdef LADY_BROWN
+void enableMogo() { mogo.clamp(); }
+void disableMogo() { mogo.clamp(); }
 
 void wsSpinToPosition(int position, double kP, double kD, double tolerance) {
   // double kP = 200;
@@ -260,7 +261,7 @@ void wallStakeAutoHold() {
   }
 }
 
-#endif
+
 
 void throwRed() {
   ringSortDisable = false;
@@ -278,8 +279,7 @@ void throwBlue() {
 }
 
 
-void enableMogo() { mogoMech.set(true); }
-void disableMogo() { mogoMech.set(false); }
+
 
 int main() {
   thread colorSortThread = thread(colorSort);

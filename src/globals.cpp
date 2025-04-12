@@ -27,12 +27,14 @@ motor R3(PORT13, ratio6_1, false);
 optical colorDetect(PORT21);
 distance ringDist(PORT12);
 inertial inertialSensor(PORT11);
-digital_out mogoMech(Brain.ThreeWirePort.D);
+//digital_out mogoMech(Brain.ThreeWirePort.D);
 digital_out ringChuck(Brain.ThreeWirePort.C);
 digital_in ringSwitch1(Brain.ThreeWirePort.E);
 rotation rotationWallStake(PORT20);
 
 Doinker doinker(Brain.ThreeWirePort.B);
+
+Mogo mogo(Brain.ThreeWirePort.D);
 
 #endif
 
@@ -52,11 +54,15 @@ motor R3(PORT13, ratio6_1, false);
 optical colorDetect(PORT21);
 distance ringDist(PORT12);
 inertial inertialSensor(PORT11);
-digital_out mogoMech(Brain.ThreeWirePort.D);
+//digital_out mogoMech(Brain.ThreeWirePort.D);
 digital_out ringChuck(Brain.ThreeWirePort.C);
 digital_in ringSwitch1(Brain.ThreeWirePort.E);
 
 Doinker doinker(Brain.ThreeWirePort.B);
+
+Mogo mogo(Brain.ThreeWirePort.D);
+
+
 #endif
 
 motor_group leftDriveMotors(L1, L2, L3);

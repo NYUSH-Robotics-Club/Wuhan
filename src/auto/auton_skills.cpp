@@ -2,7 +2,7 @@
 
 void auton_skills() {
   // Prog Skills
-
+  /*
   // grab 1 ring
   chassis.set_drive_constants(4, 1.5, 0, 10, 0);
   roller.spin(forward, 12, volt);
@@ -71,4 +71,7 @@ void auton_skills() {
   chassis.drive_distance(19);
   chassis.drive_distance(-20);
   chassis.drive_distance(20);
+
+
+  */
 }

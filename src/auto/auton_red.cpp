@@ -1,6 +1,7 @@
 #include "auto/utils.h"
 
 void auton_red() {
+  /*
   // HS AWP RED
 
   // thread autoColorSortThread = thread(autoColorSort);
@@ -79,4 +80,5 @@ void auton_red() {
   chassis.turn_to_angle(0);
   roller.spin(forward, 12, volt);
   drive_for_time(2000, fwd, 12);
+  */
 }

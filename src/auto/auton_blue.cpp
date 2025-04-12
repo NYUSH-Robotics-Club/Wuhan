@@ -1,6 +1,7 @@
 #include "auto/utils.h"
 
 void auton_blue() {
+  /*
   // HS AWP BLUE
 
   // prep for rush
@@ -85,4 +86,5 @@ void auton_blue() {
   chassis.turn_to_angle(0);
   roller.spin(forward, 12, volt);
   drive_for_time(2000, fwd, 4);
+  */
 }

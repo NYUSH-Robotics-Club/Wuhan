@@ -1,28 +1,24 @@
 #include "robot/mogo.h"
-#include "vex.h"
-#include "globals.h"
-//#include "robot-config.h"
 
-class Mogo {
-    public:
-        Mogo() : piston(mogoMech) {
-        }
-    
-        int toggle() {
-        piston.set(!piston.value());
-        return 0;
-        }
-    
-        int release() {
-        piston.set(false);
-        return 0;
-        }
-    
-        int clamp() {
-        piston.set(true);
-        return 0;
-        }
-    
-    private:
-        vex::digital_out piston;
-};
+Mogo::Mogo(vex::triport::port port)
+    : port(vex::digital_out(port)), extended(false) {}
+
+void Mogo::toggle() {
+  if (extended) {
+    release();
+  } else {
+    clamp();
+  }
+}
+
+void Mogo::clamp() {
+  port.set(true);
+  extended = true;
+}
+
+void Mogo::release() {
+  port.set(false);
+  extended = false;
+}
+
+bool Mogo::is_clamped() { return extended; }

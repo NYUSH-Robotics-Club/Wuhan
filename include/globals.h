@@ -2,6 +2,7 @@
 #include "JAR-Template/drive.h"
 
 #include "robot/doinker.h"
+#include "robot/mogo.h"
 
 extern brain Brain;
 
@@ -27,6 +28,8 @@ extern digital_in ringSwitch1;
 extern rotation rotationWallStake;
 
 extern Doinker doinker;
+
+extern Mogo mogo;
 
 extern motor_group leftDriveMotors;
 extern motor_group rightDriveMotors;
