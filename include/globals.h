@@ -34,3 +34,6 @@ extern motor_group allDriveMotors;
 extern motor_group intakeMotors;
 
 extern Drive chassis;
+extern bool isRed;
+
+extern bool ringSortDisable;
