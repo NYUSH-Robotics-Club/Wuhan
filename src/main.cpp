@@ -25,7 +25,6 @@
 // colorDetect          optical       21
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-using namespace vex;
 competition Competition;
 
 float ringColor;
