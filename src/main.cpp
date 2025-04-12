@@ -262,12 +262,6 @@ void wallStakeAutoHold() {
 
 #endif
 
-#ifdef FISH
-
-// TODO fish stuff here
-
-#endif
-
 void throwRed() {
   ringSortDisable = false;
   isRed = false;
@@ -317,9 +311,7 @@ int main() {
 #ifdef LADY_BROWN
   Controller1.ButtonR1.pressed(scoreLB);
 #endif
-#ifdef FISH
-  Controller1.ButtonR1.pressed(scoreLB);
-#endif
+
 
   Controller1.ButtonR2.pressed(toggleMogo);
   Controller1.ButtonA.pressed(loadRing);
@@ -342,9 +334,6 @@ int main() {
   Controller1.ButtonR1.pressed(enableMogo);
   Controller1.ButtonR2.pressed(disableMogo);
 #ifdef LADY_BROWN
-  Controller1.ButtonY.pressed(scoreLB);
-#endif
-#ifdef FISH
   Controller1.ButtonY.pressed(scoreLB);
 #endif
   Controller1.ButtonA.pressed(loadRing);
