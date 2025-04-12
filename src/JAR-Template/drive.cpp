@@ -573,6 +573,9 @@ void Drive::control_tank() {
   DriveR.spin(fwd, to_volt(rightthrottle), volt);
 }
 
+// why does this depend on our chassis ahhhhhhhh
+extern Drive chassis;
+
 int Drive::position_track_task() {
   chassis.position_track();
   return (0);

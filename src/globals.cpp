@@ -1,5 +1,4 @@
-#include "robot-config.h"
-#include "robot_type.h"
+#include "robot.h"
 #include "vex.h"
 
 using namespace vex;
@@ -30,10 +29,12 @@ optical colorDetect(PORT21);
 distance ringDist(PORT12);
 inertial inertialSensor(PORT11);
 digital_out mogoMech(Brain.ThreeWirePort.D);
-digital_out doinker(Brain.ThreeWirePort.B);
 digital_out ringChuck(Brain.ThreeWirePort.C);
 digital_in ringSwitch1(Brain.ThreeWirePort.E);
 rotation rotationWallStake(PORT20);
+
+Doinker doinker(Brain.ThreeWirePort.B);
+
 #endif
 
 #ifdef GOLD
@@ -53,9 +54,10 @@ optical colorDetect(PORT21);
 distance ringDist(PORT12);
 inertial inertialSensor(PORT11);
 digital_out mogoMech(Brain.ThreeWirePort.D);
-digital_out doinker(Brain.ThreeWirePort.B);
 digital_out ringChuck(Brain.ThreeWirePort.C);
 digital_in ringSwitch1(Brain.ThreeWirePort.E);
+
+Doinker doinker(Brain.ThreeWirePort.B);
 #endif
 
 motor_group leftDriveMotors(L1, L2, L3);

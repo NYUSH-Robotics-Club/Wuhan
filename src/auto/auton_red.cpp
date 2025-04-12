@@ -7,23 +7,23 @@ void auton_red() {
 
   // rush
   roller.spin(forward, 12, volt);
-  doinker.set(true);
+  doinker.extend();
   chassis.drive_distance(36, 35);
   chassis.drive_distance(3);
-  doinker.set(false);
+  doinker.retract();
   wait(.1, seconds);
   chassis.drive_distance(-30);
-  doinker.set(true);
+  doinker.extend();
   chassis.drive_distance(3);
   chassis.left_swing_to_angle(-20);
-  doinker.set(false);
+  doinker.retract();
   wait(.1, seconds);
   chassis.left_swing_to_angle(0);
   // zero against wall
   drive_for_time(1000, reverse);
   chassis.set_heading(0);
   chassis.turn_to_angle(0);
-  doinker.set(false);
+  doinker.retract();
   wait(.1, seconds);
   // grab mogo
   chassis.drive_distance(18);

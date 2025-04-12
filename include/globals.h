@@ -1,7 +1,7 @@
 #pragma once
 #include "JAR-Template/drive.h"
 
-using namespace vex;
+#include "robot/doinker.h"
 
 extern brain Brain;
 
@@ -22,10 +22,11 @@ extern inertial inertialSensor;
 extern optical colorDetect;
 extern distance ringDist;
 extern digital_out mogoMech;
-extern digital_out doinker;
 extern digital_out ringChuck;
 extern digital_in ringSwitch1;
 extern rotation rotationWallStake;
+
+extern Doinker doinker;
 
 extern motor_group leftDriveMotors;
 extern motor_group rightDriveMotors;

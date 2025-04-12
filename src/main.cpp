@@ -1,6 +1,6 @@
 #include "auto/autons.h"
 #include "auto/utils.h"
-#include "robot_type.h"
+#include "robot.h"
 #include "vex.h"
 // What I changed since the last version of code:
 
@@ -31,8 +31,7 @@ competition Competition;
 float ringColor;
 
 bool wallStakeFeedFwdDis, isRed, ringSortDisable = true, ringDetectOverride,
-                     antijamDisable = true;
-
+                                 antijamDisable = true;
 
 #define is_blue_alliance !isRed
 #define is_red_alliance isRed
@@ -129,12 +128,9 @@ void autonomous(void) {
   }
 }
 
-
-
 //**RING SORTING**
 void colorSort() {
 
-  
   while (1) {
     wait(10, msec);
 
@@ -218,10 +214,9 @@ void reverseConveyor() { intakeMotors.spin(reverse, 12, volt); }
 
 void stopConveyor() { intakeMotors.stop(); }
 
-void toggleDoinker() { doinker.set(!doinker.value()); }
+void toggleDoinker() { doinker.toggle(); }
 
 void toggleMogo() { mogoMech.set(!mogoMech.value()); }
-
 
 #ifdef LADY_BROWN
 
@@ -305,7 +300,6 @@ void manualWallstakeCtrl() {
   wallStake.spin(fwd, position * 0.12, volt);
 }
 
-
 void wallStakeAutoHold() {
   colorDetect.setLight(ledState::on);
   colorDetect.setLightPower(100, percent);
@@ -335,11 +329,9 @@ void wallStakeAutoHold() {
 
 #ifdef FISH
 
-//TODO fish stuff here
-
+// TODO fish stuff here
 
 #endif
-
 
 void throwRed() {
   ringSortDisable = false;
@@ -374,7 +366,6 @@ void loadRing() {
 
 void enableRingDetectOverride() { ringDetectOverride = true; }
 
-
 void enableMogo() { mogoMech.set(true); }
 void disableMogo() { mogoMech.set(false); }
 
@@ -398,12 +389,12 @@ int main() {
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
   Controller1.ButtonLeft.pressed(throwBlue);
   Controller1.ButtonRight.pressed(throwRed);
-  #ifdef LADY_BROWN
-    Controller1.ButtonR1.pressed(scoreLB);
-  #endif
-  #ifdef FISH
-    Controller1.ButtonR1.pressed(scoreLB);
-  #endif
+#ifdef LADY_BROWN
+  Controller1.ButtonR1.pressed(scoreLB);
+#endif
+#ifdef FISH
+  Controller1.ButtonR1.pressed(scoreLB);
+#endif
 
   Controller1.ButtonR2.pressed(toggleMogo);
   Controller1.ButtonA.pressed(loadRing);
@@ -425,12 +416,12 @@ int main() {
   // Controller1.ButtonR2.pressed(toggleMogo);
   Controller1.ButtonR1.pressed(enableMogo);
   Controller1.ButtonR2.pressed(disableMogo);
-  #ifdef LADY_BROWN
-    Controller1.ButtonY.pressed(scoreLB);
-  #endif
-  #ifdef FISH
-    Controller1.ButtonY.pressed(scoreLB);
-  #endif
+#ifdef LADY_BROWN
+  Controller1.ButtonY.pressed(scoreLB);
+#endif
+#ifdef FISH
+  Controller1.ButtonY.pressed(scoreLB);
+#endif
   Controller1.ButtonA.pressed(loadRing);
 #endif
 

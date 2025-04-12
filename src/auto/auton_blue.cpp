@@ -5,24 +5,24 @@ void auton_blue() {
 
   // prep for rush
   roller.spin(forward, 12, volt);
-  doinker.set(true);
+  doinker.extend();
   chassis.drive_distance(35, -60);
   chassis.drive_distance(3);
   // Rush
   // wait(.1, seconds);
-  doinker.set(false);
+  doinker.retract();
   // wait(.1, seconds);
   chassis.drive_distance(-37, -35);
   // chassis.left_swing_to_angle(30);
   chassis.turn_to_angle(-2);
   // chassis.turn_to_angle(5);
-  doinker.set(true);
+  doinker.extend();
   // chassis.drive_distance(3);
   chassis.turn_to_angle(-10);
   chassis.turn_to_angle(0);
   // zero against wall
   drive_for_time(1500, reverse);
-  doinker.set(false);
+  doinker.retract();
   chassis.set_heading(0);
   chassis.turn_to_angle(0);
   wait(.1, seconds);
