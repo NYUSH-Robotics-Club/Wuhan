@@ -34,6 +34,7 @@ competition Competition;
 
 bool wallStakeFeedFwdDis, antijamDisable = true;
 
+
 #define is_blue_alliance !isRed
 #define is_red_alliance isRed
 

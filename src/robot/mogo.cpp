@@ -1,4 +1,4 @@
-#include "mogo.h"
+#include "robot/mogo.h"
 #include "vex.h"
 #include "globals.h"
 #include "robot-config.h"

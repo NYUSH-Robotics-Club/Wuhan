@@ -10,7 +10,7 @@ float ringColor;
 
 int conveyorPosition = 0;
 
-bool ringDetectOverride = false;
+
 
 //**RING SORTING**
 void colorSort() {
