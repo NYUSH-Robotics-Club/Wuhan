@@ -72,7 +72,12 @@ public:
   float desired_heading;
 
   Drive(enum::drive_setup drive_setup, motor_group DriveL, motor_group DriveR, int gyro_port, float wheel_diameter, float wheel_ratio, float gyro_scale, int DriveLF_port, int DriveRF_port, int DriveLB_port, int DriveRB_port, int ForwardTracker_port, float ForwardTracker_diameter, float ForwardTracker_center_distance, int SidewaysTracker_port, float SidewaysTracker_diameter, float SidewaysTracker_center_distance);
-
+  Drive& operator=(const Drive& other) {
+    if (this != &other) {
+        // Copy the members from 'other' to 'this'
+    }
+    return *this;
+  }
   void drive_with_voltage(float leftVoltage, float rightVoltage);
 
   float get_absolute_heading();
