@@ -574,10 +574,15 @@ void Drive::control_tank() {
 }
 
 // why does this depend on our chassis ahhhhhhhh
-extern Drive chassis;
+Drive* ptr = nullptr;
+
+void init_chassis(Drive* c){
+  ptr = c;
+}
 
 int Drive::position_track_task() {
-  chassis.position_track();
+  if (ptr == nullptr) return 0;
+  ptr->position_track();
   return (0);
 }
 

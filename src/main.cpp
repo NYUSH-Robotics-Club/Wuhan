@@ -4,6 +4,7 @@
 #include "vex.h"
 #include "globals.h"
 #include "robot/ring_sort.h"
+#include "JAR-Template/drive.h"
 
 // What I changed since the last version of code:
 
@@ -262,23 +263,15 @@ void wallStakeAutoHold() {
 }
 
 
-void init_chassis(Drive &chassis){
-  chassis = Drive(
-    ZERO_TRACKER_NO_ODOM, 
-    leftDriveMotors, 
-    rightDriveMotors,
-    PORT14, 
-    3.25, 0.75, 360, 
-    PORT1, -PORT2, PORT3, -PORT4, 
-    3, 2.75,
-    -2, 1, -2.75, 5.5
-  );
-}
+
 
 
 
 int main() {
-  init_chassis(chassis);
+  
+  
+  init_chassis(&chassis);
+
 
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
