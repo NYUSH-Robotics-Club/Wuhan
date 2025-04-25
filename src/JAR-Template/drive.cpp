@@ -550,16 +550,19 @@ void Drive::holonomic_drive_to_point(
 }
 
 void Drive::control_arcade() {
-  float throttle = deadband(controller(primary).Axis3.value(), 5);
-  float turn = deadband(controller(primary).Axis1.value(), 5);
+  float throttle =
+      deadband(controller(primary).Axis3.value(), CONTROLLER_DEADBAN);
+  float turn = deadband(controller(primary).Axis1.value(), CONTROLLER_DEADBAN);
   DriveL.spin(fwd, to_volt(throttle + turn), volt);
   DriveR.spin(fwd, to_volt(throttle - turn), volt);
 }
 
 void Drive::control_holonomic() {
-  float throttle = deadband(controller(primary).Axis3.value(), 5);
-  float turn = deadband(controller(primary).Axis1.value(), 5);
-  float strafe = deadband(controller(primary).Axis4.value(), 5);
+  float throttle =
+      deadband(controller(primary).Axis3.value(), CONTROLLER_DEADBAN);
+  float turn = deadband(controller(primary).Axis1.value(), CONTROLLER_DEADBAN);
+  float strafe =
+      deadband(controller(primary).Axis4.value(), CONTROLLER_DEADBAN);
   DriveLF.spin(fwd, to_volt(throttle + turn + strafe), volt);
   DriveRF.spin(fwd, to_volt(throttle - turn - strafe), volt);
   DriveLB.spin(fwd, to_volt(throttle + turn - strafe), volt);
@@ -567,8 +570,10 @@ void Drive::control_holonomic() {
 }
 
 void Drive::control_tank() {
-  float leftthrottle = deadband(controller(primary).Axis3.value(), 5);
-  float rightthrottle = deadband(controller(primary).Axis2.value(), 5);
+  float leftthrottle =
+      deadband(controller(primary).Axis3.value(), CONTROLLER_DEADBAN);
+  float rightthrottle =
+      deadband(controller(primary).Axis2.value(), CONTROLLER_DEADBAN);
   DriveL.spin(fwd, to_volt(leftthrottle), volt);
   DriveR.spin(fwd, to_volt(rightthrottle), volt);
 }
