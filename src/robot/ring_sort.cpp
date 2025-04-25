@@ -1,21 +1,17 @@
 #include "robot/ring_sort.h"
-#include "vex.h"
 #include "globals.h"
+#include "vex.h"
 
 float ringColor;
 
 #define is_blue_alliance !isRed
 #define is_red_alliance isRed
 
-
 int conveyorPosition = 0;
-
-
 
 //**RING SORTING**
 void colorSort() {
 
-  
   while (1) {
     wait(10, msec);
 
@@ -63,8 +59,6 @@ void colorSort() {
   }
 }
 
-
-
 void loadRing() {
   ringDetectOverride = false;
   Controller1.rumble("-");
@@ -81,10 +75,7 @@ void loadRing() {
   roller.spin(fwd, 8, volt);
 }
 
-
 void enableRingDetectOverride() { ringDetectOverride = true; }
-
-
 
 void throwRed() {
   ringSortDisable = false;
@@ -100,4 +91,3 @@ void throwBlue() {
   Controller1.Screen.setCursor(3, 1);
   Controller1.Screen.print("chuck blue");
 }
-

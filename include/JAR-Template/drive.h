@@ -137,5 +137,3 @@ public:
   void control_tank();
   void control_holonomic();
 };
-
-void init_chassis(Drive* c);

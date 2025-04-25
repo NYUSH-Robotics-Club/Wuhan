@@ -27,7 +27,7 @@ motor R3(PORT13, ratio6_1, false);
 optical colorDetect(PORT21);
 distance ringDist(PORT12);
 inertial inertialSensor(PORT11);
-//digital_out mogoMech(Brain.ThreeWirePort.D);
+// digital_out mogoMech(Brain.ThreeWirePort.D);
 digital_out ringChuck(Brain.ThreeWirePort.C);
 digital_in ringSwitch1(Brain.ThreeWirePort.E);
 rotation rotationWallStake(PORT20);
@@ -54,14 +54,13 @@ motor R3(PORT13, ratio6_1, false);
 optical colorDetect(PORT21);
 distance ringDist(PORT12);
 inertial inertialSensor(PORT11);
-//digital_out mogoMech(Brain.ThreeWirePort.D);
+// digital_out mogoMech(Brain.ThreeWirePort.D);
 digital_out ringChuck(Brain.ThreeWirePort.C);
 digital_in ringSwitch1(Brain.ThreeWirePort.E);
 
 Doinker doinker(Brain.ThreeWirePort.B);
 
 Mogo mogo(Brain.ThreeWirePort.D);
-
 
 #endif
 
@@ -75,7 +74,6 @@ Drive chassis(ZERO_TRACKER_NO_ODOM, leftDriveMotors, rightDriveMotors,
               PORT14, 3.25, 0.75, 360, PORT1, -PORT2, PORT3, -PORT4, 3, 2.75,
               -2, 1, -2.75, 5.5);
 bool isRed = true;
-
 
 bool ringSortDisable = true;
 bool ringDetectOverride = false;

@@ -1,10 +1,10 @@
+#include "JAR-Template/drive.h"
 #include "auto/autons.h"
 #include "auto/utils.h"
-#include "robot.h"
-#include "vex.h"
 #include "globals.h"
+#include "robot.h"
 #include "robot/ring_sort.h"
-#include "JAR-Template/drive.h"
+#include "vex.h"
 
 // What I changed since the last version of code:
 
@@ -31,10 +31,7 @@
 
 competition Competition;
 
-
-
 bool wallStakeFeedFwdDis, antijamDisable = true;
-
 
 #define is_blue_alliance !isRed
 #define is_red_alliance isRed
@@ -130,8 +127,6 @@ void autonomous(void) {
     break;
   }
 }
-
-
 
 void usercontrol(void) {
   ringSortDisable = true;
@@ -262,17 +257,7 @@ void wallStakeAutoHold() {
   }
 }
 
-
-
-
-
-
 int main() {
-  
-  
-  init_chassis(&chassis);
-
-
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
 
@@ -286,12 +271,8 @@ int main() {
   Controller1.ButtonL2.released(stopConveyor);
 
   // Unwrapped updateDrivetrainVelocity logic
-  Controller1.Axis1.changed([]() {
-    chassis.control_arcade();
-  });
-  Controller1.Axis3.changed([]() {
-    chassis.control_arcade();
-  });
+  Controller1.Axis1.changed([]() { chassis.control_arcade(); });
+  Controller1.Axis3.changed([]() { chassis.control_arcade(); });
 
   Controller1.Axis2.changed(manualWallstakeCtrl);
   Controller1.ButtonB.pressed(toggleDoinker);
@@ -302,7 +283,6 @@ int main() {
 #ifdef LADY_BROWN
   Controller1.ButtonR1.pressed(scoreLB);
 #endif
-
 
   Controller1.ButtonR2.pressed(toggleMogo);
   Controller1.ButtonA.pressed(loadRing);
