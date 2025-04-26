@@ -11,13 +11,11 @@ void Mogo::toggle() {
 }
 
 void Mogo::clamp() {
-  printf("clamp\n");
   port->set(true);
   extended = true;
 }
 
 void Mogo::release() {
-  printf("release\n");
   port->set(false);
   extended = false;
 }
