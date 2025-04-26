@@ -1,7 +1,6 @@
 #include "robot/doinker.h"
 
-Doinker::Doinker(vex::triport::port port)
-    : port(vex::digital_out(port)), extended(false) {}
+Doinker::Doinker(digital_out *port) : port(port), extended(false) {}
 
 void Doinker::toggle() {
   if (extended) {
@@ -12,12 +11,12 @@ void Doinker::toggle() {
 }
 
 void Doinker::extend() {
-  port.set(true);
+  port->set(true);
   extended = true;
 }
 
 void Doinker::retract() {
-  port.set(false);
+  port->set(false);
   extended = false;
 }
 

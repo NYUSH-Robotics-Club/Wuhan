@@ -32,10 +32,8 @@ digital_out ringChuck(Brain.ThreeWirePort.C);
 digital_in ringSwitch1(Brain.ThreeWirePort.E);
 rotation rotationWallStake(PORT20);
 
-Doinker doinker(Brain.ThreeWirePort.B);
-
+digital_out doinkerPort(Brain.ThreeWirePort.B);
 digital_out mogoPort(Brain.ThreeWirePort.D);
-Mogo mogo(&mogoPort);
 
 #endif
 
@@ -59,9 +57,8 @@ inertial inertialSensor(PORT11);
 digital_out ringChuck(Brain.ThreeWirePort.C);
 digital_in ringSwitch1(Brain.ThreeWirePort.E);
 
-Doinker doinker(Brain.ThreeWirePort.B);
-
-Mogo mogo(Brain.ThreeWirePort.D);
+digital_out doinkerPort(Brain.ThreeWirePort.B);
+digital_out mogoPort(Brain.ThreeWirePort.D);
 
 #endif
 
@@ -74,6 +71,10 @@ Drive chassis(ZERO_TRACKER_NO_ODOM, leftDriveMotors, rightDriveMotors,
               // inertial port
               PORT14, 3.25, 0.75, 360, PORT1, -PORT2, PORT3, -PORT4, 3, 2.75,
               -2, 1, -2.75, 5.5);
+
+Doinker doinker(&doinkerPort);
+Mogo mogo(&mogoPort);
+
 bool isRed = true;
 
 bool ringSortDisable = true;

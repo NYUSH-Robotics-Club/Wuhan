@@ -4,13 +4,13 @@
 
 class Doinker {
     public:
-        Doinker(vex::triport::port port);
+        Doinker(digital_out* port);
         void toggle();
         void extend();
         void retract();
         bool is_extended();
 
     private:
-        vex::digital_out port;
+        digital_out* port;
         bool extended;
 };
