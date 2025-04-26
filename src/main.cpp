@@ -147,7 +147,10 @@ void stopConveyor() { intakeMotors.stop(); }
 
 void toggleDoinker() { doinker.toggle(); }
 
-void toggleMogo() { mogo.toggle(); }
+void toggleMogo() {
+  printf("toggleMogo\n");
+  mogo.toggle();
+}
 
 void enableMogo() { mogo.clamp(); }
 void disableMogo() { mogo.clamp(); }

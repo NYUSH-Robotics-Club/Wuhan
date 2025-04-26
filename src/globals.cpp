@@ -34,7 +34,8 @@ rotation rotationWallStake(PORT20);
 
 Doinker doinker(Brain.ThreeWirePort.B);
 
-Mogo mogo(Brain.ThreeWirePort.D);
+digital_out mogoPort(Brain.ThreeWirePort.D);
+Mogo mogo(&mogoPort);
 
 #endif
 

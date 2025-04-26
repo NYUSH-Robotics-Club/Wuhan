@@ -4,13 +4,13 @@
 
 class Mogo {
     public:
-        Mogo(vex::triport::port port);
+        Mogo(digital_out* port);
         void toggle();
         void clamp();
         void release();
         bool is_clamped();
 
     private:
-        vex::digital_out port;
+        digital_out* port;
         bool extended;
 };

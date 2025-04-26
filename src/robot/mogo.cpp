@@ -1,7 +1,6 @@
 #include "robot/mogo.h"
 
-Mogo::Mogo(vex::triport::port port)
-    : port(vex::digital_out(port)), extended(false) {}
+Mogo::Mogo(digital_out *port) : port(port), extended(false) {}
 
 void Mogo::toggle() {
   if (extended) {
@@ -12,12 +11,14 @@ void Mogo::toggle() {
 }
 
 void Mogo::clamp() {
-  port.set(true);
+  printf("clamp\n");
+  port->set(true);
   extended = true;
 }
 
 void Mogo::release() {
-  port.set(false);
+  printf("release\n");
+  port->set(false);
   extended = false;
 }
 
