@@ -22,7 +22,8 @@
 // R3                   motor         3
 // roller               motor         5
 // conveyor             motor         4
-// wallStake            motor         9
+// wallStake1           motor         9
+// wallStake2           motor         10
 // doinker              digital_out   B
 // ringChuck            digital_out   C
 // mogoMech             digital_out   D
@@ -54,8 +55,6 @@ void pre_auton(void) {
     switch (current_auton_selection) {
     case 0:
       Brain.Screen.printAt(50, 50, "Red Auton");
-      // Brain.Screen.setFillColor();
-      // Brain.Screen.drawRectangle(0, 0, 100, 100);
       break;
     case 1:
       Brain.Screen.printAt(50, 50, "Blue Auton");
@@ -136,7 +135,6 @@ void usercontrol(void) {
 
 // intake control
 void enableConveyor() {
-  // intakeMain.spin(forward, 9, volt);
   conveyor.spin(fwd, 9, volt);
   roller.spin(fwd, 12, volt);
 }
@@ -153,9 +151,6 @@ void enableMogo() { mogo.clamp(); }
 void disableMogo() { mogo.clamp(); }
 
 void wsSpinToPosition(int position, double kP, double kD, double tolerance) {
-  // double kP = 200;
-  // double kD = 1000;
-
   rotationWallStake.resetPosition();
 
   double startPos = rotationWallStake.position(deg);
@@ -166,13 +161,16 @@ void wsSpinToPosition(int position, double kP, double kD, double tolerance) {
 
   while (fabs(error) > tolerance) {
     error = target - rotationWallStake.position(deg);
-    wallStake.spin(fwd, (error * kP) + ((error - lastError) * kD),
+    wallStake1.spin(fwd, (error * kP) + ((error - lastError) * kD),
+                   vex::voltageUnits::mV);
+    wallStake2.spin(fwd, (error * kP) + ((error - lastError) * kD),
                    vex::voltageUnits::mV);
     lastError = error;
     wait(10, msec);
   }
 
-  wallStake.stop(hold);
+  wallStake1.stop(hold);
+  wallStake2.stop(hold);
 }
 
 int wsState = 0;
@@ -187,7 +185,8 @@ void scoreLB() {
       wsSpinToPosition(21, 200, 0, 1);
       waitUntil(conveyor.current(amp) > 2.3 && conveyor.velocity(rpm) < 2);
       conveyor.spin(fwd, 2, volt);
-      wallStake.stop(coast);
+      wallStake1.stop(coast);
+      wallStake2.stop(coast);
     });
 
     roller.spin(fwd, 12, volt);
@@ -199,9 +198,11 @@ void scoreLB() {
       conveyor.stop();
       if (Controller1.ButtonY.pressing()) {
         wsSpinToPosition(90, 200, 0, 2);
-        wallStake.spin(reverse, 12, volt);
+        wallStake1.spin(reverse, 12, volt);
+        wallStake2.spin(reverse, 12, volt);
         wait(500, msec);
-        wallStake.stop(coast);
+        wallStake1.stop(coast);
+        wallStake2.stop(coast);
         wsState = 0;
       }
     });
@@ -209,9 +210,11 @@ void scoreLB() {
     wsThread = thread([]() {
       wsState = 0;
       wsSpinToPosition(55, 200, 0, 5);
-      wallStake.spin(reverse, 12, volt);
+      wallStake1.spin(reverse, 12, volt);
+      wallStake2.spin(reverse, 12, volt);
       wait(400, msec);
-      wallStake.stop(coast);
+      wallStake1.stop(coast);
+      wallStake2.stop(coast);
     });
   }
 
@@ -222,36 +225,38 @@ void manualWallstakeCtrl() {
   int position = Controller1.Axis2.position();
   if (abs(position) < 50) {
     wallStakeFeedFwdDis = false;
-    wallStake.stop(brake);
+    wallStake1.stop(brake);
+    wallStake2.stop(brake);
     return;
   }
   wsThread.interrupt();
   wsState = LOWER_SCORING;
   conveyor.stop();
   wallStakeFeedFwdDis = true;
-  wallStake.spin(fwd, position * 0.12, volt);
+  wallStake1.spin(fwd, position * 0.12, volt);
+  wallStake2.spin(fwd, position * 0.12, volt);
 }
 
 void wallStakeAutoHold() {
   colorDetect.setLight(ledState::on);
   colorDetect.setLightPower(100, percent);
-  wallStake.setVelocity(100, percent);
-  wallStake.setStopping(hold);
+  wallStake1.setVelocity(100, percent);
+  wallStake2.setVelocity(100, percent);
+  wallStake1.setStopping(hold);
+  wallStake2.setStopping(hold);
   wallStakeFeedFwdDis = false;
-  // Set drive motor stopping to coast
   allDriveMotors.setStopping(coast);
 
   while (1) {
     Brain.Screen.setCursor(1, 1);
-    Brain.Screen.print(wallStake.position(degrees));
+    Brain.Screen.print(wallStake1.position(degrees));
+    Brain.Screen.setCursor(1, 4);
+    Brain.Screen.print(wallStake2.position(degrees));
     Brain.Screen.print("   ");
     if (Controller1.ButtonDown.pressing()) {
-      wallStake.setPosition(0, degrees);
+      wallStake1.setPosition(0, degrees);
+      wallStake2.setPosition(0, degrees);
     }
-
-    // if (!wallStakeFeedFwdDis && wallStake.position(degrees) < 100) {
-    //   wallStake.spin(reverse, 1, volt);
-    // }
 
     wait(20, msec);
   }
@@ -270,7 +275,6 @@ int main() {
   Controller1.ButtonL2.pressed(reverseConveyor);
   Controller1.ButtonL2.released(stopConveyor);
 
-  // Unwrapped updateDrivetrainVelocity logic
   Controller1.Axis1.changed([]() { chassis.control_arcade(); });
   Controller1.Axis3.changed([]() { chassis.control_arcade(); });
 
@@ -292,16 +296,14 @@ int main() {
   Controller1.ButtonL1.pressed(enableConveyor);
   Controller1.ButtonL2.pressed(reverseConveyor);
   Controller1.ButtonL2.released(stopConveyor);
-  Controller1.Axis1.changed(updateDrivetrainVelocity);
-  Controller1.Axis3.changed(updateDrivetrainVelocity);
+  Controller1.Axis1.changed([]() { chassis.control_arcade(); });
+  Controller1.Axis3.changed([]() { chassis.control_arcade(); });
   Controller1.Axis2.changed(manualWallstakeCtrl);
   Controller1.ButtonB.pressed(toggleDoinker);
   Controller1.ButtonL1.pressed(enableRingDetectOverride);
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
   Controller1.ButtonLeft.pressed(throwBlue);
   Controller1.ButtonRight.pressed(throwRed);
-  // Controller1.ButtonR1.pressed(scoreLB);
-  // Controller1.ButtonR2.pressed(toggleMogo);
   Controller1.ButtonR1.pressed(enableMogo);
   Controller1.ButtonR2.pressed(disableMogo);
 #ifdef LADY_BROWN
