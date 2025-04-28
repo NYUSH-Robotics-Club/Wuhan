@@ -12,20 +12,20 @@ controller Controller1(primary);
 
 #ifdef GREEN
 
-motor roller = motor(PORT5, ratio6_1, true);
-motor conveyor = motor(PORT7, ratio6_1, true);
-motor wSMotor1 = motor(PORT17, ratio36_1, true);
-motor wSMotor2 = motor(PORT16, ratio36_1, false);
-motor L1 = motor(PORT1, ratio6_1, true);
-motor L2 = motor(PORT2, ratio6_1, false);
-motor L3 = motor(PORT4, ratio6_1, false);
-motor L4 = motor(PORT20, ratio6_1, true);
-motor R1 = motor(PORT11, ratio6_1, false);
-motor R2 = motor(PORT12, ratio6_1, true);
-motor R3 = motor(PORT13, ratio6_1, false);
-motor R4 = motor(PORT14, ratio6_1, true);
+motor roller(PORT5, ratio6_1, true);
+motor conveyor(PORT7, ratio6_1, true);
+motor wSMotor1(PORT17, ratio36_1, true);
+motor wSMotor2(PORT16, ratio36_1, false);
+motor L1(PORT1, ratio6_1, true);
+motor L2(PORT2, ratio6_1, false);
+motor L3(PORT4, ratio6_1, false);
+motor L4(PORT20, ratio6_1, true);
+motor R1(PORT11, ratio6_1, false);
+motor R2(PORT12, ratio6_1, true);
+motor R3(PORT13, ratio6_1, false);
+motor R4(PORT14, ratio6_1, true);
 
-rotation rotationWallStake = rotation(PORT15); //reverse
+rotation rotationWallStake(PORT15); //reverse
 // rotation verticalTraker = rotation(PORT6); //reverse
 // rotation horizontalTraker = rotation(PORT8); 
 
@@ -35,12 +35,12 @@ rotation rotationWallStake = rotation(PORT15); //reverse
 // vex::motor_group rightDriveMotors = motor_group(R1,R2,R3);
 // vex::motor_group allDriveMotors = motor_group(L1, R1, L2, R2, L3, R3);
 
-distance ringDist = distance(PORT18);
-optical colorDetect = optical(PORT19);
-inertial inertialSensor = inertial(PORT9);
-digital_out mogoPort = digital_out(Brain.ThreeWirePort.B);
-digital_out doinkerPort = digital_out(Brain.ThreeWirePort.C);
-digital_out tipper = digital_out(Brain.ThreeWirePort.D);
+distance ringDist(PORT18);
+optical colorDetect(PORT19);
+inertial inertialSensor(PORT9);
+digital_out mogoPort(Brain.ThreeWirePort.B);
+digital_out doinkerPort(Brain.ThreeWirePort.C);
+digital_out tipper(Brain.ThreeWirePort.D);
 
 //digital_out ringChuck = digital_out(Brain.ThreeWirePort.D); //not used
 //digital_in ringSwitch = digital_in(Brain.ThreeWirePort.H);//not used
@@ -79,7 +79,7 @@ digital_out ringChuck(Brain.ThreeWirePort.C); //not used
 digital_out doinkerPort(Brain.ThreeWirePort.B);
 digital_out mogoPort(Brain.ThreeWirePort.D);
 
-digital_out tipper = digital_out(Brain.ThreeWirePort.A);
+digital_out tipper(Brain.ThreeWirePort.A);
 
 #define HORIZ_TRACKER PORT8
 #define VERT_TRACKER PORT6
@@ -181,7 +181,7 @@ Drive chassis(
 Doinker doinker(&doinkerPort);
 Mogo mogo(&mogoPort);
 
-motor_group wallStake = motor_group(wSMotor1, wSMotor2);
+motor_group wallStake(wSMotor1, wSMotor2);
 
 bool isRed = true;
 
