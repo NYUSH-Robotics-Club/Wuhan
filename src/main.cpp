@@ -30,6 +30,8 @@
 // colorDetect          optical       21
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
+#define PID_TUNING
+
 competition Competition;
 
 bool wallStakeFeedFwdDis, antijamDisable = true;
@@ -284,10 +286,36 @@ int main() {
   thread wsAutoHold = thread(wallStakeAutoHold);
 
   rotationWallStake.setPosition(0, degrees);
+  
+  #ifdef PID_TUNING
+  thread debugthread = thread([]() {
+    while (1) {
+      Brain.Screen.setCursor(5, 1);
+      Brain.Screen.print("x: %d", chassis.get_X_position());
+      Brain.Screen.setCursor(6, 1);
+      Brain.Screen.print("y: %d",chassis.get_Y_position());
+      Brain.Screen.setCursor(7, 1);
+      Brain.Screen.print("h: %f", chassis.get_absolute_heading());
+      wait(20, msec);
+    }
+  });
 
   colorDetect.integrationTime(5);
+  default_constants();
 
-#ifdef GREEN
+  chassis.set_coordinates(0, 0, 0);
+  chassis.drive_distance(72.0);
+  //chassis.drive_to_point(0, 72.0);
+  chassis.turn_to_angle(180.0);
+  wait(1, sec);
+  chassis.drive_to_point(0, 0);
+  chassis.turn_to_angle(0.0);
+
+  wait(1, sec);
+  #endif
+  //auton_odom_test();
+
+  #ifdef GREEN
   Controller1.ButtonL1.pressed(enableConveyor);
   Controller1.ButtonL2.pressed(reverseConveyor);
   Controller1.ButtonL2.released(stopConveyor);

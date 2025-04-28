@@ -14,14 +14,12 @@ controller Controller1(primary);
 
 motor roller = motor(PORT5, ratio6_1, true);
 motor conveyor = motor(PORT7, ratio6_1, true);
-
 motor wallStake1 = motor(PORT17, ratio36_1, true);
 motor wallStake2 = motor(PORT16, ratio36_1, false);
 motor L1 = motor(PORT1, ratio6_1, true);
 motor L2 = motor(PORT2, ratio6_1, false);
 motor L3 = motor(PORT4, ratio6_1, false);
 motor L4 = motor(PORT20, ratio6_1, true);
-
 motor R1 = motor(PORT11, ratio6_1, false);
 motor R2 = motor(PORT12, ratio6_1, true);
 motor R3 = motor(PORT13, ratio6_1, false);
@@ -46,6 +44,9 @@ digital_out tipper = digital_out(Brain.ThreeWirePort.D);
 
 digital_out ringChuck = digital_out(Brain.ThreeWirePort.C); //not used
 digital_in ringSwitch = digital_in(Brain.ThreeWirePort.H);//not used
+
+#define horiz_tracker PORT6
+#define vert_tracker PORT5
 
 #endif
 
@@ -79,6 +80,9 @@ digital_out doinkerPort(Brain.ThreeWirePort.B);
 digital_out mogoPort(Brain.ThreeWirePort.D);
 
 digital_out tipper = digital_out(Brain.ThreeWirePort.A);
+
+#define horiz_tracker PORT8
+#define vert_tracker PORT6
 
 
 //digital_out tipper = digital_out(Brain.ThreeWirePort.D);
@@ -153,7 +157,7 @@ Drive chassis(
   //If you are using position tracking, this is the Forward Tracker port (the tracker which runs parallel to the direction of the chassis).
   //If this is a rotation sensor, enter it in "PORT1" format, inputting the port below.
   //If this is an encoder, enter the port as an integer. Triport A will be a "1", Triport B will be a "2", etc.
-  PORT5,
+  vert_tracker,
   
   //Input the Forward Tracker diameter (reverse it to make the direction switch):
   -2.00,
@@ -164,7 +168,7 @@ Drive chassis(
   0.0,
   
   //Input the Sideways Tracker Port, following the same steps as the Forward Tracker Port:
-  PORT6,
+  horiz_tracker,
   
   //Sideways tracker diameter (reverse to make the direction switch):
   2.0,
