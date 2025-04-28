@@ -69,8 +69,8 @@ void default_constants() {
   wait(2000, msec);
   Controller1.rumble("-..");
 
-  wallStake1.setVelocity(100, percent);
-  wallStake2.setVelocity(100, percent);
+  wSMotor1.setVelocity(100, percent);
+  wSMotor2.setVelocity(100, percent);
 
   /*
   chassis.set_drive_constants(10, 1.5, 0, 10, 0);

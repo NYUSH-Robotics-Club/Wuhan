@@ -136,11 +136,7 @@ void usercontrol(void) {
   allDriveMotors.setStopping(coast);
   while (1)
   {
-    printf("Axis1: %d\n", Controller1.Axis1.position());
-    printf("Axis3: %d\n", Controller1.Axis3.position());
-    printf("R1 deg: %d\n", R1.position(deg));
-    printf("R1 velo: %d\n", R1.velocity(percent));
-    wait(20.0, timeUnits::msec);
+    
   }
   
 
@@ -179,16 +175,14 @@ void wsSpinToPosition(int position, double kP, double kD, double tolerance) {
 
   while (fabs(error) > tolerance) {
     error = target - rotationWallStake.position(deg);
-    wallStake1.spin(fwd, (error * kP) + ((error - lastError) * kD),
+    wallStake.spin(fwd, (error * kP) + ((error - lastError) * kD),
                    vex::voltageUnits::mV);
-    wallStake2.spin(fwd, (error * kP) + ((error - lastError) * kD),
-                   vex::voltageUnits::mV);
+    
     lastError = error;
     wait(10, msec);
   }
 
-  wallStake1.stop(hold);
-  wallStake2.stop(hold);
+  wallStake.stop(hold);
 }
 
 int wsState = 0;
@@ -203,8 +197,7 @@ void scoreLB() {
       wsSpinToPosition(21, 200, 0, 1);
       waitUntil(conveyor.current(amp) > 2.3 && conveyor.velocity(rpm) < 2);
       conveyor.spin(fwd, 2, volt);
-      wallStake1.stop(coast);
-      wallStake2.stop(coast);
+      wallStake.stop(coast);
     });
 
     roller.spin(fwd, 12, volt);
@@ -216,11 +209,9 @@ void scoreLB() {
       conveyor.stop();
       if (Controller1.ButtonY.pressing()) {
         wsSpinToPosition(90, 200, 0, 2);
-        wallStake1.spin(reverse, 12, volt);
-        wallStake2.spin(reverse, 12, volt);
+        wallStake.spin(reverse, 12, volt);
         wait(500, msec);
-        wallStake1.stop(coast);
-        wallStake2.stop(coast);
+        wallStake.stop(coast);
         wsState = 0;
       }
     });
@@ -228,11 +219,9 @@ void scoreLB() {
     wsThread = thread([]() {
       wsState = 0;
       wsSpinToPosition(55, 200, 0, 5);
-      wallStake1.spin(reverse, 12, volt);
-      wallStake2.spin(reverse, 12, volt);
+      wallStake.spin(reverse, 12, volt);
       wait(400, msec);
-      wallStake1.stop(coast);
-      wallStake2.stop(coast);
+      wallStake.stop(coast);
     });
   }
 
@@ -243,38 +232,36 @@ void manualWallstakeCtrl() {
   int position = Controller1.Axis2.position();
   if (abs(position) < 50) {
     wallStakeFeedFwdDis = false;
-    wallStake1.stop(brake);
-    wallStake2.stop(brake);
+    wallStake.stop(coast);
     return;
   }
   wsThread.interrupt();
   wsState = LOWER_SCORING;
   conveyor.stop();
   wallStakeFeedFwdDis = true;
-  wallStake1.spin(fwd, position * 0.12, volt);
-  wallStake2.spin(fwd, position * 0.12, volt);
+  wallStake.spin(fwd, position * 0.12, volt);
 }
 
 void wallStakeAutoHold() {
   colorDetect.setLight(ledState::on);
   colorDetect.setLightPower(100, percent);
-  wallStake1.setVelocity(100, percent);
-  wallStake2.setVelocity(100, percent);
-  wallStake1.setStopping(hold);
-  wallStake2.setStopping(hold);
+  wallStake.setVelocity(100, percent);
+  wallStake.setStopping(hold);
   wallStakeFeedFwdDis = false;
+  // Set drive motor stopping to coast
   allDriveMotors.setStopping(coast);
-
+  
   while (1) {
     Brain.Screen.setCursor(1, 1);
-    Brain.Screen.print(wallStake1.position(degrees));
-    Brain.Screen.setCursor(1, 4);
-    Brain.Screen.print(wallStake2.position(degrees));
+    Brain.Screen.print(wallStake.position(degrees));
     Brain.Screen.print("   ");
-    if (Controller1.ButtonDown.pressing()) {
-      wallStake1.setPosition(0, degrees);
-      wallStake2.setPosition(0, degrees);
+    if(Controller1.ButtonDown.pressing()){
+      wallStake.setPosition(0, degrees);
     }
+
+    // if (!wallStakeFeedFwdDis && wallStake.position(degrees) < 100) {
+    //   wallStake.spin(reverse, 1, volt);
+    // }
 
     wait(20, msec);
   }

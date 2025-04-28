@@ -14,8 +14,8 @@ controller Controller1(primary);
 
 motor roller = motor(PORT5, ratio6_1, true);
 motor conveyor = motor(PORT7, ratio6_1, true);
-motor wallStake1 = motor(PORT17, ratio36_1, true);
-motor wallStake2 = motor(PORT16, ratio36_1, false);
+motor wSMotor1 = motor(PORT17, ratio36_1, true);
+motor wSMotor2 = motor(PORT16, ratio36_1, false);
 motor L1 = motor(PORT1, ratio6_1, true);
 motor L2 = motor(PORT2, ratio6_1, false);
 motor L3 = motor(PORT4, ratio6_1, false);
@@ -181,7 +181,7 @@ Drive chassis(
 Doinker doinker(&doinkerPort);
 Mogo mogo(&mogoPort);
 
-
+motor_group wallStake = motor_group(wSMotor1, wSMotor2);
 
 bool isRed = true;
 

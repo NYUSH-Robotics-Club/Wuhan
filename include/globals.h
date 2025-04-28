@@ -10,13 +10,15 @@ extern brain Brain;
 extern controller Controller1;
 extern motor roller;
 extern motor conveyor;
-extern motor wallStake1;
-extern motor wallStake2;
+extern motor wSMotor1;
+extern motor wSMotor2;
 
 extern motor L1;
 extern motor L2;
 extern motor L3;
 extern motor L4;
+
+extern motor_group wallStake;
 
 extern motor R1;
 extern motor R2;
