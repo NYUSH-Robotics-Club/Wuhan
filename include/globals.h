@@ -12,21 +12,26 @@ extern motor roller;
 extern motor conveyor;
 extern motor wallStake1;
 extern motor wallStake2;
+
 extern motor L1;
 extern motor L2;
 extern motor L3;
-//extern motor L4;
+extern motor L4;
+
 extern motor R1;
 extern motor R2;
 extern motor R3;
-//extern motor R4;
+extern motor R4;
+
 extern inertial inertialSensor;
 extern optical colorDetect;
 extern distance ringDist;
 extern digital_out mogoMech;
 extern digital_out ringChuck;
-extern digital_in ringSwitch1;
+extern digital_in ringSwitch;
 extern rotation rotationWallStake;
+
+extern digital_out tipper;
 
 extern Doinker doinker;
 

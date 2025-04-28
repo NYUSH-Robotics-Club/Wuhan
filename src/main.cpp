@@ -47,87 +47,6 @@ thread wsThread;
 int current_auton_selection = 0, wallStakeState = 0;
 bool auto_started = false;
 
-Drive chassis(
-
-  //Pick your drive setup from the list below:
-  //ZERO_TRACKER_NO_ODOM
-  //ZERO_TRACKER_ODOM
-  //TANK_ONE_FORWARD_ENCODER
-  //TANK_ONE_FORWARD_ROTATION
-  //TANK_ONE_SIDEWAYS_ENCODER
-  //TANK_ONE_SIDEWAYS_ROTATION
-  //TANK_TWO_ENCODER
-  //TANK_TWO_ROTATION
-  //HOLONOMIC_TWO_ENCODER
-  //HOLONOMIC_TWO_ROTATION
-  //
-  //Write it here:
-  TANK_TWO_ROTATION,
-  
-  //Add the names of your Drive motors into the motor groups below, separated by commas, i.e. motor_group(Motor1,Motor2,Motor3).
-  //You will input whatever motor names you chose when you configured your robot using the sidebar configurer, they don't have to be "Motor1" and "Motor2".
-  
-  //Left Motors:
-  leftDriveMotors,
-  
-  //Right Motors:
-  rightDriveMotors,
-  
-  //Specify the PORT NUMBER of your inertial sensor, in PORT format (i.e. "PORT1", not simply "1"):
-  PORT21,
-  
-  //Input your wheel diameter. (4" omnis are actually closer to 4.125"):
-  2.75,
-  
-  //External ratio, must be in decimal, in the format of input teeth/output teeth.
-  //If your motor has an 84-tooth gear and your wheel has a 60-tooth gear, this value will be 1.4.
-  //If the motor drives the wheel directly, this value is 1:
-  (float) (0.94736842),
-  
-  //Gyro scale, this is what your gyro reads when you spin the robot 360 degrees.
-  //For most cases 360 will do fine here, but this scale factor can be very helpful when precision is necessary.
-  360,
-  
-  /*---------------------------------------------------------------------------*/
-  /*                                  PAUSE!                                   */
-  /*                                                                           */
-  /*  The rest of the drive constructor is for robots using POSITION TRACKING. */
-  /*  If you are not using position tracking, leave the rest of the values as  */
-  /*  they are.                                                                */
-  /*---------------------------------------------------------------------------*/
-  
-  //If you are using ZERO_TRACKER_ODOM, you ONLY need to adjust the FORWARD TRACKER CENTER DISTANCE.
-  
-  //FOR HOLONOMIC DRIVES ONLY: Input your drive motors by position. This is only necessary for holonomic drives, otherwise this section can be left alone.
-  //LF:      //RF:    
-  PORT1,     -PORT2,
-  
-  //LB:      //RB: 
-  PORT3,     -PORT4,
-  
-  //If you are using position tracking, this is the Forward Tracker port (the tracker which runs parallel to the direction of the chassis).
-  //If this is a rotation sensor, enter it in "PORT1" format, inputting the port below.
-  //If this is an encoder, enter the port as an integer. Triport A will be a "1", Triport B will be a "2", etc.
-  PORT5,
-  
-  //Input the Forward Tracker diameter (reverse it to make the direction switch):
-  2.00,
-  
-  //Input Forward Tracker center distance (a positive distance corresponds to a tracker on the right side of the robot, negative is left.)
-  //For a zero tracker tank drive with odom, put the positive distance from the center of the robot to the right side of the drive.
-  //This distance is in inches:
-  2.5,
-  
-  //Input the Sideways Tracker Port, following the same steps as the Forward Tracker Port:
-  PORT6,
-  
-  //Sideways tracker diameter (reverse to make the direction switch):
-  2.0,
-  
-  //Sideways tracker center distance (positive distance is behind the center of the robot, negative is in front):
-  0
-  
-  );
 
 void pre_auton(void) {
   default_constants();
@@ -213,6 +132,16 @@ void usercontrol(void) {
   ringSortDisable = true;
   antijamDisable = true;
   allDriveMotors.setStopping(coast);
+  while (1)
+  {
+    printf("Axis1: %d\n", Controller1.Axis1.position());
+    printf("Axis3: %d\n", Controller1.Axis3.position());
+    printf("R1 deg: %d\n", R1.position(deg));
+    printf("R1 velo: %d\n", R1.velocity(percent));
+    wait(20.0, timeUnits::msec);
+  }
+  
+
 }
 
 // intake control
@@ -228,6 +157,11 @@ void stopConveyor() { intakeMotors.stop(); }
 void toggleDoinker() { doinker.toggle(); }
 
 void toggleMogo() { mogo.toggle(); }
+
+void toggleTipper() {
+  bool newTipperState = !tipper.value();
+  tipper.set(newTipperState);
+}
 
 void enableMogo() { mogo.clamp(); }
 void disableMogo() { mogo.clamp(); }
@@ -345,6 +279,7 @@ void wallStakeAutoHold() {
 }
 
 int main() {
+  
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
 
@@ -366,9 +301,10 @@ int main() {
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
   Controller1.ButtonLeft.pressed(throwBlue);
   Controller1.ButtonRight.pressed(throwRed);
-#ifdef LADY_BROWN
+  Controller1.ButtonDown.pressed(toggleTipper);
+
   Controller1.ButtonR1.pressed(scoreLB);
-#endif
+
 
   Controller1.ButtonR2.pressed(toggleMogo);
   Controller1.ButtonA.pressed(loadRing);
@@ -386,11 +322,11 @@ int main() {
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
   Controller1.ButtonLeft.pressed(throwBlue);
   Controller1.ButtonRight.pressed(throwRed);
-  Controller1.ButtonR1.pressed(enableMogo);
-  Controller1.ButtonR2.pressed(disableMogo);
-#ifdef LADY_BROWN
-  Controller1.ButtonY.pressed(scoreLB);
-#endif
+  Controller1.ButtonR1.pressed(scoreLB);
+  Controller1.ButtonR2.pressed(toggleMogo);
+
+  Controller1.ButtonDown.pressed(toggleTipper);
+
   Controller1.ButtonA.pressed(loadRing);
 #endif
 
