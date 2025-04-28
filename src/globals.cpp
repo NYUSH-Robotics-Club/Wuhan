@@ -83,11 +83,7 @@ digital_out tipper = digital_out(Brain.ThreeWirePort.A);
 
 //digital_out tipper = digital_out(Brain.ThreeWirePort.D);
 
-
-
 #endif
-
-
 
 motor_group leftDriveMotors(L1, L2, L3, L4);
 motor_group rightDriveMotors(R1, R2, R3, R4);
@@ -160,12 +156,12 @@ Drive chassis(
   PORT5,
   
   //Input the Forward Tracker diameter (reverse it to make the direction switch):
-  2.00,
+  -2.00,
   
   //Input Forward Tracker center distance (a positive distance corresponds to a tracker on the right side of the robot, negative is left.)
   //For a zero tracker tank drive with odom, put the positive distance from the center of the robot to the right side of the drive.
   //This distance is in inches:
-  2.5,
+  0.0,
   
   //Input the Sideways Tracker Port, following the same steps as the Forward Tracker Port:
   PORT6,
@@ -174,7 +170,7 @@ Drive chassis(
   2.0,
   
   //Sideways tracker center distance (positive distance is behind the center of the robot, negative is in front):
-  0
+  -0.75
   
   );
 
