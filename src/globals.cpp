@@ -42,11 +42,11 @@ digital_out mogoPort = digital_out(Brain.ThreeWirePort.B);
 digital_out doinkerPort = digital_out(Brain.ThreeWirePort.C);
 digital_out tipper = digital_out(Brain.ThreeWirePort.D);
 
-digital_out ringChuck = digital_out(Brain.ThreeWirePort.C); //not used
-digital_in ringSwitch = digital_in(Brain.ThreeWirePort.H);//not used
+//digital_out ringChuck = digital_out(Brain.ThreeWirePort.D); //not used
+//digital_in ringSwitch = digital_in(Brain.ThreeWirePort.H);//not used
 
-#define horiz_tracker PORT6
-#define vert_tracker PORT5
+#define HORIZ_TRACKER PORT6
+#define VERT_TRACKER PORT5
 
 #endif
 
@@ -81,8 +81,8 @@ digital_out mogoPort(Brain.ThreeWirePort.D);
 
 digital_out tipper = digital_out(Brain.ThreeWirePort.A);
 
-#define horiz_tracker PORT8
-#define vert_tracker PORT6
+#define HORIZ_TRACKER PORT8
+#define VERT_TRACKER PORT6
 
 
 //digital_out tipper = digital_out(Brain.ThreeWirePort.D);
@@ -157,7 +157,7 @@ Drive chassis(
   //If you are using position tracking, this is the Forward Tracker port (the tracker which runs parallel to the direction of the chassis).
   //If this is a rotation sensor, enter it in "PORT1" format, inputting the port below.
   //If this is an encoder, enter the port as an integer. Triport A will be a "1", Triport B will be a "2", etc.
-  vert_tracker,
+  VERT_TRACKER,
   
   //Input the Forward Tracker diameter (reverse it to make the direction switch):
   -2.00,
@@ -168,7 +168,7 @@ Drive chassis(
   0.0,
   
   //Input the Sideways Tracker Port, following the same steps as the Forward Tracker Port:
-  horiz_tracker,
+  HORIZ_TRACKER,
   
   //Sideways tracker diameter (reverse to make the direction switch):
   2.0,
