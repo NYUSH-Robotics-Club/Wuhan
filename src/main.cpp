@@ -42,6 +42,7 @@ thread wsThread;
 #define PRESCORING 2
 #define SCORING 3
 
+// Note: Updated green ports since they were wrong, I think gold is wrong too but not 100% sure
 #ifdef GOLD
 #define VERT PORT6
 #define HORI PORT8
@@ -49,8 +50,8 @@ thread wsThread;
 #endif
 
 #ifdef GREEN
-#define VERT PORT5
-#define HORI PORT6
+#define VERT PORT6
+#define HORI PORT8
 #define INERTIAL PORT9
 #endif
 
