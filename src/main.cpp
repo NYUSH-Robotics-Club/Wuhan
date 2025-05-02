@@ -44,8 +44,8 @@ thread wsThread;
 
 // Note: Updated green ports since they were wrong, I think gold is wrong too but not 100% sure
 #ifdef GOLD
-#define VERT PORT6
-#define HORI PORT8
+#define VERT PORT5
+#define HORI PORT6
 #define INERTIAL PORT21
 #endif
 
