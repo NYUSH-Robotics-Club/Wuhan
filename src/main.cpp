@@ -201,25 +201,25 @@ void autonomous(void) {
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
-    RedLeft();
+    leftAuton();
     break;
   case 1:
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
-    RedRight();
+    rightAuton();
     break;
   case 2:
     isRed = false;
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
-    BlueLeft();
+    leftAuton();
     break;
   case 3:
     isRed = false;
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
-    BlueRight();
+    rightAuton();
     break;
   case 4:
     odom_test();
