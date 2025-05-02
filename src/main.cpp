@@ -397,6 +397,10 @@ void onR2Pressed()
 { 
   // mogoMech.set(!mogoMech.value());
   bool newState = !mogoMech.value();
+  if (mogoMech.value() == true) {
+    Controller1.rumble("..");
+  }
+
   mogoMech.set(newState);
 }
 
@@ -529,9 +533,7 @@ void onAxis2Changed() {
   wallStakeMain.spin(fwd, position * 0.12, volt);
 }
 
-//void autonomousRoutine() {
-  // Code here
-//}
+
 
 int main() {
   leftDriveMotors.setStopping(vex::coast);
@@ -558,6 +560,9 @@ int main() {
   Controller1.ButtonR2.pressed(onR2Pressed);
   Controller1.ButtonDown.pressed(onDownPressed);
   Controller1.ButtonA.pressed(onAPressed);
+
+
+
 
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);

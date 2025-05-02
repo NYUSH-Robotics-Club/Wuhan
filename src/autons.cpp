@@ -109,6 +109,7 @@ void odom_constants(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void RedLeft(){
+  //GREENGREENGREENGREENGREENGREENGREENGREENGREEN
   //Red left auton
   //score alliance stake
   chassis.set_heading(90);
@@ -140,7 +141,12 @@ void RedLeft(){
 }
 
 void RedRight(){
+  //GOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLD
   //Red right auton
+  wait(.5, sec);
+  chassis.set_heading(-90);
+
+  /*
   wait(1, sec);
   chassis.set_heading(-90);
   chassis.turn_to_angle(-127.5);
@@ -166,6 +172,7 @@ void RedRight(){
   chassis.turn_to_angle(-90);
   chassis.drive_distance(60);
   chassis.drive_distance(-40);
+  */
 }
 
 void BlueLeft(){

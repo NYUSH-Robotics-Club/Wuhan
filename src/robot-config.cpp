@@ -78,7 +78,7 @@ optical colorDetect = optical(PORT16);
 inertial inertialSensor = inertial(PORT21);
 digital_out mogoMech = digital_out(Brain.ThreeWirePort.B);
 digital_out doinker = digital_out(Brain.ThreeWirePort.C);
-digital_out tipper = digital_out(Brain.ThreeWirePort.D);
+digital_out tipper = digital_out(Brain.ThreeWirePort.A);
 
 digital_out ringChuck = digital_out(Brain.ThreeWirePort.C); //not used
 digital_in ringSwitch = digital_in(Brain.ThreeWirePort.H);//not used
