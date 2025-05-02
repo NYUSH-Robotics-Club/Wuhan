@@ -300,7 +300,7 @@ void colorSort() {
       //wait(.09, sec);
       //printf("Launching red\n");
       conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + 700);
+      waitUntil(conveyor.position(degrees) > conveyorPosition + 260);
       //wait(10 * conveyor.current(amp), msec);
       conveyor.spin(reverse, 12 ,volt);
       wait(.2, sec);
@@ -312,7 +312,7 @@ void colorSort() {
       //wait(.09, sec);
       //printf("Launching blue\n");
       conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + 700);
+      waitUntil(conveyor.position(degrees) > conveyorPosition + 260);
       //wait(10 * conveyor.current(amp), msec);
       conveyor.spin(reverse, 12 ,volt);
       wait(.2, sec);
