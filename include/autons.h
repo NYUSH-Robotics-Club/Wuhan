@@ -7,9 +7,13 @@ extern Drive chassis;
 
 void default_constants();
 
-void leftAutonCenter();
-void leftAutonLeft();
-void rightAuton();
+void redLeftAutonCenter();
+void redLeftAutonLeft();
+void redRightAuton();
+
+void blueLeftAutonCenter();
+void blueLeftAutonLeft();
+void blueRightAuton();
 //void BlueLeft();
 //void BlueRight();
 void odom_test();

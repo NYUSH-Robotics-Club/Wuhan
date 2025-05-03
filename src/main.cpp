@@ -24,7 +24,7 @@
 // colorDetect          optical       21
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-#define DEBUG_ODOM
+//#define DEBUG_ODOM
 
 using namespace vex;
 competition Competition;
@@ -209,37 +209,37 @@ void autonomous(void) {
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
-    leftAutonCenter();
+    redLeftAutonCenter();
     break;
   case 1:
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
-    leftAutonLeft();
+    redLeftAutonLeft();
     break;
   case 2:
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
-    rightAuton();
+    redRightAuton();
     break;
   case 3:
     isRed = false;
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
-    leftAutonCenter();
+    blueLeftAutonCenter();
     break;
   case 4:
     isRed = false;
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
-    leftAutonLeft();
+    blueLeftAutonLeft();
     break;
   case 5:
     isRed = false;
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
-    rightAuton();
+    blueRightAuton();
     break;
   case 6:
     odom_test();
@@ -264,27 +264,6 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 
-
-int whenStarted1() {
-  // // Zero wallStake
-  // wallStake.setStopping(hold);
-  // wallStakeFeedFwdDis = false;
-  // wallStake.setVelocity(80, rpm);
-  // while (!(wallStake.current(amp) > 1.4)) {
-  //   wallStake.spin(reverse);
-  //   wait(10, msec);
-  // }
-  // wallStake.setPosition(0, degrees);
-  // wallStake.stop();
-  // Set drive motor stopping to coast
-  admMain.setStopping(coast);
-
-  colorDetect.setLight(ledState::on);
-  colorDetect.setLightPower(100, percent);
-  wallStakeMain.setVelocity(100, percent);
-
-  return 0;
-}
 
 
 //**RING SORTING**
@@ -394,7 +373,7 @@ void onevent_Controller1ButtonL2_pressed_0() {
 
 void onevent_Controller1ButtonL2_released_0() { intakeMain.stop(); }
 
-void toggleDoinker() { doinker.set(!doinker.value()); }
+void toggleDoinker() { doinker_right.set(!doinker_right.value()); }
 
 void onR2Pressed()
 //add later**** Make controller rumble once when clamped, rumble twice when released******
@@ -408,7 +387,7 @@ void onR2Pressed()
   mogoMech.set(newState);
 }
 
-void onDownPressed()
+void onRightPressed()
 {
   bool newTipperState = !tipper.value();
   tipper.set(newTipperState);
@@ -488,7 +467,7 @@ void onR1Pressed() {
   antijamDisable = false;
 }
 
-void onRightPressed() {
+void onUpPressed() {
   ringSortDisable = false;
   isRed = false;
   Controller1.Screen.setCursor(3, 1);
@@ -520,6 +499,11 @@ void onAPressed() {
   roller.spin(fwd, 8, volt);
 }
 
+
+void onDownPressed() {
+  doinker_left.set(!doinker_left.value());
+}
+
 void enableRingDetectOverride() { ringDetectOverride = true; }
 
 void onAxis2Changed() {
@@ -540,8 +524,9 @@ void onAxis2Changed() {
 
 
 int main() {
-  leftDriveMotors.setStopping(vex::coast);
-  rightDriveMotors.setStopping(vex::coast);
+  //leftDriveMotors.setStopping(vex::coast);
+  //rightDriveMotors.setStopping(vex::coast);
+  admMain.setStopping(coast);
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
 
@@ -594,9 +579,11 @@ int main() {
   Controller1.ButtonL1.pressed(enableRingDetectOverride);
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
   Controller1.ButtonLeft.pressed(onLeftPressed);
-  Controller1.ButtonRight.pressed(onRightPressed);
+  //Controller1.ButtonRight.pressed(onRightPressed);
   Controller1.ButtonR1.pressed(onR1Pressed);
   Controller1.ButtonR2.pressed(onR2Pressed);
+  Controller1.ButtonUp.pressed(onUpPressed);
+  Controller1.ButtonRight.pressed(onRightPressed);
   Controller1.ButtonDown.pressed(onDownPressed);
   Controller1.ButtonA.pressed(onAPressed);
 
@@ -605,6 +592,6 @@ int main() {
 
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
-  admMain.setStopping(coast);
+  
   
 }

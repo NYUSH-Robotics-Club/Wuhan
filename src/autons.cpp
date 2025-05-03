@@ -110,8 +110,7 @@ void odom_constants(){
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void leftAutonCenter(){
+void redLeftAutonCenter(){
   //GREENGREENGREENGREENGREENGREENGREENGREENGREEN
   //Red left auton
   //score alliance stake
@@ -122,24 +121,81 @@ void leftAutonCenter(){
   //chassis.set_coordinates()
   chassis.drive_to_point(0, 1.5);
   //chassis.turn_to_angle(30);
-  doinker.set(true); // clamp mogo
+  doinker_right.set(true); // clamp mogo
   wait(.5, sec);
-
-
 }
 
-void leftAutonLeft(){
+void blueLeftAutonCenter(){
+  //GREENGREENGREENGREENGREENGREENGREENGREENGREEN
+  //Blue left auton
+  //score alliance stake
+
+  //default_constants();
+  
+  //rush to the center mogo
+  //chassis.set_coordinates()
+  chassis.drive_to_point(0, 1.5);
+  //chassis.turn_to_angle(30);
+  doinker_right.set(true); // clamp mogo
+  wait(.5, sec);
+}
+
+void redLeftAutonLeft(){
   //GREENGREENGREENGREENGREENGREENGREENGREENGREEN
   //Red left auton
   //score alliance stake
   
   //rush to the left mogo
-
 }
 
-void rightAuton(){
+void blueLeftAutonLeft(){
+  //GREENGREENGREENGREENGREENGREENGREENGREENGREEN
+  //Blue left auton
+  //score alliance stake
+  
+  //rush to the left mogo
+}
+
+void redRightAuton(){
   //GOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLD
   //Red right auton
+  wait(.5, sec);
+  chassis.set_heading(-90);
+
+  //turn to the right mogo
+
+  /*
+  wait(1, sec);
+  chassis.set_heading(-90);
+  chassis.turn_to_angle(-127.5);
+  chassis.drive_distance(5.5);
+  wallStake.spin(fwd, 12, volt);
+  wait(.5, sec);
+  chassis.drive_distance(-15.25);
+  wallStake.spin(reverse, 12, volt);
+  chassis.turn_to_angle(-180);
+  chassis.drive_distance(-22); // 17.5 bare minimum to reach goal
+  wallStake.stop();
+  mogoMech.set(true);
+  chassis.turn_to_angle(90);
+  intake.spin(fwd, 12, volt);
+  chassis.drive_distance(17);
+  chassis.turn_to_angle(-180);
+  chassis.drive_distance(19);
+  chassis.turn_to_angle(135);
+  // chassis.drive_distance(24);
+  drive_for_time(900, fwd, 8);
+  wait(200, msec);
+  chassis.drive_distance(-15);
+  chassis.turn_to_angle(-90);
+  chassis.drive_distance(60);
+  chassis.drive_distance(-40);
+  */
+}
+
+void blueRightAuton(){
+  //GOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLD
+  //Blue right auton
   wait(.5, sec);
   chassis.set_heading(-90);
 
