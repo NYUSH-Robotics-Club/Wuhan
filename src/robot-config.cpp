@@ -82,7 +82,7 @@ digital_out mogoMech = digital_out(Brain.ThreeWirePort.B);
 digital_out doinker = digital_out(Brain.ThreeWirePort.C);
 digital_out tipper = digital_out(Brain.ThreeWirePort.A);
 
-digital_in doinkerSwitches = digital_in(Brain.ThreeWirePort.H); //not used on GOLD
+digital_in doinkerSwitches = digital_in(Brain.ThreeWirePort.H); // DEFAULT HIGH
 
 digital_out ringChuck = digital_out(Brain.ThreeWirePort.C); //not used
 digital_in ringSwitch = digital_in(Brain.ThreeWirePort.H);//not used

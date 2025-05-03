@@ -24,7 +24,7 @@
 // colorDetect          optical       21
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-//#define DEBUG_ODOM
+#define DEBUG_ODOM
 
 using namespace vex;
 competition Competition;
@@ -122,7 +122,7 @@ Drive chassis(
   VERT,
   
   //Input the Forward Tracker diameter (reverse it to make the direction switch):
-  -2.00,
+  -2.0259270425f,
   
   //Input Forward Tracker center distance (a positive distance corresponds to a tracker on the right side of the robot, negative is left.)
   //For a zero tracker tank drive with odom, put the positive distance from the center of the robot to the right side of the drive.
@@ -133,7 +133,7 @@ Drive chassis(
   HORI,
   
   //Sideways tracker diameter (reverse to make the direction switch):
-  2.0,
+  2.008662356412027f,
   
   //Sideways tracker center distance (positive distance is behind the center of the robot, negative is in front):
   0.0
@@ -152,10 +152,7 @@ void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
   default_constants();
-  chassis.Gyro.calibrate();
-  while (chassis.Gyro.isCalibrating()) {
-    wait(100, msec);
-  }
+  
   chassis.set_drive_constants(5.5, 1.5, 0, 10, 0);
 
   while (auto_started == false) {
@@ -200,7 +197,7 @@ void pre_auton(void) {
     } else if (current_auton_selection == 10) {
       current_auton_selection = 0;
     }
-    task::sleep(10);
+    task::sleep(100);
   }
 }
 
@@ -306,48 +303,48 @@ void colorSort() {
   while(1){
     wait(10, msec);
   
-  //print distance away on brain screen
-  Brain.Screen.setCursor(1, 30);
-  Brain.Screen.print(ringDist.objectDistance(inches));
+    //print distance away on brain screen
+    Brain.Screen.setCursor(1, 30);
+    Brain.Screen.print(ringDist.objectDistance(inches));
 
-  if (ringDist.objectDistance(inches) > 2.5 || ringSortDisable) continue;
+    if (ringDist.objectDistance(inches) > 2.5 || ringSortDisable) continue;
 
-    //print ringColor on controller screen (removed bc printing to controller screen takes 200ms)
-    ringColor = colorDetect.hue();
-    // Controller1.Screen.setCursor(3, 14);
-    // Controller1.Screen.print(ringColor);
+      //print ringColor on controller screen (removed bc printing to controller screen takes 200ms)
+      ringColor = colorDetect.hue();
+      // Controller1.Screen.setCursor(3, 14);
+      // Controller1.Screen.print(ringColor);
 
-    conveyorPosition = conveyor.position(degrees);
-    
-    if(!isRed && (ringColor > 360 || 20 > ringColor)) {
-      //wait(.09, sec);
-      //printf("Launching red\n");
-      conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + 200);
-      //wait(10 * conveyor.current(amp), msec);
-      conveyor.spin(reverse, 12 ,volt);
-      wait(.2, sec);
-      conveyor.spin(forward, 12, volt);
-      Controller1.rumble("..");
-      wait(200, msec);
+      conveyorPosition = conveyor.position(degrees);
+
+      if(!isRed && (ringColor > 360 || 20 > ringColor)) {
+        //wait(.09, sec);
+        //printf("Launching red\n");
+        conveyor.spin(forward, 12, volt);
+        waitUntil(conveyor.position(degrees) > (conveyorPosition + 200));
+        //wait(10 * conveyor.current(amp), msec);
+        conveyor.spin(reverse, 12 ,volt);
+        wait(.2, sec);
+        conveyor.spin(forward, 12, volt);
+        Controller1.rumble("..");
+        wait(200, msec);
+      }
+      else if (isRed && (ringColor > 180 && 260 > ringColor)) {
+        //wait(.09, sec);
+        //printf("Launching blue\n");
+        conveyor.spin(forward, 12, volt);
+        waitUntil(conveyor.position(degrees) > (conveyorPosition + 200));
+        //wait(10 * conveyor.current(amp), msec);
+        conveyor.spin(reverse, 12 ,volt);
+        wait(.2, sec);
+        conveyor.spin(forward, 12, volt);
+        Controller1.rumble(".");
+        wait(200, msec);
+      }
+
+      // Controller1.Screen.setCursor(3, 14);
+      // Controller1.Screen.print(ringColor);
+
     }
-    else if (isRed && (ringColor > 180 && 260 > ringColor)) {
-      //wait(.09, sec);
-      //printf("Launching blue\n");
-      conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + 200);
-      //wait(10 * conveyor.current(amp), msec);
-      conveyor.spin(reverse, 12 ,volt);
-      wait(.2, sec);
-      conveyor.spin(forward, 12, volt);
-      Controller1.rumble(".");
-      wait(200, msec);
-    }
-
-    // Controller1.Screen.setCursor(3, 14);
-    // Controller1.Screen.print(ringColor);
-    
-  }
 }
 
 
@@ -380,29 +377,9 @@ void usercontrol(void) {
   ringSortDisable = true;
   antijamDisable = true;
   admMain.setStopping(coast);
-  #ifdef DEBUG_ODOM
-  leftAutonCenter();
-  #endif
+  
 }
 
-void updateDrivetrainVelocity() {
-  // int leftVelocity =
-  //     (Controller1.Axis3.position() + (Controller1.Axis1.position() / 1)) * 120;
-  // int rightVelocity =
-  //     (Controller1.Axis3.position() - (Controller1.Axis1.position() / 1)) * 120;
-
-  // if (abs(Controller1.Axis3.position()) < 5 && abs(Controller1.Axis1.position()) < 5)
-  // {
-  //   leftVelocity = 0;
-  //   rightVelocity = 0;
-  // }
-
-  // motor_group(L1, L2, L3, L4)
-  //     .spin(vex::forward, leftVelocity, vex::voltageUnits::mV);
-  // motor_group(R1, R2, R3, R4)
-  //     .spin(vex::forward, rightVelocity, vex::voltageUnits::mV);
-  chassis.control_arcade();
-}
 
 // intake control
 void onevent_Controller1ButtonL1_pressed_0() {
@@ -569,18 +546,28 @@ int main() {
   thread wsAutoHold = thread(wallStakeAutoHold);
 
   rotationWallStake.setPosition(0, degrees);
-  default_constants();
+  //default_constants();
 
   colorDetect.integrationTime(5);
 
   #ifdef DEBUG_ODOM
-    wait(100, msec); // let thread initialize
+    default_constants();
+    
+    
+    chassis.set_coordinates(0, 0, 0);
+    chassis.drive_timeout = 20000;
+    //wait(100, msec); // let thread initialize
+    
+    
+    //wait(100, msec); // let thread initialize
     thread odom_thread = thread([]() {
       while (1) {
-        Brain.Screen.setCursor(3, 1);
-        Brain.Screen.print(chassis.get_ForwardTracker_position());
         Brain.Screen.setCursor(4, 1);
-        Brain.Screen.print(chassis.get_SidewaysTracker_position());
+        Brain.Screen.print("Y = %f", chassis.get_Y_position());
+        Brain.Screen.setCursor(5, 1);
+        Brain.Screen.print("X = %f", chassis.get_X_position());
+        Brain.Screen.setCursor(6, 1);
+        Brain.Screen.print("H = %f", chassis.get_absolute_heading());
         //Brain.Screen.setCursor(4, 1);
         //Brain.Screen.print("Chassis Position: X = %.2f, Y = %.2f, H = %.2f", chassis.get_X_position(), chassis.get_Y_position(), chassis.get_absolute_heading());
         
@@ -588,14 +575,20 @@ int main() {
       }
     });
     wait(100, msec); // let thread initialize
+
+    //chassis.drive_to_point(0.0, 96.0, 2.0, 3.0);
   #endif
 
 
   Controller1.ButtonL1.pressed(onevent_Controller1ButtonL1_pressed_0);
   Controller1.ButtonL2.pressed(onevent_Controller1ButtonL2_pressed_0);
   Controller1.ButtonL2.released(onevent_Controller1ButtonL2_released_0);
-  Controller1.Axis1.changed(updateDrivetrainVelocity);
-  Controller1.Axis3.changed(updateDrivetrainVelocity);
+  Controller1.Axis1.changed([] { 
+    chassis.control_arcade();
+  });
+  Controller1.Axis3.changed([] { 
+    chassis.control_arcade();
+  });
   Controller1.Axis2.changed(onAxis2Changed);
   Controller1.ButtonB.pressed(toggleDoinker);
   Controller1.ButtonL1.pressed(enableRingDetectOverride);
@@ -612,5 +605,6 @@ int main() {
 
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
+  admMain.setStopping(coast);
   
 }

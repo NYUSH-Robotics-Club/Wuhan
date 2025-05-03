@@ -84,8 +84,11 @@ void default_constants(){
   
 
   //Calibrate inertial sensor
-  inertialSensor.calibrate();
-  wait(2000, msec);
+  chassis.Gyro.calibrate();
+  while (chassis.Gyro.isCalibrating()) {
+    wait(10, msec);
+  }
+  wait(100, msec);
   Controller1.rumble("--");
 
   wallStake.setVelocity(100, percent);
