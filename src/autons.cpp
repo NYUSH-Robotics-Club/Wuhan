@@ -110,9 +110,8 @@ void odom_constants(){
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void redLeftAutonCenter(){
-  //GREENGREENGREENGREENGREENGREENGREENGREENGREEN
-  //Red left auton
+void redGreenAutonCenter(){
+  
   //score alliance stake
 
   //default_constants();
@@ -125,12 +124,9 @@ void redLeftAutonCenter(){
   wait(.5, sec);
 }
 
-void blueLeftAutonCenter(){
-  //GREENGREENGREENGREENGREENGREENGREENGREENGREEN
-  //Blue left auton
-  //score alliance stake
+void blueGreenAutonCenter(){
+  
 
-  //default_constants();
   
   //rush to the center mogo
   //chassis.set_coordinates()
@@ -140,25 +136,22 @@ void blueLeftAutonCenter(){
   wait(.5, sec);
 }
 
-void redLeftAutonLeft(){
-  //GREENGREENGREENGREENGREENGREENGREENGREENGREEN
-  //Red left auton
+void redGreenAutonLeft(){
+  
   //score alliance stake
   
   //rush to the left mogo
 }
 
-void blueLeftAutonLeft(){
-  //GREENGREENGREENGREENGREENGREENGREENGREENGREEN
-  //Blue left auton
+void blueGreenAutonLeft(){
+ 
   //score alliance stake
   
   //rush to the left mogo
 }
 
-void redRightAuton(){
-  //GOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLD
-  //Red right auton
+void redGoldAuton(){
+  
   wait(.5, sec);
   chassis.set_heading(-90);
 
@@ -193,9 +186,8 @@ void redRightAuton(){
   */
 }
 
-void blueRightAuton(){
-  //GOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLDGOLD
-  //Blue right auton
+void blueGoldAuton(){
+  
   wait(.5, sec);
   chassis.set_heading(-90);
 
