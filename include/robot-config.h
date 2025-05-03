@@ -27,6 +27,7 @@ extern digital_out tipper;
 extern digital_out ringChuck;
 extern digital_in ringSwitch;
 extern rotation rotationWallStake;
+extern digital_in doinkerSwitches;
 // extern motor_group leftDriveMotors;
 // extern motor_group rightDriveMotors;
 // extern motor_group allDriveMotors;

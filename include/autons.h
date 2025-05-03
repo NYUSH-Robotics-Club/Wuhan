@@ -7,7 +7,8 @@ extern Drive chassis;
 
 void default_constants();
 
-void leftAuton();
+void leftAutonCenter();
+void leftAutonLeft();
 void rightAuton();
 //void BlueLeft();
 //void BlueRight();
