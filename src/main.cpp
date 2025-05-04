@@ -128,7 +128,7 @@ Drive chassis(
   -2.0259270425f,
   #endif
   #ifdef GOLD
-  -2.0f,
+  -2.038463892801825f,
   #endif
   //Input Forward Tracker center distance (a positive distance corresponds to a tracker on the right side of the robot, negative is left.)
   //For a zero tracker tank drive with odom, put the positive distance from the center of the robot to the right side of the drive.
@@ -144,7 +144,7 @@ Drive chassis(
   2.008662356412027f,
   #endif
   #ifdef GOLD
-  2.0f,
+  -2.0063045333426217f,
   #endif
   //Sideways tracker center distance (positive distance is behind the center of the robot, negative is in front):
   0.0
@@ -544,11 +544,11 @@ int main() {
     //default_constants();
     
     
-    //chassis.set_coordinates(24, -48, 0);
+    chassis.set_coordinates(24, -48, 0);
 
-    chassis.set_coordinates(0, 0, 0);
-    chassis.drive_timeout = 20000;
-    wait(100, msec); // let thread initialize
+    //chassis.set_coordinates(0, 0, 0);
+    //chassis.drive_timeout = 20000;
+    //wait(100, msec); // let thread initialize
     
     
     //wait(100, msec); // let thread initialize
@@ -579,7 +579,10 @@ int main() {
       admMain.setStopping(coast);
     });
     */
-    chassis.drive_to_point(0.0, 96.0);
+    //chassis.drive_max_voltage = 3.0;
+    //chassis.turn_max_voltage = 2.0;
+    //chassis.drive_to_point(0.0, 96.0);
+    chassis.drive_stop(coast);
   #endif
 
 

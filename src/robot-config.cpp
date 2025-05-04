@@ -51,7 +51,7 @@ digital_in ringSwitch = digital_in(Brain.ThreeWirePort.H);//not used
 
 #ifdef GOLD
 motor roller = motor(PORT20, ratio6_1, true);
-motor conveyor = motor(PORT18, ratio6_1, true);
+motor conveyor = motor(PORT18, ratio18_1, true);
 motor wallStake1 = motor(PORT11, ratio36_1, true);
 motor wallStake2 = motor(PORT12, ratio36_1, false);
 motor L1 = motor(PORT7, ratio6_1, true);
