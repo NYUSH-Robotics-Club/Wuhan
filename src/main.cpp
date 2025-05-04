@@ -135,7 +135,12 @@ Drive chassis(
   HORI,
   
   //Sideways tracker diameter (reverse to make the direction switch):
+  #ifdef GREEN
   2.008662356412027f,
+  #endif
+  #ifdef GOLD
+  -2.008662356412027f,
+  #endif
   
   //Sideways tracker center distance (positive distance is behind the center of the robot, negative is in front):
   0.0
