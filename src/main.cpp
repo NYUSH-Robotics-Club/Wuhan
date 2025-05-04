@@ -124,8 +124,12 @@ Drive chassis(
   VERT,
   
   //Input the Forward Tracker diameter (reverse it to make the direction switch):
+  #ifdef GREEN
   -2.0259270425f,
-  
+  #endif
+  #ifdef GOLD
+  -2.0f,
+  #endif
   //Input Forward Tracker center distance (a positive distance corresponds to a tracker on the right side of the robot, negative is left.)
   //For a zero tracker tank drive with odom, put the positive distance from the center of the robot to the right side of the drive.
   //This distance is in inches:
@@ -136,12 +140,12 @@ Drive chassis(
   
   //Sideways tracker diameter (reverse to make the direction switch):
   #ifdef GREEN
+  #ifdef GREEN
   2.008662356412027f,
   #endif
   #ifdef GOLD
-  -2.008662356412027f,
+  2.0f,
   #endif
-  
   //Sideways tracker center distance (positive distance is behind the center of the robot, negative is in front):
   0.0
   
@@ -159,7 +163,7 @@ void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
 
-  //odom_constants();
+  odom_constants();
   
   //chassis.set_drive_constants(5.5, 1.5, 0, 10, 0);
 
@@ -241,7 +245,7 @@ void autonomous(void) {
     wallStakeFeedFwdDis = true; // BLUE GREEN CENTER
     ringSortDisable = false;
     
-    
+    chassis.set_coordinates(24, -48, 0);
     blueGreenAutonCenter();
     break;
   case 4:
@@ -387,8 +391,8 @@ void onR2Pressed()
 
 void onRightPressed()
 {
-  bool newTipperState = !tipper.value();
-  tipper.set(newTipperState);
+  
+  tipper.set(!tipper.value());
 }
 
 void wsSpinToPosition(int position, double kP, double kD, double tolerance)
@@ -527,7 +531,7 @@ int main() {
   
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
-  odom_constants();
+  
   //
 
   rotationWallStake.resetPosition();
@@ -536,14 +540,15 @@ int main() {
   colorDetect.integrationTime(5);
 
   #ifdef DEBUG_ODOM
+    odom_constants();
     //default_constants();
     
     
-    chassis.set_coordinates(24, -48, 0);
+    //chassis.set_coordinates(24, -48, 0);
 
-    //chassis.set_coordinates(0, 0, 0);
-    //chassis.drive_timeout = 20000;
-    //wait(100, msec); // let thread initialize
+    chassis.set_coordinates(0, 0, 0);
+    chassis.drive_timeout = 20000;
+    wait(100, msec); // let thread initialize
     
     
     //wait(100, msec); // let thread initialize
@@ -567,13 +572,14 @@ int main() {
     //   chassis.turn_to_angle(chassis.get_absolute_heading() + 90);
     // });
     //chassis.turn_to_angle(90);
+    /*
     Controller1.ButtonX.pressed([] {
       isRed = true;
       redGreenAutonCenter();
       admMain.setStopping(coast);
     });
-    
-    //chassis.drive_to_point(0.0, 96.0, 2.0, 3.0);
+    */
+    chassis.drive_to_point(0.0, 96.0);
   #endif
 
 
@@ -603,8 +609,9 @@ int main() {
   Controller1.ButtonDown.pressed(onDownPressed);
   Controller1.ButtonA.pressed(onAPressed);
 
-  pre_auton();
-
+  #ifndef DEBUG_ODOM
+    pre_auton();
+  #endif
   
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
