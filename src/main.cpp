@@ -139,7 +139,7 @@ Drive chassis(
   HORI,
   
   //Sideways tracker diameter (reverse to make the direction switch):
-  #ifdef GREEN
+  
   #ifdef GREEN
   2.008662356412027f,
   #endif
