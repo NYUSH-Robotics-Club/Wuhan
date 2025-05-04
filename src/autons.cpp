@@ -112,24 +112,11 @@ void odom_constants(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void redGreenAutonCenter(){
   
-  //score alliance stake
-
-  //default_constants();
-  
-
-  //rush to the center mogo
-  //chassis.set_coordinates()
-  chassis.drive_to_point(0, 1.5);
-  //chassis.turn_to_angle(30);
-  doinker_right.set(true); // clamp mogo
-  wait(.5, sec);
-}
-
-void blueGreenAutonCenter(){
-
   //roller.spin(fwd, 12, volt);
   chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
+
+  intake.spin(fwd, 12, volt);
   
   //chassis.set_heading(-30);
   doinker_left.set(true); //extend doinker
@@ -152,22 +139,32 @@ void blueGreenAutonCenter(){
   chassis.drive_distance(-24);
   mogoMech.set(true); //grab mogo
   chassis.drive_min_voltage = 0;
-  intake.spin(fwd, 12, volt);
+  
   wait(1, sec);
 
   chassis.turn_to_point(24, -24);
   chassis.drive_to_point(24, -24);
 
   chassis.turn_to_angle(90.0);
-  
+
   chassis.drive_max_voltage = 3.5;
   chassis.drive_to_point(57, -24);
+
+
+  chassis.turn_to_point(60, 0);
+  chassis.drive_to_point(60, -7);
+  chassis.drive_distance(-6);
 
   chassis.drive_max_voltage = 5;
   chassis.turn_to_point(48, -48);
 
   chassis.drive_max_voltage = 3.5;
   chassis.drive_to_point(48, -48);
+}
+
+void blueGreenAutonCenter(){
+
+  
 
   //ringSortDisable = false;
 

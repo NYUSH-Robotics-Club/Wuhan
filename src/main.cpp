@@ -26,7 +26,7 @@
 
 #define DEBUG_ODOM
 
-//#define ENABLE_DRIVE
+// #define ENABLE_DRIVE
 
 using namespace vex;
 competition Competition;
@@ -38,7 +38,7 @@ motor_group wallStakeMain = motor_group(wallStake1, wallStake2);
 
 float ringColor;
 
-bool wallStakeFeedFwdDis, isRed = false, ringSortDisable = false, ringDetectOverride, antijamDisable = true;
+bool wallStakeFeedFwdDis, isRed = true, ringSortDisable = false, ringDetectOverride, antijamDisable = true;
 
 thread wsThread;
 
@@ -212,7 +212,9 @@ void autonomous(void) {
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
-    
+
+
+    chassis.set_coordinates(24, -48, 0);
     redGreenAutonCenter();
     break;
   case 1:
@@ -234,7 +236,7 @@ void autonomous(void) {
     wallStakeFeedFwdDis = true; // BLUE GREEN CENTER
     ringSortDisable = false;
     
-    chassis.set_coordinates(24, -48, 0);
+    
     blueGreenAutonCenter();
     break;
   case 4:
@@ -287,9 +289,13 @@ void colorSort() {
 
     // Get ring color hue
     ringColor = colorDetect.hue();
+
     conveyorPosition = conveyor.position(degrees);
 
+    printf("detected ring\n");
     if (!isRed && (ringColor > 360 || ringColor < 20)) {
+      //Brain.Screen.printAt()
+      printf("yeeting red\n");
       // Launch red ring
       conveyor.spin(forward, 12, volt);
       waitUntil(conveyor.position(degrees) > conveyorPosition + 200);
@@ -299,6 +305,7 @@ void colorSort() {
       Controller1.rumble("..");
       wait(200, msec);
     } else if (isRed && (ringColor > 180 && ringColor < 260)) {
+      printf("yeeting blue\n");
       // Launch blue ring
       conveyor.spin(forward, 12, volt);
       waitUntil(conveyor.position(degrees) > conveyorPosition + 200);
@@ -339,7 +346,7 @@ void wallStakeAutoHold() {
 }
 
 void usercontrol(void) {
-  ringSortDisable = true;
+  //ringSortDisable = true;
   antijamDisable = true;
   admMain.setStopping(coast);
   
@@ -546,7 +553,7 @@ int main() {
         //Brain.Screen.setCursor(4, 1);
         //Brain.Screen.print("Chassis Position: X = %.2f, Y = %.2f, H = %.2f", chassis.get_X_position(), chassis.get_Y_position(), chassis.get_absolute_heading());
         
-        wait(10, msec);
+        wait(200, msec);
       }
     });
     wait(100, msec); // let thread initialize
@@ -556,8 +563,8 @@ int main() {
     // });
     //chassis.turn_to_angle(90);
     Controller1.ButtonX.pressed([] {
-      isRed = false;
-      blueGreenAutonCenter();
+      isRed = true;
+      redGreenAutonCenter();
       admMain.setStopping(coast);
     });
     
