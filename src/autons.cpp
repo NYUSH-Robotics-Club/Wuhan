@@ -72,8 +72,8 @@ void drive_for_time(int timeMs)
 }
 
 void default_constants(){
-  chassis.set_drive_constants(10, 1.5, 0, 10, 0);
-  chassis.set_heading_constants(6, .4, 0, 1, 0);
+  chassis.set_drive_constants(12, 1.5, 0.0, 10, 0);
+  chassis.set_heading_constants(6, .5, 0, 1.2, 0);
   chassis.set_turn_constants(12, .4, 0.01, 3.1, 15);
   //chassis.set_swing_constants(12, .35, .002, 2, 15);
   chassis.set_swing_constants(12, .3, .001, 2, 15);
@@ -116,6 +116,7 @@ void redGreenAutonCenter(){
 
   //default_constants();
   
+
   //rush to the center mogo
   //chassis.set_coordinates()
   chassis.drive_to_point(0, 1.5);
@@ -125,25 +126,80 @@ void redGreenAutonCenter(){
 }
 
 void blueGreenAutonCenter(){
+
+  //roller.spin(fwd, 12, volt);
+  chassis.drive_max_voltage = 12;
+  chassis.heading_max_voltage = 12;
+  
+  //chassis.set_heading(-30);
+  doinker_left.set(true); //extend doinker
+  chassis.drive_to_point(14.2, -13.3);
+  doinker_left.set(false); //clamp doinker
+
+  chassis.drive_to_point(30.1, -42.3);
+  
+  chassis.drive_stop(hold);
+  
+  chassis.drive_max_voltage = 8;
+  chassis.heading_max_voltage = 4;
+  doinker_left.set(true); //unclamp doinker
+  wait(.5, sec);
+  chassis.drive_distance(-5);
+  doinker_left.set(false); //retract doinker
+  chassis.turn_to_angle(chassis.get_absolute_heading() + 165);
+  
+  chassis.drive_min_voltage = 3;
+  chassis.drive_distance(-24);
+  mogoMech.set(true); //grab mogo
+  chassis.drive_min_voltage = 0;
+  intake.spin(fwd, 12, volt);
+  wait(1, sec);
+
+  chassis.turn_to_point(24, -24);
+  chassis.drive_to_point(24, -24);
+
+  chassis.turn_to_angle(90.0);
+  
+  chassis.drive_max_voltage = 3.5;
+  chassis.drive_to_point(57, -24);
+
+  chassis.drive_max_voltage = 5;
+  chassis.turn_to_point(48, -48);
+
+  chassis.drive_max_voltage = 3.5;
+  chassis.drive_to_point(48, -48);
+
+  //ringSortDisable = false;
+
+
+    
+  /*
   
 
+  chassis.drive_max_voltage = 8;
+  chassis.drive_to_point(24, -24);
+  doinker_left.set(true); // unclamp doinker
+  chassis.drive_distance(-6, 335);
+  doinker_left.set(false); // retract doinker
+
   
-  //rush to the center mogo
-  //chassis.set_coordinates()
-  chassis.drive_to_point(0, 1.5);
-  //chassis.turn_to_angle(30);
-  doinker_right.set(true); // clamp mogo
-  wait(.5, sec);
+
+  chassis.turn_to_angle(chassis.get_absolute_heading() + 180);
+  */
+  //chassis.turn_to_angle(-30);
+  
+  
+  
 }
 
-void redGreenAutonLeft(){
+void redGreenAutonOther(){
   
   //score alliance stake
   
   //rush to the left mogo
 }
 
-void blueGreenAutonLeft(){
+void blueGreenAutonOther(){
  
   //score alliance stake
   

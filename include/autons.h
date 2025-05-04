@@ -6,13 +6,14 @@ class Drive;
 extern Drive chassis;
 
 void default_constants();
+void odom_constants();
 
 void redGreenAutonCenter();
-void redGreenAutonLeft();
+void redGreenAutonOther();
 void redGoldAuton();
 
 void blueGreenAutonCenter();
-void blueGreenAutonLeft();
+void blueGreenAutonOther();
 void blueGoldAuton();
 //void BlueLeft();
 //void BlueRight();
