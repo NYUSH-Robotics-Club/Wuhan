@@ -1,4 +1,5 @@
 #include "vex.h"
+#include "main.h"
 #include "robot-config.h"
 
 // What I changed since the last version of code:
@@ -168,51 +169,6 @@ void pre_auton(void) {
   odom_constants();
   
   //chassis.set_drive_constants(5.5, 1.5, 0, 10, 0);
-
-  while (auto_started == false) {
-    Brain.Screen.clearScreen();
-    switch (current_auton_selection) {
-    case 0:
-      Brain.Screen.printAt(50, 50, "Red Left - RUSH CENTER");
-      break;
-    case 1:
-      Brain.Screen.printAt(50, 50, "Red Left - RUSH LEFT");
-      break;
-    case 2:
-      Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT");
-      break;
-    case 3:
-      Brain.Screen.printAt(50, 50, "Blue Left - RUSH CENTER");
-      break;
-    case 4:
-      Brain.Screen.printAt(50, 50, "Blue Left - RUSH LEFT");
-      break;
-    case 5:
-      Brain.Screen.printAt(50, 50, "Blue Right - RUSH RIGHT");
-      break;
-    case 6:
-      Brain.Screen.printAt(50, 50, "TEST DO NOT USE - Empty Slot");
-      break;
-    case 7:
-      Brain.Screen.printAt(50, 50, "DO NOT USE - Empty Slot");
-      break;
-    case 8:
-      Brain.Screen.printAt(50, 50, "Blue Auto v2");
-      break;
-    case 9:
-      Brain.Screen.printAt(50, 50, "Red Auto v2");
-      break;
-    }
-    if (Brain.Screen.pressing()) {
-      while (Brain.Screen.pressing()) {
-        wait(10, msec);
-      }
-      current_auton_selection++;
-    } else if (current_auton_selection == 10) {
-      current_auton_selection = 0;
-    }
-    task::sleep(100);
-  }
 }
 
 void autonomous(void) {
@@ -355,7 +311,7 @@ void wallStakeAutoHold() {
     //   wallStake.spin(reverse, 1, volt);
     // }
 
-    wait(20, msec);
+    wait(200, msec);
   }
 }
 
@@ -435,7 +391,7 @@ void onR1Pressed() {
   if (wsState == LOADING)
   {
     wsThread = thread([](){
-      wsSpinToPosition(13, 300, 0, 1);
+      wsSpinToPosition(14, 300, 0, 1);
       waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
       conveyor.spin(fwd, 2, volt);
       wallStakeMain.stop(coast);
@@ -492,7 +448,7 @@ void onLeftPressed() {
 void onAPressed() {
   ringDetectOverride = false;
   Controller1.rumble("-");
-  while (!(((ringDist.objectDistance(inches) < 2.5)) || ringDetectOverride)) {
+  while (!((ringDist.objectDistance(inches) < 2.5) || ringDetectOverride)) {
     roller.spin(forward, 12, volt);
     conveyor.spin(forward, 7, volt);
     wait(10, msec);
@@ -559,6 +515,7 @@ int main() {
     //wait(100, msec); // let thread initialize
     thread odom_thread = thread([]() {
       while (1) {
+        wait(200, msec);
         Brain.Screen.setCursor(5, 1);
         Brain.Screen.print("Y = %f", chassis.get_Y_position());
         Brain.Screen.setCursor(4, 1);
@@ -568,7 +525,6 @@ int main() {
         //Brain.Screen.setCursor(4, 1);
         //Brain.Screen.print("Chassis Position: X = %.2f, Y = %.2f, H = %.2f", chassis.get_X_position(), chassis.get_Y_position(), chassis.get_absolute_heading());
         
-        wait(200, msec);
       }
     });
     wait(100, msec); // let thread initialize

@@ -1,5 +1,6 @@
 #include "vex.h"
 #include "robot-config.h"
+#include "main.h"
 
 motor_group adm = motor_group(L1, R1, L2, R2, L3, R3, L4, R4);
 motor_group intake = motor_group(roller, conveyor);
@@ -111,17 +112,20 @@ void odom_constants(){
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void redGreenAutonCenter(){
-  
-  //roller.spin(fwd, 12, volt);
+  double startTime = Brain.timer(msec);
+
+
   chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
 
-  intake.spin(fwd, 12, volt);
   
   //chassis.set_heading(-30);
+  roller.spin(fwd, 12, volt);
   doinker_left.set(true); //extend doinker
-  chassis.drive_to_point(14.2, -13.3);
+  // chassis.drive_to_point(14.2, -13.3);
+  chassis.drive_distance(35);//switched to drive_distance for better consistency
   doinker_left.set(false); //clamp doinker
+  roller.spin(reverse, 12, volt);
 
   chassis.drive_to_point(30.1, -42.3);
   
@@ -131,19 +135,27 @@ void redGreenAutonCenter(){
   chassis.heading_max_voltage = 4;
   doinker_left.set(true); //unclamp doinker
   wait(.5, sec);
-  chassis.drive_distance(-5);
+  chassis.drive_distance(2);
+  chassis.drive_distance(-6);
   doinker_left.set(false); //retract doinker
   chassis.turn_to_angle(chassis.get_absolute_heading() + 165);
   
   chassis.drive_min_voltage = 3;
+  chassis.drive_max_voltage = 4;
   chassis.drive_distance(-24);
-  mogoMech.set(true); //grab mogo
+  mogoMech.set(true);
+  wait(.1, sec); //grab mogo
+  roller.spin(fwd, 12, volt);
+  conveyor.spin(fwd, 9, volt);
+  
   chassis.drive_min_voltage = 0;
+  chassis.drive_max_voltage = 8;
+
   
   wait(1, sec);
 
-  chassis.turn_to_point(24, -24);
-  chassis.drive_to_point(24, -24);
+  // chassis.turn_to_point(24, -24);
+  // chassis.drive_to_point(24, -24);//grab red blue stack
 
   chassis.turn_to_angle(90.0);
 
@@ -154,12 +166,58 @@ void redGreenAutonCenter(){
   chassis.turn_to_point(60, 0);
   chassis.drive_to_point(60, -7);
   chassis.drive_distance(-6);
+  wait(.5, sec);//wait for ring to flip over the top
 
-  chassis.drive_max_voltage = 5;
-  chassis.turn_to_point(48, -48);
 
-  chassis.drive_max_voltage = 3.5;
-  chassis.drive_to_point(48, -48);
+  chassis.drive_max_voltage = 9;
+  chassis.turn_to_point(48, -47);
+
+  chassis.drive_to_point(48, -47);
+  
+  //drop off goal near + corner
+  chassis.turn_to_point(55, -46, 180);
+  chassis.drive_to_point(55, -46);
+  mogoMech.set(false);
+  wait(.1, sec);
+
+  chassis.turn_to_point(0, -60);
+  chassis.drive_to_point(0,-60);
+
+  wsState = 0;
+  onR1Pressed();
+  
+  // chassis.drive_to_point(8,-56);
+  // chassis.turn_to_angle(-135);
+  wait(400,msec);
+  chassis.turn_to_point(-1, -72);
+  drive_for_time(500, fwd, 4);//align with alliance stake
+  chassis.drive_distance(-9);
+  chassis.turn_to_point(-2, -72);
+  conveyor.spin(reverse, 4, volt);
+  wait(100,msec);
+  wallStake.spin(forward, 12, volt);//score on alliance stake
+  wait(1000,msec);
+  wallStake.stop();
+
+  //touch the ladder near goal that gold bot left behind
+  drive_for_time(200, reverse, 7);
+  intake.spin(fwd, 12 ,volt);
+  chassis.heading_max_voltage = 12;
+  chassis.drive_to_point(-24, -18);
+  wallStake.spin(reverse, 12, volt);
+  chassis.heading_max_voltage = 4;
+  chassis.turn_to_point(0, 0);
+  wallStake.stop();
+  chassis.drive_distance(8);
+
+
+
+  //leave at end of auton
+  chassis.drive_stop(vex::coast);
+
+  double endTime = Brain.timer(msec);
+
+  printf("Autonomous finished in %.2f seconds\n", (endTime - startTime)/1000);
 }
 
 void blueGreenAutonCenter(){
