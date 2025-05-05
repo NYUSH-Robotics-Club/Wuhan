@@ -26,7 +26,7 @@
 
 #define DEBUG_ODOM
 
-// #define ENABLE_DRIVE
+#define ENABLE_DRIVE
 
 using namespace vex;
 competition Competition;
@@ -51,12 +51,14 @@ thread wsThread;
 #define VERT PORT5
 #define HORI PORT6
 #define INERTIAL PORT21
+#define RING_SORT_DELAY 40
 #endif
 
 #ifdef GREEN
 #define VERT PORT6
 #define HORI PORT8
 #define INERTIAL PORT9
+#define RING_SORT_DELAY 200
 #endif
 
 
@@ -113,10 +115,10 @@ Drive chassis(
   
   //FOR HOLONOMIC DRIVES ONLY: Input your drive motors by position. This is only necessary for holonomic drives, otherwise this section can be left alone.
   //LF:      //RF:    
-  PORT16,     PORT16,
+  PORT22,     PORT22,
   
   //LB:      //RB: 
-  PORT16,     PORT16,
+  PORT22,     PORT22,
   
   //If you are using position tracking, this is the Forward Tracker port (the tracker which runs parallel to the direction of the chassis).
   //If this is a rotation sensor, enter it in "PORT1" format, inputting the port below.
@@ -295,10 +297,14 @@ void colorSort() {
     Brain.Screen.print(ringDist.objectDistance(inches));
 
     if (ringDist.objectDistance(inches) > 2.5 || ringSortDisable) continue;
+    
+    #ifdef GOLD
+    wait(90, msec);
+    #endif
 
     // Get ring color hue
     ringColor = colorDetect.hue();
-
+    printf("hue = %.2f\n", ringColor);
     conveyorPosition = conveyor.position(degrees);
 
     printf("detected ring\n");
@@ -307,7 +313,7 @@ void colorSort() {
       printf("yeeting red\n");
       // Launch red ring
       conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + 200);
+      waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
       conveyor.spin(reverse, 12, volt);
       wait(0.2, sec);
       conveyor.spin(forward, 12, volt);
@@ -317,7 +323,7 @@ void colorSort() {
       printf("yeeting blue\n");
       // Launch blue ring
       conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + 200);
+      waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
       conveyor.spin(reverse, 12, volt);
       wait(0.2, sec);
       conveyor.spin(forward, 12, volt);
@@ -330,8 +336,7 @@ void colorSort() {
 
 
 void wallStakeAutoHold() {
-  colorDetect.setLight(ledState::on);
-  colorDetect.setLightPower(100, percent);
+  
   wallStakeMain.setVelocity(100, percent);
   wallStakeMain.setStopping(hold);
   wallStakeFeedFwdDis = false;
@@ -536,14 +541,14 @@ int main() {
 
   rotationWallStake.resetPosition();
   //default_constants();
-
-  colorDetect.integrationTime(5);
+  
+  //wait(500, msec);
 
   #ifdef DEBUG_ODOM
     odom_constants();
     //default_constants();
     
-    
+    //ringSortDisable = false;
     chassis.set_coordinates(24, -48, 0);
 
     //chassis.set_coordinates(0, 0, 0);
@@ -583,6 +588,7 @@ int main() {
     //chassis.turn_max_voltage = 2.0;
     //chassis.drive_to_point(0.0, 96.0);
     chassis.drive_stop(coast);
+    //isRed = false;
   #endif
 
 
@@ -618,6 +624,10 @@ int main() {
   
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
+
+  colorDetect.integrationTime(5);
+  colorDetect.setLight(ledState::on);
+  colorDetect.setLightPower(100, percent);
   
   
 }
