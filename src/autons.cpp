@@ -311,41 +311,58 @@ void blueGoldAuton() {
   chassis.heading_max_voltage = 4;
 
   doinker_right.set(true);  // let go of mogo
+  chassis.drive_distance(3);
   wait(.5, sec);
-  chassis.drive_distance(2);
-  chassis.drive_distance(-6);
+  chassis.drive_distance(-7);
   doinker_right.set(false); // put doinker up
   chassis.turn_to_angle(chassis.get_absolute_heading() - 165);
-
-  //turn to the right mogo
-
-  /*
-  wait(1, sec);
-  chassis.set_heading(-90);
-  chassis.turn_to_angle(-127.5);
-  chassis.drive_distance(5.5);
-  wallStake.spin(fwd, 12, volt);
-  wait(.5, sec);
-  chassis.drive_distance(-15.25);
-  wallStake.spin(reverse, 12, volt);
-  chassis.turn_to_angle(-180);
-  chassis.drive_distance(-22); // 17.5 bare minimum to reach goal
-  wallStake.stop();
+  chassis.drive_distance(-10);
+  chassis.drive_min_voltage = 3;
+  chassis.drive_max_voltage = 4;
+  chassis.drive_distance(-13);
   mogoMech.set(true);
-  chassis.turn_to_angle(90);
-  intake.spin(fwd, 12, volt);
-  chassis.drive_distance(17);
-  chassis.turn_to_angle(-180);
-  chassis.drive_distance(19);
-  chassis.turn_to_angle(135);
-  // chassis.drive_distance(24);
-  drive_for_time(900, fwd, 8);
-  wait(200, msec);
-  chassis.drive_distance(-15);
-  chassis.turn_to_angle(-90);
-  chassis.drive_distance(60);
-  chassis.drive_distance(-40);
-  */
+  wait(.1, sec); //grab mogo
+  roller.spin(fwd, 12, volt);
+  conveyor.spin(fwd, 9, volt);
+  wait(.3, sec);
+  
+  //drop mogo near driver station wall
+  chassis.turn_to_point(24, -72, 180);
+  chassis.drive_distance(-12);
+  mogoMech.set(false);
+  wait(.1, sec);
+
+  //gab our side mogo
+  chassis.turn_to_point(0, -48, 180);
+  chassis.drive_to_point(2, -48);
+  mogoMech.set(true);
+
+
+  chassis.drive_min_voltage = 0;
+  chassis.drive_max_voltage = 4;
+  chassis.turn_max_voltage = 7;
+
+  //get 2 double stacks of rings
+  chassis.turn_to_point(54, -18);
+  chassis.drive_to_point(54, -18);
+  chassis.drive_max_voltage = 7;
+  chassis.turn_to_point(48, -48);
+  chassis.drive_to_point(48, -48);
+  
+  //grab 4 stack in corner & ram 3 times
+  chassis.turn_to_point(72, -72);
+  drive_for_time(700, forward, 8);
+  chassis.drive_distance(-10);
+  chassis.turn_to_point(72, -72);
+  drive_for_time(700, forward, 8);
+  chassis.drive_distance(-10);
+  chassis.turn_to_point(72, -72);
+  drive_for_time(700, forward, 8);
+  chassis.drive_distance(-10);
+  chassis.turn_to_point(72, -72);
+  drive_for_time(700, forward, 8);
+  chassis.drive_to_point(54, -54);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

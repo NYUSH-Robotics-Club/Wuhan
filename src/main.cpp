@@ -39,7 +39,7 @@ motor_group wallStakeMain = motor_group(wallStake1, wallStake2);
 
 float ringColor;
 
-bool wallStakeFeedFwdDis, isRed = true, ringSortDisable = false, ringDetectOverride, antijamDisable = true;
+bool wallStakeFeedFwdDis, isRed = true, ringSortDisable = true, ringDetectOverride, antijamDisable = true;
 
 thread wsThread;
 
@@ -52,14 +52,14 @@ thread wsThread;
 #define VERT PORT5
 #define HORI PORT6
 #define INERTIAL PORT21
-#define RING_SORT_DELAY 40
+#define RING_SORT_DELAY 30
 #endif
 
 #ifdef GREEN
 #define VERT PORT6
 #define HORI PORT8
 #define INERTIAL PORT9
-#define RING_SORT_DELAY 200
+#define RING_SORT_DELAY 180
 #endif
 
 
@@ -247,10 +247,11 @@ void autonomous(void) {
 void colorSort() {
   while (1) {
     wait(10, msec);
-
+    //printf("in task haha\n");
     // Print distance away on brain screen
     Brain.Screen.setCursor(1, 30);
     Brain.Screen.print(ringDist.objectDistance(inches));
+    //printf("sort is disabled: {%d}\n", ringSortDisable);
 
     if (ringDist.objectDistance(inches) > 2.5 || ringSortDisable) continue;
     
@@ -270,6 +271,9 @@ void colorSort() {
       // Launch red ring
       conveyor.spin(forward, 12, volt);
       waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
+      #ifdef GOLD
+      wait(10*conveyor.current(amp), msec);
+      #endif
       conveyor.spin(reverse, 12, volt);
       wait(0.2, sec);
       conveyor.spin(forward, 12, volt);
@@ -280,6 +284,9 @@ void colorSort() {
       // Launch blue ring
       conveyor.spin(forward, 12, volt);
       waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
+      #ifdef GOLD
+      wait(10*conveyor.current(amp), msec);
+      #endif
       conveyor.spin(reverse, 12, volt);
       wait(0.2, sec);
       conveyor.spin(forward, 12, volt);
@@ -559,7 +566,7 @@ int main() {
     
     Controller1.ButtonX.pressed([] {
       isRed = false;
-      ringSortDisable = true;
+      ringSortDisable = false;
       admMain.setStopping(coast);
       blueGoldAuton();
     });
