@@ -39,7 +39,7 @@ motor_group wallStakeMain = motor_group(wallStake1, wallStake2);
 
 float ringColor;
 
-bool wallStakeFeedFwdDis, isRed = true, ringSortDisable = true, ringDetectOverride, antijamDisable = true;
+bool wallStakeFeedFwdDis, isRed = true, ringSortDisable = false, ringDetectOverride, antijamEnable = true;
 
 thread wsThread;
 
@@ -52,14 +52,14 @@ thread wsThread;
 #define VERT PORT5
 #define HORI PORT6
 #define INERTIAL PORT21
-#define RING_SORT_DELAY 30
+#define RING_SORT_DELAY 185.0 // TODO Tune this
 #endif
 
 #ifdef GREEN
 #define VERT PORT6
 #define HORI PORT8
 #define INERTIAL PORT9
-#define RING_SORT_DELAY 180
+#define RING_SORT_DELAY 185.0
 #endif
 
 
@@ -253,6 +253,15 @@ void colorSort() {
     Brain.Screen.print(ringDist.objectDistance(inches));
     //printf("sort is disabled: {%d}\n", ringSortDisable);
 
+    
+    if (antijamEnable && conveyor.current(amp) > 1.0 && fabs(conveyor.velocity(dps)) < 1.0) {
+      conveyor.spin(reverse, 12, volt);
+      wait(100.0, msec);
+      conveyor.spin(forward, 12, volt);
+      wait(600.0, msec);
+      continue;
+    }
+
     if (ringDist.objectDistance(inches) > 2.5 || ringSortDisable) continue;
     
     #ifdef GOLD
@@ -263,35 +272,35 @@ void colorSort() {
     ringColor = colorDetect.hue();
     printf("hue = %.2f\n", ringColor);
     conveyorPosition = conveyor.position(degrees);
+    bool ringIsRed = ringColor > 360 || ringColor < 20;
+    bool ringIsBlue = ringColor > 180 && ringColor < 260;
 
-    printf("detected ring\n");
-    if (!isRed && (ringColor > 360 || ringColor < 20)) {
-      //Brain.Screen.printAt()
-      printf("yeeting red\n");
-      // Launch red ring
+    if ((ringIsRed && !isRed) || (ringIsBlue && isRed)) {
+      if (isRed) {
+        printf("yeeting blue\n");
+      } else {
+        printf("yeeting red\n");
+      }
+
       conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
-      #ifdef GOLD
-      wait(10*conveyor.current(amp), msec);
-      #endif
+
+      // Alternative method using position and dynamic waiting with current:
+      //waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
+      //wait(10.0 * conveyor.current(amp), msec);
+
+      // Simple time wait:
+      wait(RING_SORT_DELAY, msec);
+
       conveyor.spin(reverse, 12, volt);
       wait(0.2, sec);
       conveyor.spin(forward, 12, volt);
-      Controller1.rumble("..");
-      wait(200, msec);
-    } else if (isRed && (ringColor > 180 && ringColor < 260)) {
-      printf("yeeting blue\n");
-      // Launch blue ring
-      conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
-      #ifdef GOLD
-      wait(10*conveyor.current(amp), msec);
-      #endif
-      conveyor.spin(reverse, 12, volt);
-      wait(0.2, sec);
-      conveyor.spin(forward, 12, volt);
-      Controller1.rumble(".");
-      wait(200, msec);
+
+      if (isRed) {
+        Controller1.rumble(".");
+      } else {
+        Controller1.rumble("..");
+      }
+      wait(20, msec);
     }
   }
 }
@@ -324,7 +333,7 @@ void wallStakeAutoHold() {
 
 void usercontrol(void) {
   //ringSortDisable = true;
-  antijamDisable = true;
+  antijamEnable = true;
   admMain.setStopping(coast);
   
 }
@@ -434,7 +443,7 @@ void onR1Pressed() {
     
   }
   
-  antijamDisable = false;
+  antijamEnable = true;
 }
 
 void onUpPressed() {
