@@ -297,10 +297,25 @@ void redGoldAuton(){
   */
 }
 
-void blueGoldAuton(){
-  
+void blueGoldAuton() {
+  chassis.drive_max_voltage = 12;
+  chassis.heading_max_voltage = 12;
+  doinker_right.set(true); // put doinker down
+  chassis.drive_distance(39);
+  doinker_right.set(false);  // grab mogo
+  chassis.drive_to_point(24, -48);
+
+  chassis.drive_stop(hold);
+
+  chassis.drive_max_voltage = 8;
+  chassis.heading_max_voltage = 4;
+
+  doinker_right.set(true);  // let go of mogo
   wait(.5, sec);
-  chassis.set_heading(-90);
+  chassis.drive_distance(2);
+  chassis.drive_distance(-6);
+  doinker_right.set(false); // put doinker up
+  chassis.turn_to_angle(chassis.get_absolute_heading() - 165);
 
   //turn to the right mogo
 

@@ -27,7 +27,7 @@
 
 #define DEBUG_ODOM
 
-#define ENABLE_DRIVE
+//#define ENABLE_DRIVE
 
 using namespace vex;
 competition Competition;
@@ -504,7 +504,6 @@ int main() {
     odom_constants();
     //default_constants();
     
-    //ringSortDisable = false;
     chassis.set_coordinates(24, -48, 0);
 
     //chassis.set_coordinates(0, 0, 0);
@@ -514,14 +513,43 @@ int main() {
     
     //wait(100, msec); // let thread initialize
     thread odom_thread = thread([]() {
+      float startingX = 22.6;
+      float startingY = -50.85;
+      float startingHeading = 20.2;
+
       while (1) {
         wait(200, msec);
+        float xPos = chassis.get_X_position();
+        float yPos = chassis.get_Y_position();
+        float heading = chassis.get_absolute_heading();
+
         Brain.Screen.setCursor(5, 1);
-        Brain.Screen.print("Y = %f", chassis.get_Y_position());
+        Brain.Screen.print("Y = %.2f, expected %.2f", yPos, startingY);
         Brain.Screen.setCursor(4, 1);
-        Brain.Screen.print("X = %f", chassis.get_X_position());
+        Brain.Screen.print("X = %.2f, expected %.2f", xPos, startingX);
         Brain.Screen.setCursor(6, 1);
-        Brain.Screen.print("H = %f", chassis.get_absolute_heading());
+        Brain.Screen.print("H = %.2f, expected %.2f", heading, startingHeading);
+
+        float xDiff = startingX - xPos;
+        float yDiff = startingY - yPos;
+        float headingDiff = startingHeading - heading;
+
+        Brain.Screen.setCursor(7, 1);
+        Brain.Screen.print("Y error: %.2f", yDiff);
+        Brain.Screen.setCursor(8, 1);
+        Brain.Screen.print("X error: %.2f", xDiff);
+        Brain.Screen.setCursor(9, 1);
+        Brain.Screen.print("Heading error: %.2f", headingDiff);
+
+        Brain.Screen.setCursor(10, 1);
+
+        if (xDiff < 0.5 && xDiff > -0.5 && yDiff < 0.5 && yDiff > -0.5) {
+          Brain.Screen.print("Correct position");
+        } else {
+          Brain.Screen.print("Wrong position!");
+        }
+
+        // 22.6, -50.85, 20.2
         //Brain.Screen.setCursor(4, 1);
         //Brain.Screen.print("Chassis Position: X = %.2f, Y = %.2f, H = %.2f", chassis.get_X_position(), chassis.get_Y_position(), chassis.get_absolute_heading());
         
@@ -529,6 +557,12 @@ int main() {
     });
     wait(100, msec); // let thread initialize
     
+    Controller1.ButtonX.pressed([] {
+      isRed = false;
+      ringSortDisable = true;
+      admMain.setStopping(coast);
+      blueGoldAuton();
+    });
     // Controller1.ButtonX.pressed([] {
     //   chassis.turn_to_angle(chassis.get_absolute_heading() + 90);
     // });
