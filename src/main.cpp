@@ -25,7 +25,7 @@
 // colorDetect          optical       21
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-#define DEBUG_ODOM
+//#define DEBUG_ODOM
 
 //#define ENABLE_DRIVE
 
@@ -176,12 +176,7 @@ void autonomous(void) {
   auto_started = true;
   switch (current_auton_selection) {
   case 0:
-    isRed = true;
-    ringSortDisable = false;
-    wallStakeFeedFwdDis = true;
-
-
-    chassis.set_coordinates(24, -48, 0);
+    
     redGreenAutonCenter();
     break;
   case 1:
@@ -588,7 +583,7 @@ int main() {
       isRed = true;
       redGreenAutonCenter();
       admMain.setStopping(coast);
-    });
+    });\
     */
     //chassis.drive_max_voltage = 3.0;
     //chassis.turn_max_voltage = 2.0;

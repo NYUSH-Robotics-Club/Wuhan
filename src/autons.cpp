@@ -12,48 +12,6 @@ float autoRingColor, autoConveyorPosition;
 //autoIsRed = True means we are sorting OUT blue, meaning we are on the red alliance.
 bool autoIsRed = false;
 
-/*void autoColorSort() {
-  while (1) {
-    wait(20, msec);
-    
-    // colorDetect.setLight(ledState::on);
-    // colorDetect.setLightPower(100, percent);
-  
-
-  //print distance away on brain screen
-  // Brain.Screen.setCursor(1, 30);
-  // Brain.Screen.print(ringDist.objectDistance(inches));
-
-  if ((ringDist.objectDistance(inches) < 2)) {
-
-    //print ringColor on controller screen (removed bc printing to controller screen takes 200ms)
-    autoRingColor = colorDetect.hue();
-    // Controller1.Screen.setCursor(3, 14);
-    // Controller1.Screen.print(autoRingColor);
-
-    autoConveyorPosition = conveyor.position(degrees);
-    
-    if(autoIsRed && (autoRingColor > 360 || 20 > autoRingColor)) {
-      //wait(.09, sec);
-      conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > autoConveyorPosition + 100);
-      conveyor.spin(reverse, 12 ,volt);
-      wait(.2, sec);
-      conveyor.spin(forward, 12, volt);
-      //Controller1.rumble(".");
-    }
-    else if (!autoIsRed && (autoRingColor > 180 && 260 > autoRingColor)) {
-      //wait(.09, sec);
-      conveyor.spin(forward, 12, volt);
-      waitUntil(conveyor.position(degrees) > autoConveyorPosition + 162);
-      conveyor.spin(reverse, 12 ,volt);
-      wait(.2, sec);
-      conveyor.spin(forward, 12, volt);
-      //Controller1.rumble(".");
-    }
-  }
-  }
-}*/
 
 void drive_for_time(int timeMs, directionType direction, int maxVoltage) 
 {
@@ -111,6 +69,14 @@ void odom_constants(){
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void preRedGreenAutonCenter(){
+  isRed = true;
+  ringSortDisable = false;
+  wallStakeFeedFwdDis = true;
+  
+  chassis.set_coordinates(24, -48, 0);
+}
+
 void redGreenAutonCenter(){
   double startTime = Brain.timer(msec);
 
