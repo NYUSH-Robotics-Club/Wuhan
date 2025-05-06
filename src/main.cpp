@@ -27,7 +27,7 @@
 
 #define DEBUG_ODOM
 
-// #define ENABLE_DRIVE
+#define ENABLE_DRIVE
 
 using namespace vex;
 competition Competition;
@@ -363,7 +363,7 @@ void onRightPressed()
   tipper.set(!tipper.value());
 }
 
-void wsSpinToPosition(int position, double kP, double kD, double tolerance)
+void wsSpinToPosition(double position, double kP, double kD, double tolerance)
 {  
   // double kP = 200;
   // double kD = 1000;
@@ -397,17 +397,20 @@ void onR1Pressed() {
   
   if (wsState == LOADING)
   {
+    
+    ringSortDisable = true;
     //antijamEnable = false;
     wsThread = thread([](){
       #ifdef GREEN
       wsSpinToPosition(14, 300, 0, 1);
       #endif
       #ifdef GOLD
-      wsSpinToPosition(19, 300, 0, 1);
+      wsSpinToPosition(14, 300, 0, 1);
       #endif
       waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
       conveyor.spin(fwd, 2, volt);
       wallStakeMain.stop(coast);
+      ringSortDisable = false;
     });
   
     roller.spin(fwd, 12.0, volt);
