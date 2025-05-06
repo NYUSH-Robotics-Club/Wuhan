@@ -93,18 +93,18 @@ void redGreenAutonCenter(){
   roller.spin(reverse, 12, volt);
 
   // chassis.drive_to_point(30.1, -42.3);
-  chassis.drive_to_point(30, -48);
+  chassis.drive_to_point(30, -50);
   
   chassis.drive_stop(hold);
   
   chassis.drive_max_voltage = 8;
   chassis.heading_max_voltage = 4;
-  chassis.drive_distance(3);
+  chassis.drive_distance(2);
   doinker_left.set(true); //unclamp doinker
   wait(.5, sec);
   chassis.drive_distance(-7);
   doinker_left.set(false); //retract doinker
-  chassis.turn_to_angle(chassis.get_absolute_heading() + 165);
+  chassis.turn_to_angle(chassis.get_absolute_heading() + 175);
   
   chassis.drive_min_voltage = 3;
   chassis.drive_max_voltage = 4;
@@ -115,7 +115,7 @@ void redGreenAutonCenter(){
   conveyor.spin(fwd, 9, volt);
   
   chassis.drive_min_voltage = 0;
-  chassis.drive_max_voltage = 8;
+  chassis.drive_max_voltage = 9;
 
   
   wait(1, sec);
@@ -127,19 +127,19 @@ void redGreenAutonCenter(){
 
   chassis.drive_max_voltage = 3.5;
   chassis.drive_to_point(57, -24);
+  chassis.drive_max_voltage = 9;
 
 
   chassis.turn_to_point(60, 0);
-  chassis.drive_to_point(60, -7);
+  chassis.drive_to_point(60, -9);
   chassis.drive_distance(-6);
-  wait(.5, sec);//wait for ring to flip over the top
+  // wait(.5, sec);//wait for ring to flip over the top
 
 
-  chassis.drive_max_voltage = 9;
   chassis.turn_to_point(48, -47);
 
   chassis.drive_to_point(48, -47);
-  wait(.5, sec); //wait for ring to score on goal (non-essential)
+  // wait(.5, sec); //wait for ring to score on goal (non-essential)
   
   //drop off goal near + corner
   chassis.turn_to_point(55, -46, 180);
@@ -156,15 +156,40 @@ void redGreenAutonCenter(){
   // chassis.drive_to_point(8,-56);
   // chassis.turn_to_angle(-135);
   wait(400,msec);
-  chassis.turn_to_point(-1, -72);
+  chassis.turn_to_point(0, -72);
   drive_for_time(500, fwd, 4);//align with alliance stake
+  //score, go left and right to align
   chassis.drive_distance(-9);
-  chassis.turn_to_point(-2, -72);
+  chassis.turn_to_point(0, -72);
   conveyor.spin(reverse, 4, volt);
   wait(100,msec);
-  wallStake.spin(forward, 12, volt);//score on alliance stake
-  wait(1000,msec);
+  //put in scoring position
+  conveyor.spin(reverse, 4, volt);
+  
+  wallStake.spin(fwd, 4, volt);
+
+  wait(1.5, sec);
   wallStake.stop();
+
+  // onR1Pressed();
+  // conveyor.spin(reverse, 4, volt);
+  // wait(1, sec);
+
+  // onR1Pressed();
+  // conveyor.spin(reverse, 4, volt);
+  // wait(1, sec);
+
+  // wallStake.spin(forward, 8, volt);//score on alliance stake
+  // wait(1200,msec);
+  // wallStake.stop();
+  chassis.set_turn_exit_conditions(2, 100, 200);
+  chassis.turn_to_point(-4, -72);
+  chassis.turn_to_point(4, -72);
+  chassis.turn_to_point(0, -72);
+  chassis.set_turn_exit_conditions(2, 100, 1000);
+
+
+
 
   //touch the ladder near goal that gold bot left behind
   drive_for_time(200, reverse, 7);
@@ -176,7 +201,7 @@ void redGreenAutonCenter(){
   chassis.turn_to_point(0, 0);
   wallStake.stop();
   chassis.drive_distance(10);
-  chassis.turn_to_point(-24, -68, 180);
+  chassis.turn_to_point(-36, -68, 180);
 
 
 

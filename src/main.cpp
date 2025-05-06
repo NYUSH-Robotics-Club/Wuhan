@@ -400,7 +400,7 @@ void onR1Pressed() {
     //antijamEnable = false;
     wsThread = thread([](){
       #ifdef GREEN
-      wsSpinToPosition(14, 400, 0, 1);
+      wsSpinToPosition(14, 300, 0, 1);
       #endif
       #ifdef GOLD
       wsSpinToPosition(19, 300, 0, 1);
