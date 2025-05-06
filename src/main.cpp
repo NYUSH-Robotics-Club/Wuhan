@@ -25,9 +25,9 @@
 // colorDetect          optical       21
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-//#define DEBUG_ODOM
+#define DEBUG_ODOM
 
-#define ENABLE_DRIVE
+// #define ENABLE_DRIVE
 
 using namespace vex;
 competition Competition;
@@ -574,10 +574,10 @@ int main() {
     wait(100, msec); // let thread initialize
     
     Controller1.ButtonX.pressed([] {
-      isRed = false;
+      isRed = true;
       ringSortDisable = false;
       admMain.setStopping(coast);
-      blueGoldAuton();
+      redGreenAutonCenter();
     });
     // Controller1.ButtonX.pressed([] {
     //   chassis.turn_to_angle(chassis.get_absolute_heading() + 90);

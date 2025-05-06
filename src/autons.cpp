@@ -84,7 +84,6 @@ void redGreenAutonCenter(){
   chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
 
-  
   //chassis.set_heading(-30);
   roller.spin(fwd, 12, volt);
   doinker_left.set(true); //extend doinker
@@ -93,22 +92,23 @@ void redGreenAutonCenter(){
   doinker_left.set(false); //clamp doinker
   roller.spin(reverse, 12, volt);
 
-  chassis.drive_to_point(30.1, -42.3);
+  // chassis.drive_to_point(30.1, -42.3);
+  chassis.drive_to_point(30, -48);
   
   chassis.drive_stop(hold);
   
   chassis.drive_max_voltage = 8;
   chassis.heading_max_voltage = 4;
+  chassis.drive_distance(3);
   doinker_left.set(true); //unclamp doinker
   wait(.5, sec);
-  chassis.drive_distance(2);
-  chassis.drive_distance(-6);
+  chassis.drive_distance(-7);
   doinker_left.set(false); //retract doinker
   chassis.turn_to_angle(chassis.get_absolute_heading() + 165);
   
   chassis.drive_min_voltage = 3;
   chassis.drive_max_voltage = 4;
-  chassis.drive_distance(-24);
+  chassis.drive_distance(-23);
   mogoMech.set(true);
   wait(.1, sec); //grab mogo
   roller.spin(fwd, 12, volt);
@@ -139,6 +139,7 @@ void redGreenAutonCenter(){
   chassis.turn_to_point(48, -47);
 
   chassis.drive_to_point(48, -47);
+  wait(.5, sec); //wait for ring to score on goal (non-essential)
   
   //drop off goal near + corner
   chassis.turn_to_point(55, -46, 180);
@@ -168,13 +169,14 @@ void redGreenAutonCenter(){
   //touch the ladder near goal that gold bot left behind
   drive_for_time(200, reverse, 7);
   intake.spin(fwd, 12 ,volt);
+  wallStake.spin(reverse, 12, volt);
   chassis.heading_max_voltage = 12;
   chassis.drive_to_point(-24, -18);
-  wallStake.spin(reverse, 12, volt);
   chassis.heading_max_voltage = 4;
   chassis.turn_to_point(0, 0);
   wallStake.stop();
-  chassis.drive_distance(8);
+  chassis.drive_distance(10);
+  chassis.turn_to_point(-24, -68, 180);
 
 
 
@@ -300,13 +302,15 @@ void blueGoldAuton() {
   // wait(.1, sec);
 
   //gab our side mogo
-  chassis.turn_to_point(0, -48, 180);
-  chassis.drive_to_point(-2, -49);
+  chassis.turn_to_point(-3, -49, 180);
+  chassis.drive_min_voltage = 3;
+  chassis.drive_max_voltage = 7;
+  chassis.drive_to_point(-3, -49);
   mogoMech.set(true);
 
 
   chassis.drive_min_voltage = 0;
-  chassis.drive_max_voltage = 9;
+  chassis.drive_max_voltage = 10;
   chassis.turn_max_voltage = 7;
 
   //get 2 double stacks of rings
@@ -323,47 +327,63 @@ void blueGoldAuton() {
   
   //grab 4 stack in corner & ram 3 times
   chassis.turn_to_point(72, -72);
-  drive_for_time(900, forward, 5);
-  chassis.drive_distance(-10);
+  drive_for_time(700, forward, 6);
+  chassis.drive_distance(-5);
   chassis.turn_to_point(72, -72);
-  drive_for_time(600, forward, 9);
-  chassis.drive_distance(-10);
+  drive_for_time(400, forward, 10);
+  chassis.drive_distance(-7);
   chassis.turn_to_point(72, -72);
-  drive_for_time(600, forward, 9);
-  chassis.drive_distance(-10);
+  drive_for_time(300, forward, 10);
+  chassis.drive_distance(-7);
   chassis.turn_to_point(72, -72);
-  drive_for_time(600, forward, 9);
+  drive_for_time(300, forward, 10);
   chassis.drive_distance(-10);
-  chassis.turn_to_point(-48, -48);
+  chassis.turn_to_point(-46, -48);
 
   chassis.drive_max_voltage = 12;
   //cross the field to pos corner to clear rings and put mogo in corner
-  chassis.drive_to_point(-48, -48);
-  chassis.drive_max_voltage = 9;
+  chassis.drive_to_point(-46, -48);
+  chassis.drive_max_voltage = 10;
 
 
-  //grab 4 stack in corner & ram 3 times
+  //grab 4 stack in + corner & ram 3 times
   chassis.turn_to_point(-72, -72);
-  drive_for_time(900, forward, 5);
-  chassis.drive_distance(-10);
+  drive_for_time(700, forward, 7);
+  chassis.drive_distance(-5);
   chassis.turn_to_point(-72, -72);
-  drive_for_time(600, forward, 9);
-  chassis.drive_distance(-10);
+  drive_for_time(400, forward, 10);
+  chassis.drive_distance(-7);
   chassis.turn_to_point(-72, -72);
-  drive_for_time(600, forward, 9);
-  chassis.drive_distance(-10);
+  drive_for_time(300, forward, 10);
+  chassis.drive_distance(-7);
   chassis.turn_to_point(-72, -72);
-  drive_for_time(600, forward, 9);
+  drive_for_time(300, forward, 10);
+  //sweep corner
+  
   chassis.drive_distance(-10);
+  chassis.turn_to_point(-36, -60, 180);
+  chassis.drive_to_point(-36, -60);
+  chassis.turn_max_voltage = 12;
+  doinker_left.set(true);
+  chassis.turn_max_voltage = 9;
+  chassis.turn_to_point(-72, -70);
+  drive_for_time(500, fwd, 10);
+  chassis.drive_distance(-5);
+  // chassis.turn_to_point(-72, -48);
   chassis.turn_to_point(0, 0);
+  doinker_left.set(false);
 
   //put goal in + corner
   mogoMech.set(false);
   drive_for_time(500, reverse, 8);
+  chassis.drive_distance(10);
 
   //line up to grab goal green dropped off
-  chassis.drive_to_point(-58, -58);
+  // chassis.drive_to_point(-56, -56);
   chassis.turn_to_angle(135);
+  //get off auton line for AWP
+  chassis.drive_max_voltage = 9;
+  chassis.drive_distance(-6);
 
 
 }
