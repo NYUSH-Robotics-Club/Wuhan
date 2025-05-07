@@ -27,7 +27,7 @@
 
 #define DEBUG_ODOM
 
-#define ENABLE_DRIVE
+// #define ENABLE_DRIVE
 
 using namespace vex;
 competition Competition;
@@ -52,19 +52,19 @@ thread wsThread;
 #define VERT PORT5
 #define HORI PORT6
 #define INERTIAL PORT21
-#define RING_SORT_DELAY 190 
-#define INTAKE_SPEED 12.0
+#define RING_SORT_DELAY 220
+#define INTAKE_SPEED 9.0
 
 #endif
 
 
 
 #ifdef GREEN
-#define INTAKE_SPEED 12.0
+#define INTAKE_SPEED 9.0
 #define VERT PORT6
 #define HORI PORT8
 #define INERTIAL PORT9
-#define RING_SORT_DELAY 250 // 220
+#define RING_SORT_DELAY 335 
 #endif
 
 
@@ -251,6 +251,7 @@ void colorSort() {
     Brain.Screen.setCursor(1, 30);
     Brain.Screen.print(ringDist.objectDistance(inches));
 
+    
     if (ringDist.objectDistance(inches) > 2.5 || ringSortDisable) continue;
     
     #ifdef GOLD
@@ -271,7 +272,7 @@ void colorSort() {
         printf("yeeting red\n");
       }
 
-      conveyor.spin(forward, 12, volt);
+      conveyor.spin(forward, INTAKE_SPEED, volt);
 
       // Alternative method using position and dynamic waiting with current:
       //waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
@@ -282,7 +283,7 @@ void colorSort() {
 
       conveyor.spin(reverse, 12, volt);
       wait(0.2, sec);
-      conveyor.spin(forward, 12, volt);
+      conveyor.spin(forward, INTAKE_SPEED, volt);
 
       if (isRed) {
         Controller1.rumble(".");
@@ -524,7 +525,8 @@ int main() {
     odom_constants();
     //default_constants();
     
-    chassis.set_coordinates(24, -48, 0);
+    chassis.set_coordinates(24, -48, 0); //***for blueGold and redGreen
+    // chassis.set_coordinates(-24, -48, 0); //***for redGold and blueGreen
 
     //chassis.set_coordinates(0, 0, 0);
     //chassis.drive_timeout = 20000;
