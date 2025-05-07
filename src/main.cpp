@@ -525,8 +525,8 @@ int main() {
     odom_constants();
     //default_constants();
     
-    chassis.set_coordinates(24, -48, 0); //***for blueGold and redGreen
-    // chassis.set_coordinates(-24, -48, 0); //***for redGold and blueGreen
+    // chassis.set_coordinates(24, -48, 0); //***for blueGold and redGreen
+    chassis.set_coordinates(-24, -48, 0); //***for redGold and blueGreen
 
     //chassis.set_coordinates(0, 0, 0);
     //chassis.drive_timeout = 20000;
@@ -583,7 +583,7 @@ int main() {
       isRed = true;
       ringSortDisable = false;
       admMain.setStopping(coast);
-      redGreenAutonCenter();
+      redGoldAuton();
     });
     // Controller1.ButtonX.pressed([] {
     //   chassis.turn_to_angle(chassis.get_absolute_heading() + 90);

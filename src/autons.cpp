@@ -87,13 +87,15 @@ void redGreenAutonCenter(){
   //chassis.set_heading(-30);
   roller.spin(fwd, 12, volt);
   doinker_left.set(true); //extend doinker
-  // chassis.drive_to_point(14.2, -13.3);
-  chassis.drive_distance(35);//switched to drive_distance for better consistency
+  // chassis.drive_to_point(-14.2, -13.3);
+  chassis.drive_distance(34);//switched to drive_distance for better consistency | used to be 35
   doinker_left.set(false); //clamp doinker
   roller.spin(reverse, 12, volt);
 
-  // chassis.drive_to_point(30.1, -42.3);
-  chassis.drive_to_point(30, -50);
+  chassis.drive_to_point(30.1, -42.3);
+  chassis.turn_to_point(24, 0);
+  // chassis.drive_to_point(-38, -53);
+  // chassis.drive_to_point(-27, -28);
   
   chassis.drive_stop(hold);
   
@@ -101,40 +103,51 @@ void redGreenAutonCenter(){
   chassis.heading_max_voltage = 4;
   chassis.drive_distance(2);
   doinker_left.set(true); //unclamp doinker
-  wait(.5, sec);
-  chassis.drive_distance(-7);
+  wait(.3, sec);
+  chassis.drive_distance(-8);
   doinker_left.set(false); //retract doinker
-  chassis.turn_to_angle(chassis.get_absolute_heading() + 175);
+  chassis.turn_to_angle(chassis.get_absolute_heading() + 160);
+
   
   chassis.drive_min_voltage = 3;
   chassis.drive_max_voltage = 4;
   chassis.drive_distance(-23);
+
+  // //grab & re-grab mogo
+  // mogoMech.set(true);
+  // wait(.1, sec); //grab mogo
+  // chassis.drive_distance(5);
+  // mogoMech.set(false);
+  // wait(.1, sec);
+  // chassis.drive_distance(-5);
   mogoMech.set(true);
-  wait(.1, sec); //grab mogo
-  roller.spin(fwd, 12, volt);
-  conveyor.spin(fwd, 9, volt);
+  wait(.1, sec);
   
   chassis.drive_min_voltage = 0;
   chassis.drive_max_voltage = 9;
 
   
-  wait(1, sec);
+  // wait(.4, sec);
 
   // chassis.turn_to_point(24, -24);
   // chassis.drive_to_point(24, -24);//grab red blue stack
 
   chassis.turn_to_angle(90.0);
 
+  roller.spin(fwd, 12, volt);
+  conveyor.spin(fwd, 9, volt);
+
+
   chassis.drive_max_voltage = 3.5;
   chassis.drive_to_point(57, -24);
   chassis.drive_max_voltage = 9;
 
 
-  chassis.turn_to_point(60, -9);
-  chassis.drive_to_point(60, -9);
+  chassis.turn_to_point(60, -6);
+  chassis.drive_to_point(60, -6);
   wait(.3, sec);
   chassis.drive_distance(-6);
-  // wait(.5, sec);//wait for ring to flip over the top
+  wait(.3, sec);//wait for ring to flip over the top
 
 
   chassis.turn_to_point(48, -47);
@@ -145,6 +158,7 @@ void redGreenAutonCenter(){
   //drop off goal near + corner
   chassis.turn_to_point(55, -40, 180);
   chassis.drive_to_point(55, -40);
+  wait(.3, sec);
   mogoMech.set(false);
   wait(.1, sec);
 
@@ -152,7 +166,7 @@ void redGreenAutonCenter(){
   chassis.turn_to_point(24, -24);
   chassis.drive_to_point(24,-24);
   
-  //go to wall stake
+  //go to alliance stake
   chassis.turn_to_point(0, -60);
 
   wait(2, sec);
@@ -167,7 +181,7 @@ void redGreenAutonCenter(){
   chassis.turn_to_point(0, -72);
   drive_for_time(650, fwd, 6);//align with alliance stake
   //score, go left and right to align
-  chassis.drive_distance(-10);
+  chassis.drive_distance(-9.5);
   chassis.turn_to_point(0, -72);
   conveyor.spin(reverse, 4, volt);
   wait(100,msec);
@@ -198,9 +212,9 @@ void redGreenAutonCenter(){
   chassis.heading_max_voltage = 4;
   chassis.turn_to_point(0, 0);
   wallStake.spin(fwd, 8, volt);
-  wait(.5, sec);
+  wait(.6, sec);
   wallStake.stop();
-  drive_for_time(700, fwd, 4);
+  drive_for_time(600, fwd, 4);
 
 
   //leave at end of auton
@@ -418,10 +432,10 @@ void redGoldAuton(){
   // wait(.1, sec);
 
   //gab our side mogo
-  chassis.turn_to_point(3, -49, 180);
+  chassis.turn_to_point(0, -49, 180);
   chassis.drive_min_voltage = 3;
   chassis.drive_max_voltage = 7;
-  chassis.drive_to_point(3, -49);
+  chassis.drive_to_point(0, -49);
   mogoMech.set(true);
 
 
@@ -435,7 +449,7 @@ void redGoldAuton(){
   conveyor.spin(fwd, 9, volt);
   chassis.drive_to_point(-38, -31);
   chassis.drive_max_voltage = 4;
-  // chassis.turn_to_point(56, -19);
+  // chassis.turn_to_point(-56, -19);
   chassis.drive_to_point(-56, -19);
   chassis.drive_max_voltage = 9;
   chassis.turn_to_point(-48, -48);
@@ -500,13 +514,6 @@ void redGoldAuton(){
   chassis.drive_to_point(48, -24);
   chassis.turn_to_point(60, -36, 180);
 
-  /*//line up to grab goal green dropped off
-  // chassis.drive_to_point(-56, -56);
-  chassis.turn_to_angle(-135);
-  //get off auton line for AWP
-  chassis.drive_max_voltage = 9;
-  chassis.drive_distance(-10);
-  chassis.drive_stop(coast);*/ //commented to use arc drive instead to save time
 }
 
 void blueGoldAuton() {
