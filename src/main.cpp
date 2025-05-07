@@ -60,11 +60,11 @@ thread wsThread;
 
 
 #ifdef GREEN
-#define INTAKE_SPEED 9.0
+#define INTAKE_SPEED 12.0
 #define VERT PORT6
 #define HORI PORT8
 #define INERTIAL PORT9
-#define RING_SORT_DELAY 238 // 220
+#define RING_SORT_DELAY 250 // 220
 #endif
 
 
@@ -242,56 +242,57 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-
-
-
 //**RING SORTING**
 void colorSort() {
   while (1) {
     wait(10, msec);
-
+    //printf("in task haha\n");
     // Print distance away on brain screen
     Brain.Screen.setCursor(1, 30);
     Brain.Screen.print(ringDist.objectDistance(inches));
 
+    if (ringDist.objectDistance(inches) > 2.5 || ringSortDisable) continue;
     
-    if (ringDist.objectDistance(inches) > 2.0 || ringSortDisable) continue;
-    
-
+    #ifdef GOLD
+    wait(90, msec);
+    #endif
 
     // Get ring color hue
     ringColor = colorDetect.hue();
     printf("hue = %.2f\n", ringColor);
-    double conveyorPosition = conveyor.position(degrees);
+    //conveyorPosition = conveyor.position(degrees);
+    bool ringIsRed = ringColor > 360 || ringColor < 20;
+    bool ringIsBlue = ringColor > 180 && ringColor < 260;
 
-    printf("detected ring\n");
-    if (!isRed && (ringColor > 360 || ringColor < 20)) {
-      //Brain.Screen.printAt()
-      printf("yeeting red\n");
-      // Launch red ring
-      conveyor.spin(forward, INTAKE_SPEED, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
-      conveyor.spin(reverse, INTAKE_SPEED, volt);
+    if ((ringIsRed && !isRed) || (ringIsBlue && isRed)) {
+      if (isRed) {
+        printf("yeeting blue\n");
+      } else {
+        printf("yeeting red\n");
+      }
+
+      conveyor.spin(forward, 12, volt);
+
+      // Alternative method using position and dynamic waiting with current:
+      //waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
+      //wait(10.0 * conveyor.current(amp), msec);
+
+      // Simple time wait:
+      wait(RING_SORT_DELAY, msec);
+
+      conveyor.spin(reverse, 12, volt);
       wait(0.2, sec);
-      conveyor.spin(forward, INTAKE_SPEED, volt);
-      Controller1.rumble("..");
-      wait(200, msec);
-    } else if (isRed && (ringColor > 180 && ringColor < 260)) {
-      printf("yeeting blue\n");
-      // Launch blue ring
-      conveyor.spin(forward, INTAKE_SPEED, volt);
-      waitUntil(conveyor.position(degrees) > conveyorPosition + RING_SORT_DELAY);
-      conveyor.spin(reverse, INTAKE_SPEED, volt);
-      wait(0.2, sec);
-      conveyor.spin(forward, INTAKE_SPEED, volt);
-      Controller1.rumble(".");
-      wait(200, msec);
+      conveyor.spin(forward, 12, volt);
+
+      if (isRed) {
+        Controller1.rumble(".");
+      } else {
+        Controller1.rumble("..");
+      }
+      wait(20, msec);
     }
   }
 }
-
-
-
 
 void wallStakeAutoHold() {
   
