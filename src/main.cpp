@@ -25,7 +25,7 @@
 // colorDetect          optical       21
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-#define DEBUG_ODOM
+// #define DEBUG_ODOM
 
 // #define ENABLE_DRIVE
 
@@ -175,64 +175,98 @@ void pre_auton(void) {
   //start auto selector
   auto_selector();
   //set constants
-  odom_constants();
+  //odom_constants();
   
   //chassis.set_drive_constants(5.5, 1.5, 0, 10, 0);
 }
 
+bool auto_locked = false;
+int old_auto = 255;
+
 
 void auto_selector(){
+  
+  float startingX = 0;
+  float startingY = 0;
+  float startingHeading = 0;
+
   while (auto_started == false) {
-    Brain.Screen.clearScreen();
-    float startingX = 0;
-    float startingY = 0;
-    float startingHeading = 0;
     
-    switch (current_auton_selection) {
-    default:
-      break;
+    
+    Brain.Screen.clearScreen();
+    
 
-    #ifdef GREEN
-    #define NUM_AUTONS 4
-    case 0:
-      Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
-      startingX = 19.73;
-      startingY = -43.80;
-      startingHeading = 25.53;
-      break;
-    case 2:
-      Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT (GREEN)");
-      break;
-    case 1:
-      Brain.Screen.printAt(50, 50, "Blue Left - RUSH CENTER (GREEN)");
-      startingX = -19.73;
-      startingY = -43.80;
-      startingHeading = 334.47;
-      break;
-    case 3:
-      Brain.Screen.printAt(50, 50, "Blue Left - RUSH LEFT (GREEN)");
-      break;
-    #endif
+    if (Controller1.ButtonX.pressing() && !auto_locked) {
+      auto_locked = true;
+      Controller1.rumble(".-");
+      odom_constants();
+      while (Controller1.ButtonX.pressing()) {
+        wait(10, msec);
+      }
+      //waitUntil(!chassis.Gyro.isCalibrating());
+      //Controller1.rumble("-.-");
 
-    #ifdef GOLD
-    #define NUM_AUTONS 2
-    case 0:
-      Brain.Screen.printAt(50, 50, "Red Left - RUSH LEFT (GOLD)");
-      startingX = -22.6;
-      startingY = -50.85;
-      startingHeading = 339.8;
-      break;
-    case 1:
-      Brain.Screen.printAt(50, 50, "Blue Right - RUSH RIGHT (GOLD)");
-      startingX = 22.6;
-      startingY = -50.85;
-      startingHeading = 20.2;
-      break;
-    #endif
+    } else if (Controller1.ButtonY.pressing() && auto_locked){
+      auto_locked = false;
+      Controller1.rumble("---");
+      while (Controller1.ButtonY.pressing()) {
+        wait(10, msec);
+      }
     }
-    if (Brain.Screen.pressing()) {
+
+    if (!auto_locked) {
+      switch (current_auton_selection) {
+      default:
+        break;
+
+      #ifdef GREEN
+      #define NUM_AUTONS 4
+      case 0:
+        Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
+        chassis.set_coordinates(24, -48, 0);
+        startingX = 20.98;
+        startingY = -41.84;
+        startingHeading = 25.62;
+        break;
+      case 2:
+        Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT (GREEN)");
+        break;
+      case 1:
+        Brain.Screen.printAt(50, 50, "Blue Left - RUSH CENTER (GREEN)");
+        chassis.set_coordinates(-24, -48, 0);
+        startingX = 28.01;
+        startingY = -43.24;
+        startingHeading = 333.88;
+        break;
+      case 3:
+        Brain.Screen.printAt(50, 50, "Blue Left - RUSH LEFT (GREEN)");
+        break;
+      #endif
+
+      #ifdef GOLD
+      #define NUM_AUTONS 2
+      case 0:
+        Brain.Screen.printAt(50, 50, "Red Left - RUSH LEFT (GOLD)");
+        chassis.set_coordinates(-24, -48, 0);
+        startingX = -23.26;
+        startingY = -50.20;
+        startingHeading = 341.03;
+        break;
+      case 1:
+        Brain.Screen.printAt(50, 50, "Blue Right - RUSH RIGHT (GOLD)");
+        chassis.set_coordinates(24, -48, 0);
+        startingX = 25.64;
+        startingY = -50.61;
+        startingHeading = 19.99;
+        break;
+      #endif
+      }
+    }
+
+
+    if (Brain.Screen.pressing() && !auto_locked) {
       while (Brain.Screen.pressing()) {
-        task::sleep(10);
+        wait(10, msec);
       }
       current_auton_selection++;
     } else if (current_auton_selection == NUM_AUTONS) {
@@ -267,7 +301,12 @@ void auto_selector(){
     } else {
       Brain.Screen.print("Wrong position!");
     }
-    task::sleep(100);
+    wait(100, msec);
+
+
+    old_auto = current_auton_selection;
+
+    
     ////Brain.Screen.clearScreen();
   }
 }
@@ -285,7 +324,7 @@ void autonomous(void) {
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
 
-    chassis.set_coordinates(24, -48, 0);
+    
 
     redGreenAutonCenter();
     break;
@@ -301,7 +340,7 @@ void autonomous(void) {
     wallStakeFeedFwdDis = true; // BLUE GREEN CENTER
     ringSortDisable = false;
 
-    chassis.set_coordinates(-24, -48, 0);
+    
 
     blueGreenAutonCenter();
     break;
@@ -320,7 +359,7 @@ void autonomous(void) {
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
 
-    chassis.set_coordinates(24, -48, 0);
+    
 
     redGoldAuton();
     break;
@@ -329,7 +368,7 @@ void autonomous(void) {
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
 
-    chassis.set_coordinates(-24, -48, 0);
+    
 
     blueGoldAuton();
     break;

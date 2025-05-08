@@ -49,7 +49,7 @@ void default_constants(){
     wait(10, msec);
   }
   wait(100, msec);
-  Controller1.rumble("--");
+  Controller1.rumble("-.-");
 
   wallStake.setVelocity(100, percent);
 
