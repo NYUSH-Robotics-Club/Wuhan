@@ -196,15 +196,18 @@ void auto_selector(){
     #define NUM_AUTONS 4
     case 0:
       Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
-      startingX = -19.73;
+      startingX = 19.73;
       startingY = -43.80;
-      startingHeading = 334.47;
+      startingHeading = 25.53;
       break;
     case 2:
       Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT (GREEN)");
       break;
     case 1:
       Brain.Screen.printAt(50, 50, "Blue Left - RUSH CENTER (GREEN)");
+      startingX = -19.73;
+      startingY = -43.80;
+      startingHeading = 334.47;
       break;
     case 3:
       Brain.Screen.printAt(50, 50, "Blue Left - RUSH LEFT (GREEN)");
@@ -215,6 +218,9 @@ void auto_selector(){
     #define NUM_AUTONS 2
     case 0:
       Brain.Screen.printAt(50, 50, "Red Left - RUSH LEFT (GOLD)");
+      startingX = -22.6;
+      startingY = -50.85;
+      startingHeading = 339.8;
       break;
     case 1:
       Brain.Screen.printAt(50, 50, "Blue Right - RUSH RIGHT (GOLD)");
