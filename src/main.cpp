@@ -660,7 +660,7 @@ int main() {
       isRed = true;
       ringSortDisable = false;
       admMain.setStopping(coast);
-      redGoldAuton();
+      redGreenAutonCenter();
     });
     #endif
     #ifdef GOLD
