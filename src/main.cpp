@@ -167,69 +167,171 @@ int current_auton_selection = 0;
 int wallStakeState = 0;
 bool auto_started = false;
 
+
+void auto_selector();
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-
+  //start auto selector
+  auto_selector();
+  //set constants
   odom_constants();
   
   //chassis.set_drive_constants(5.5, 1.5, 0, 10, 0);
+}
+
+
+void auto_selector(){
+  while (auto_started == false) {
+    Brain.Screen.clearScreen();
+    float startingX = 0;
+    float startingY = 0;
+    float startingHeading = 0;
+    
+    switch (current_auton_selection) {
+    default:
+      break;
+
+    #ifdef GREEN
+    #define NUM_AUTONS 4
+    case 0:
+      Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
+      startingX = -19.73;
+      startingY = -43.80;
+      startingHeading = 334.47;
+      break;
+    case 2:
+      Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT (GREEN)");
+      break;
+    case 1:
+      Brain.Screen.printAt(50, 50, "Blue Left - RUSH CENTER (GREEN)");
+      break;
+    case 3:
+      Brain.Screen.printAt(50, 50, "Blue Left - RUSH LEFT (GREEN)");
+      break;
+    #endif
+
+    #ifdef GOLD
+    #define NUM_AUTONS 2
+    case 0:
+      Brain.Screen.printAt(50, 50, "Red Left - RUSH LEFT (GOLD)");
+      break;
+    case 1:
+      Brain.Screen.printAt(50, 50, "Blue Right - RUSH RIGHT (GOLD)");
+      startingX = 22.6;
+      startingY = -50.85;
+      startingHeading = 20.2;
+      break;
+    #endif
+    }
+    if (Brain.Screen.pressing()) {
+      while (Brain.Screen.pressing()) {
+        task::sleep(10);
+      }
+      current_auton_selection++;
+    } else if (current_auton_selection == NUM_AUTONS) {
+      current_auton_selection = 0;
+    }
+    
+    //wait(200, msec);
+    float xPos = chassis.get_X_position();
+    float yPos = chassis.get_Y_position();
+    float heading = chassis.get_absolute_heading();
+    
+    Brain.Screen.setCursor(5, 1);
+    Brain.Screen.print("Y = %.2f, expected %.2f", yPos, startingY);
+    Brain.Screen.setCursor(4, 1);
+    Brain.Screen.print("X = %.2f, expected %.2f", xPos, startingX);
+    Brain.Screen.setCursor(6, 1);
+    Brain.Screen.print("H = %.2f, expected %.2f", heading, startingHeading);
+    
+    float xDiff = startingX - xPos;
+    float yDiff = startingY - yPos;
+    float headingDiff = startingHeading - heading;
+    
+    Brain.Screen.setCursor(8, 1);
+    Brain.Screen.print("Y error: %.2f", yDiff);
+    Brain.Screen.setCursor(7, 1);
+    Brain.Screen.print("X error: %.2f", xDiff);
+    Brain.Screen.setCursor(9, 1);
+    Brain.Screen.print("Heading error: %.2f", headingDiff);
+    Brain.Screen.setCursor(10, 1);
+    if (xDiff < 0.5 && xDiff > -0.5 && yDiff < 0.5 && yDiff > -0.5) {
+      Brain.Screen.print("Correct position");
+    } else {
+      Brain.Screen.print("Wrong position!");
+    }
+    task::sleep(100);
+    ////Brain.Screen.clearScreen();
+  }
 }
 
 void autonomous(void) {
 
   auto_started = true;
   switch (current_auton_selection) {
-  case 0:
-    
-    redGreenAutonCenter();
+  default:
     break;
-  case 1:
+
+  #ifdef GREEN
+  case 0:
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
-    
-    redGreenAutonOther();
+
+    chassis.set_coordinates(24, -48, 0);
+
+    redGreenAutonCenter();
     break;
   case 2:
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
-    
-    redGoldAuton();
+
+    redGreenAutonOther();
     break;
-  case 3:
+  case 1:
     isRed = false;
     wallStakeFeedFwdDis = true; // BLUE GREEN CENTER
     ringSortDisable = false;
-    
-    chassis.set_coordinates(24, -48, 0);
+
+    chassis.set_coordinates(-24, -48, 0);
+
     blueGreenAutonCenter();
     break;
-  case 4:
+  case 3:
     isRed = false;
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
-    
+
     blueGreenAutonOther();
     break;
-  case 5:
+  #endif
+
+  #ifdef GOLD
+  case 0:
+    isRed = true;
+    ringSortDisable = false;
+    wallStakeFeedFwdDis = true;
+
+    chassis.set_coordinates(24, -48, 0);
+
+    redGoldAuton();
+    break;
+  case 1:
     isRed = false;
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
-    
+
+    chassis.set_coordinates(-24, -48, 0);
+
     blueGoldAuton();
     break;
-  case 6:
-    odom_test();
-    break;
-  case 7:
-    safe_worlds_auton();
-    break;
-  case 8:
-    worlds_auton();
-    break;
+  #endif
   }
+  
+  intakeMain.stop();
+  
 }
 
 /*---------------------------------------------------------------------------*/
@@ -525,8 +627,7 @@ int main() {
     odom_constants();
     //default_constants();
     
-    // chassis.set_coordinates(24, -48, 0); //***for blueGold and redGreen
-    chassis.set_coordinates(-24, -48, 0); //***for redGold and blueGreen
+    //chassis.set_coordinates(24, -48, 0);
 
     //chassis.set_coordinates(0, 0, 0);
     //chassis.drive_timeout = 20000;
@@ -535,41 +636,16 @@ int main() {
     
     //wait(100, msec); // let thread initialize
     thread odom_thread = thread([]() {
-      float startingX = 22.6;
-      float startingY = -50.85;
-      float startingHeading = 20.2;
+      
 
       while (1) {
-        wait(200, msec);
-        float xPos = chassis.get_X_position();
-        float yPos = chassis.get_Y_position();
-        float heading = chassis.get_absolute_heading();
-
+        
         Brain.Screen.setCursor(5, 1);
-        Brain.Screen.print("Y = %.2f, expected %.2f", yPos, startingY);
+        Brain.Screen.print("Y = %.2f", chassis.get_Y_position());
         Brain.Screen.setCursor(4, 1);
-        Brain.Screen.print("X = %.2f, expected %.2f", xPos, startingX);
+        Brain.Screen.print("X = %.2f", chassis.get_X_position());
         Brain.Screen.setCursor(6, 1);
-        Brain.Screen.print("H = %.2f, expected %.2f", heading, startingHeading);
-
-        float xDiff = startingX - xPos;
-        float yDiff = startingY - yPos;
-        float headingDiff = startingHeading - heading;
-
-        Brain.Screen.setCursor(7, 1);
-        Brain.Screen.print("Y error: %.2f", yDiff);
-        Brain.Screen.setCursor(8, 1);
-        Brain.Screen.print("X error: %.2f", xDiff);
-        Brain.Screen.setCursor(9, 1);
-        Brain.Screen.print("Heading error: %.2f", headingDiff);
-
-        Brain.Screen.setCursor(10, 1);
-
-        if (xDiff < 0.5 && xDiff > -0.5 && yDiff < 0.5 && yDiff > -0.5) {
-          Brain.Screen.print("Correct position");
-        } else {
-          Brain.Screen.print("Wrong position!");
-        }
+        Brain.Screen.print("H = %.2f", chassis.get_absolute_heading());
 
         // 22.6, -50.85, 20.2
         //Brain.Screen.setCursor(4, 1);
@@ -578,13 +654,24 @@ int main() {
       }
     });
     wait(100, msec); // let thread initialize
-    
+    #ifndef ENABLE_DRIVE
+    #ifdef GREEN
     Controller1.ButtonX.pressed([] {
       isRed = true;
       ringSortDisable = false;
       admMain.setStopping(coast);
       redGoldAuton();
     });
+    #endif
+    #ifdef GOLD
+    Controller1.ButtonX.pressed([] {
+      isRed = true;
+      ringSortDisable = false;
+      admMain.setStopping(coast);
+      redGoldAuton();
+    });
+    #endif
+    #endif
     // Controller1.ButtonX.pressed([] {
     //   chassis.turn_to_angle(chassis.get_absolute_heading() + 90);
     // });
@@ -622,7 +709,7 @@ int main() {
   Controller1.ButtonL1.pressed(enableRingDetectOverride);
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
   Controller1.ButtonLeft.pressed(onLeftPressed);
-  //Controller1.ButtonRight.pressed(onRightPressed);
+  ////Controller1.ButtonRight.pressed(onRightPressed);
   Controller1.ButtonR1.pressed(onR1Pressed);
   Controller1.ButtonR2.pressed(onR2Pressed);
   Controller1.ButtonUp.pressed(onUpPressed);

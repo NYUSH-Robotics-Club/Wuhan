@@ -13,6 +13,7 @@ float autoRingColor, autoConveyorPosition;
 bool autoIsRed = false;
 
 
+
 void drive_for_time(int timeMs, directionType direction, int maxVoltage) 
 {
   adm.spin(direction, maxVoltage, volt);
@@ -69,14 +70,8 @@ void odom_constants(){
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void preRedGreenAutonCenter(){
-  isRed = true;
-  ringSortDisable = false;
-  wallStakeFeedFwdDis = true;
-  
-  chassis.set_coordinates(24, -48, 0);
-}
 
+#ifdef GREEN
 void redGreenAutonCenter(){
   double startTime = Brain.timer(msec);
 
@@ -390,7 +385,9 @@ void blueGreenAutonOther(){
   
   //rush to the left mogo
 }
+#endif
 
+#ifdef GOLD
 void redGoldAuton(){
 
   chassis.drive_max_voltage = 12;
@@ -640,7 +637,7 @@ void blueGoldAuton() {
 
 
 }
-
+#endif
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
