@@ -25,9 +25,7 @@
 // colorDetect          optical       21
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-// #define DEBUG_ODOM
 
-#define ENABLE_DRIVE
 
 using namespace vex;
 competition Competition;
@@ -477,13 +475,13 @@ void usercontrol(void) {
   //ringSortDisable = true;
   antijamEnable = true;
   admMain.setStopping(coast);
+
   
-  #ifdef ENABLE_DRIVE
   while (true) {
     chassis.control_arcade();
     wait(5, msec);
   }
-  #endif
+  
   
 }
 
@@ -563,7 +561,7 @@ void onR1Pressed() {
       wsSpinToPosition(14, 300, 0, 1);
       #endif
       #ifdef GOLD
-      wsSpinToPosition(14, 300, 0, 1);
+      wsSpinToPosition(17, 300, 0, 1);
       #endif
       waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
       conveyor.spin(fwd, 2, volt);
@@ -678,73 +676,6 @@ int main() {
   
   //wait(500, msec);
 
-  #ifdef DEBUG_ODOM
-    odom_constants();
-    //default_constants();
-    
-    //chassis.set_coordinates(24, -48, 0);
-
-    //chassis.set_coordinates(0, 0, 0);
-    //chassis.drive_timeout = 20000;
-    //wait(100, msec); // let thread initialize
-    
-    
-    //wait(100, msec); // let thread initialize
-    thread odom_thread = thread([]() {
-      
-
-      while (1) {
-        
-        Brain.Screen.setCursor(5, 1);
-        Brain.Screen.print("Y = %.2f", chassis.get_Y_position());
-        Brain.Screen.setCursor(4, 1);
-        Brain.Screen.print("X = %.2f", chassis.get_X_position());
-        Brain.Screen.setCursor(6, 1);
-        Brain.Screen.print("H = %.2f", chassis.get_absolute_heading());
-
-        // 22.6, -50.85, 20.2
-        //Brain.Screen.setCursor(4, 1);
-        //Brain.Screen.print("Chassis Position: X = %.2f, Y = %.2f, H = %.2f", chassis.get_X_position(), chassis.get_Y_position(), chassis.get_absolute_heading());
-        
-      }
-    });
-    wait(100, msec); // let thread initialize
-    #ifndef ENABLE_DRIVE
-    #ifdef GREEN
-    Controller1.ButtonX.pressed([] {
-      isRed = true;
-      ringSortDisable = false;
-      admMain.setStopping(coast);
-      redGreenAutonCenter();
-    });
-    #endif
-    #ifdef GOLD
-    Controller1.ButtonX.pressed([] {
-      isRed = true;
-      ringSortDisable = false;
-      admMain.setStopping(coast);
-      redGoldAuton();
-    });
-    #endif
-    #endif
-    // Controller1.ButtonX.pressed([] {
-    //   chassis.turn_to_angle(chassis.get_absolute_heading() + 90);
-    // });
-    //chassis.turn_to_angle(90);
-    /*
-    Controller1.ButtonX.pressed([] {
-      isRed = true;
-      redGreenAutonCenter();
-      admMain.setStopping(coast);
-    });\
-    */
-    //chassis.drive_max_voltage = 3.0;
-    //chassis.turn_max_voltage = 2.0;
-    //chassis.drive_to_point(0.0, 96.0);
-    chassis.drive_stop(coast);
-    //isRed = false;
-  #endif
-
 
   Controller1.ButtonL1.pressed(onevent_Controller1ButtonL1_pressed_0);
   Controller1.ButtonL2.pressed(onevent_Controller1ButtonL2_pressed_0);
@@ -772,9 +703,9 @@ int main() {
   colorDetect.setLight(ledState::on);
   colorDetect.setLightPower(100, percent);
 
-  #ifndef DEBUG_ODOM
+  
     pre_auton();
-  #endif
+  
   
  
   
