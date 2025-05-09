@@ -183,6 +183,8 @@ void pre_auton(void) {
 bool auto_locked = false;
 int old_auto = 255;
 
+bool auto_finished = false;
+
 
 void auto_selector(){
   
@@ -376,7 +378,7 @@ void autonomous(void) {
   }
   
   intakeMain.stop();
-  
+  auto_finished = true;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -613,6 +615,14 @@ void onLeftPressed() {
 }
 
 void onAPressed() {
+
+  if (!auto_started) {
+    auto_started = true;
+    Controller1.rumble("...");
+    autonomous();
+    return;
+  }
+
   ringDetectOverride = false;
   Controller1.rumble("-");
   while (!((ringDist.objectDistance(inches) < 2.5) || ringDetectOverride)) {
@@ -742,10 +752,14 @@ int main() {
 
   #ifdef ENABLE_DRIVE
   Controller1.Axis1.changed([] { 
+    if (!auto_finished){
     chassis.control_arcade();
+    }
   });
   Controller1.Axis3.changed([] { 
+    if (!auto_finished){
     chassis.control_arcade();
+    }
   });
   #endif
 
