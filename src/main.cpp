@@ -27,7 +27,7 @@
 
 // #define DEBUG_ODOM
 
-// #define ENABLE_DRIVE
+#define ENABLE_DRIVE
 
 using namespace vex;
 competition Competition;
@@ -64,7 +64,7 @@ thread wsThread;
 #define VERT PORT6
 #define HORI PORT8
 #define INERTIAL PORT9
-#define RING_SORT_DELAY 335 
+#define RING_SORT_DELAY 335
 #endif
 
 
@@ -762,16 +762,18 @@ int main() {
   Controller1.ButtonDown.pressed(onDownPressed);
   Controller1.ButtonA.pressed(onAPressed);
 
-  #ifndef DEBUG_ODOM
-    pre_auton();
-  #endif
-  
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
 
   colorDetect.integrationTime(5);
   colorDetect.setLight(ledState::on);
   colorDetect.setLightPower(100, percent);
+
+  #ifndef DEBUG_ODOM
+    pre_auton();
+  #endif
+  
+ 
   
   
 }

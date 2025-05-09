@@ -14,7 +14,7 @@ controller Controller1 = controller(primary);
 
 #ifdef GREEN
 motor roller = motor(PORT5, ratio6_1, true);
-motor conveyor = motor(PORT7, ratio18_1, true);
+motor conveyor = motor(PORT10, ratio18_1, true);
 motor wallStake1 = motor(PORT17, ratio36_1, true);
 motor wallStake2 = motor(PORT16, ratio36_1, false);
 motor L1 = motor(PORT1, ratio6_1, true);
