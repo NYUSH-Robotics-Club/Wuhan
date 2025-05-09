@@ -226,9 +226,9 @@ void auto_selector(){
       case 0:
         Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
         chassis.set_coordinates(24, -48, 0);
-        startingX = 20.98;
-        startingY = -41.84;
-        startingHeading = 25.62;
+        startingX = 28.01;
+        startingY = -43.24;
+        startingHeading = (360-26.12);
         break;
       case 2:
         Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT (GREEN)");
@@ -236,9 +236,9 @@ void auto_selector(){
       case 1:
         Brain.Screen.printAt(50, 50, "Blue Left - RUSH CENTER (GREEN)");
         chassis.set_coordinates(-24, -48, 0);
-        startingX = 28.01;
+        startingX = -28.01;
         startingY = -43.24;
-        startingHeading = 333.88;
+        startingHeading = (360-333.88);
         break;
       case 3:
         Brain.Screen.printAt(50, 50, "Blue Left - RUSH LEFT (GREEN)");
@@ -478,6 +478,13 @@ void usercontrol(void) {
   antijamEnable = true;
   admMain.setStopping(coast);
   
+  #ifdef ENABLE_DRIVE
+  while (true) {
+    chassis.control_arcade();
+    wait(5, msec);
+  }
+  #endif
+  
 }
 
 
@@ -616,13 +623,6 @@ void onLeftPressed() {
 
 void onAPressed() {
 
-  if (!auto_started) {
-    auto_started = true;
-    Controller1.rumble("...");
-    autonomous();
-    return;
-  }
-
   ringDetectOverride = false;
   Controller1.rumble("-");
   while (!((ringDist.objectDistance(inches) < 2.5) || ringDetectOverride)) {
@@ -750,18 +750,7 @@ int main() {
   Controller1.ButtonL2.pressed(onevent_Controller1ButtonL2_pressed_0);
   Controller1.ButtonL2.released(onevent_Controller1ButtonL2_released_0);
 
-  #ifdef ENABLE_DRIVE
-  Controller1.Axis1.changed([] { 
-    if (!auto_finished){
-    chassis.control_arcade();
-    }
-  });
-  Controller1.Axis3.changed([] { 
-    if (!auto_finished){
-    chassis.control_arcade();
-    }
-  });
-  #endif
+ 
 
   Controller1.Axis2.changed(onAxis2Changed);
   Controller1.ButtonB.pressed(toggleDoinker);

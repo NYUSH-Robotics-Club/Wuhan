@@ -11,8 +11,8 @@
 #pragma once
 
 
-//#define GOLD
-#define GREEN
+#define GOLD
+//#define GREEN
 
 
 
