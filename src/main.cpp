@@ -58,12 +58,12 @@ thread wsThread;
 
 
 #ifdef GREEN
-#define INTAKE_SPEED 9.0
+#define INTAKE_SPEED 10.5
 #define VERT PORT6
 #define HORI PORT8
 #define INERTIAL PORT9
 //#define RING_SORT_DELAY 335
-#define RING_SORT_DELAY 365
+#define RING_SORT_DELAY 295
 #endif
 
 
@@ -221,7 +221,7 @@ void auto_selector(){
         break;
 
       #ifdef GREEN
-      #define NUM_AUTONS 4
+      #define NUM_AUTONS 2
       case 0:
         Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
         chassis.set_coordinates(24, -48, 0);
