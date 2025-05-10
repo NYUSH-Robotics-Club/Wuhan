@@ -162,7 +162,7 @@ motor_group intakeMain = motor_group(roller, conveyor);
 motor_group admMain = motor_group(L1, R1, L2, R2, L3, R3, L4, R4);
 // motor wallStake = motor(PORT1, ratio18_1, false);
 
-int current_auton_selection = 1;
+int current_auton_selection = 0;
 int wallStakeState = 0;
 bool auto_started = false;
 
@@ -225,8 +225,8 @@ void auto_selector(){
       case 0:
         Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
         chassis.set_coordinates(24, -48, 0);
-        startingX = 28.01;
-        startingY = -43.24;
+        startingX = 27.99;
+        startingY = -42.07;
         startingHeading = (360 - 26.08);
         break;
       case 2:

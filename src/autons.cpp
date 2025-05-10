@@ -138,11 +138,11 @@ void redGreenAutonCenter(){
   chassis.drive_max_voltage = 9;
 
 
-  chassis.turn_to_point(60, -7.0);
-  chassis.drive_to_point(60, -7.0);
-  wait(.3, sec);
-  chassis.drive_distance(-6);
-  wait(.3, sec);//wait for ring to flip over the top
+  //chassis.turn_to_point(60, -7.0);
+  //chassis.drive_to_point(60, -7.0);
+  //wait(.3, sec);
+  //chassis.drive_distance(-6);
+  //wait(.3, sec);//wait for ring to flip over the top
 
 
   chassis.turn_to_point(48, -47);
@@ -164,7 +164,7 @@ void redGreenAutonCenter(){
   //go to alliance stake
   chassis.turn_to_point(-2, -60);
 
-  wait(2, sec);
+  wait(3.0, sec);
   chassis.drive_to_point(-2,-60);
 
   wsState = 0;
@@ -176,7 +176,7 @@ void redGreenAutonCenter(){
   chassis.turn_to_point(0, -72);
   drive_for_time(650, fwd, 6);//align with alliance stake
   //score, go left and right to align
-  chassis.drive_distance(-9.5);
+  chassis.drive_distance(-9.0);
   chassis.turn_to_point(0, -72);
   conveyor.spin(reverse, 4, volt);
   wait(100,msec);
