@@ -196,10 +196,11 @@ void redGreenAutonCenter(){
   chassis.set_turn_exit_conditions(2, 100, 1000);
 
   drive_for_time(300, reverse, 7);
-  chassis.turn_to_point(0, -24, 180);
+  chassis.turn_to_point(0, -24);
 
   //touch the ladder near goal that gold bot left behind
-  drive_for_time(1200, reverse, 7);
+  drive_for_time(1200, forward, 7);
+  tipper.set(true);
 
   // intake.spin(fwd, 12 ,volt);
   wallStake.spin(reverse, 12, volt);
@@ -261,12 +262,12 @@ void blueGreenAutonCenter(){
   chassis.drive_distance(-23);
 
   // //grab & re-grab mogo
-  // mogoMech.set(true);
-  // wait(.1, sec); //grab mogo
-  // chassis.drive_distance(5);
-  // mogoMech.set(false);
-  // wait(.1, sec);
-  // chassis.drive_distance(-5);
+  mogoMech.set(true);
+  wait(.1, sec); //grab mogo
+  chassis.drive_distance(5);
+  mogoMech.set(false);
+  wait(.1, sec);
+  chassis.drive_distance(-8);
   mogoMech.set(true);
   wait(.1, sec);
   
@@ -290,11 +291,11 @@ void blueGreenAutonCenter(){
   chassis.drive_max_voltage = 9;
 
 
-  chassis.turn_to_point(-60, -6);
-  chassis.drive_to_point(-60, -6);
-  wait(.3, sec);
-  chassis.drive_distance(-6);
-  wait(.3, sec);//wait for ring to flip over the top
+  //chassis.turn_to_point(-60, -6);
+  //chassis.drive_to_point(-60, -6);
+  //wait(.3, sec);
+  //chassis.drive_distance(-6);
+  //wait(.3, sec);//wait for ring to flip over the top
 
 
   chassis.turn_to_point(-48, -47);
@@ -316,15 +317,15 @@ void blueGreenAutonCenter(){
   //go to alliance stake
   chassis.turn_to_point(0, -60);
 
-  wait(2, sec);
-  chassis.drive_to_point(0,-60);
+  wait(2.8, sec);
+  chassis.drive_to_point(0, -60);
 
   wsState = 0;
   onR1Pressed();
   
   // chassis.drive_to_point(8,-56);
   // chassis.turn_to_angle(-135);
-  wait(400,msec);
+  wait(400, msec);
   chassis.turn_to_point(0, -72);
   drive_for_time(650, fwd, 6);//align with alliance stake
   //score, go left and right to align
@@ -342,26 +343,32 @@ void blueGreenAutonCenter(){
 
  
   chassis.set_turn_exit_conditions(2, 100, 400);
-  chassis.turn_to_point(6, -72);
   chassis.turn_to_point(-6, -72);
+  chassis.turn_to_point(6, -72);
   chassis.turn_to_point(0, -72);
   chassis.set_turn_exit_conditions(2, 100, 1000);
 
 
 
+  drive_for_time(300, reverse, 7);
+  chassis.turn_to_point(0, -24);
 
   //touch the ladder near goal that gold bot left behind
-  drive_for_time(200, reverse, 7);
-  intake.spin(fwd, 12 ,volt);
-  wallStake.spin(reverse, 12, volt);
-  chassis.heading_max_voltage = 12;
-  chassis.drive_to_point(24, -18);
-  chassis.heading_max_voltage = 4;
-  chassis.turn_to_point(0, 0);
-  wallStake.spin(fwd, 8, volt);
-  wait(.6, sec);
-  wallStake.stop();
-  drive_for_time(600, fwd, 4);
+  drive_for_time(1200, forward, 7);
+  tipper.set(true);
+
+  // intake.spin(fwd, 12 ,volt);
+  //wallStake.spin(reverse, 12, volt);
+  // chassis.heading_max_voltage = 12;
+  // chassis.drive_to_point(-24, -18);
+  // chassis.heading_max_voltage = 4;
+  // chassis.turn_to_point(0, 0);
+  //wallStake.spin(fwd, 8, volt);
+  //wait(2.6, sec);
+  //wallStake.stop();
+  // drive_for_time(600, fwd, 4);
+  wsState = 0;
+  onR1Pressed();
 
 
   //leave at end of auton
@@ -496,7 +503,7 @@ void redGoldAuton(){
   chassis.turn_max_voltage = 9;
   chassis.turn_to_point(72, -70);
   drive_for_time(500, fwd, 10);
-  chassis.drive_distance(-4);
+  chassis.drive_distance(-2);
   // chassis.turn_to_point(72, -48);
   chassis.turn_to_point(0, 0);
   doinker_right.set(false);

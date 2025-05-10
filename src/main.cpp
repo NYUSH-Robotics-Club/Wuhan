@@ -50,8 +50,8 @@ thread wsThread;
 #define VERT PORT5
 #define HORI PORT6
 #define INERTIAL PORT21
-#define RING_SORT_DELAY 220
-#define INTAKE_SPEED 9.0
+#define RING_SORT_DELAY 190 //220
+#define INTAKE_SPEED 9.0 
 
 #endif
 
@@ -162,7 +162,7 @@ motor_group intakeMain = motor_group(roller, conveyor);
 motor_group admMain = motor_group(L1, R1, L2, R2, L3, R3, L4, R4);
 // motor wallStake = motor(PORT1, ratio18_1, false);
 
-int current_auton_selection = 0;
+int current_auton_selection = 1;
 int wallStakeState = 0;
 bool auto_started = false;
 
@@ -227,7 +227,7 @@ void auto_selector(){
         chassis.set_coordinates(24, -48, 0);
         startingX = 28.01;
         startingY = -43.24;
-        startingHeading = (331.24);
+        startingHeading = (360 - 26.08);
         break;
       case 2:
         Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT (GREEN)");
@@ -237,7 +237,7 @@ void auto_selector(){
         chassis.set_coordinates(-24, -48, 0);
         startingX = -28.01;
         startingY = -43.24;
-        startingHeading = (360-331.24);
+        startingHeading = (26.08);
         break;
       case 3:
         Brain.Screen.printAt(50, 50, "Blue Left - RUSH LEFT (GREEN)");
@@ -439,6 +439,10 @@ void colorSort() {
         Controller1.rumble("..");
       }
       wait(20, msec);
+      // if (auto_finished || !auto_started) {
+      //   intakeMain.spin(fwd, 12.0, volt);
+      // }
+      
     }
   }
 }
@@ -490,12 +494,12 @@ void usercontrol(void) {
 // intake control
 void onevent_Controller1ButtonL1_pressed_0() {
   //intakeMain.spin(forward, 9, volt);
-  conveyor.spin(fwd, 12.0, volt);
-  roller.spin(fwd, 12.0, volt);
+  conveyor.spin(fwd, INTAKE_SPEED, volt);
+  roller.spin(fwd, INTAKE_SPEED, volt);
 }
 
 void onevent_Controller1ButtonL2_pressed_0() {
-  intakeMain.spin(reverse, 12.0, volt);
+  intakeMain.spin(reverse, INTAKE_SPEED, volt);
 }
 
 void onevent_Controller1ButtonL2_released_0() { intakeMain.stop(); }
