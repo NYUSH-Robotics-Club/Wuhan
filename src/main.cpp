@@ -62,7 +62,8 @@ thread wsThread;
 #define VERT PORT6
 #define HORI PORT8
 #define INERTIAL PORT9
-#define RING_SORT_DELAY 335
+//#define RING_SORT_DELAY 335
+#define RING_SORT_DELAY 365
 #endif
 
 
@@ -226,7 +227,7 @@ void auto_selector(){
         chassis.set_coordinates(24, -48, 0);
         startingX = 28.01;
         startingY = -43.24;
-        startingHeading = (360-26.12);
+        startingHeading = (331.24);
         break;
       case 2:
         Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT (GREEN)");
@@ -236,7 +237,7 @@ void auto_selector(){
         chassis.set_coordinates(-24, -48, 0);
         startingX = -28.01;
         startingY = -43.24;
-        startingHeading = (360-333.88);
+        startingHeading = (360-331.24);
         break;
       case 3:
         Brain.Screen.printAt(50, 50, "Blue Left - RUSH LEFT (GREEN)");
@@ -489,22 +490,20 @@ void usercontrol(void) {
 // intake control
 void onevent_Controller1ButtonL1_pressed_0() {
   //intakeMain.spin(forward, 9, volt);
-  conveyor.spin(fwd, INTAKE_SPEED, volt);
+  conveyor.spin(fwd, 12.0, volt);
   roller.spin(fwd, 12.0, volt);
 }
 
 void onevent_Controller1ButtonL2_pressed_0() {
-  intakeMain.spin(reverse, INTAKE_SPEED, volt);
+  intakeMain.spin(reverse, 12.0, volt);
 }
 
 void onevent_Controller1ButtonL2_released_0() { intakeMain.stop(); }
 
 void toggleDoinker() { doinker_right.set(!doinker_right.value()); }
 
-void onR2Pressed()
-//add later**** Make controller rumble once when clamped, rumble twice when released******
-{ 
-  // mogoMech.set(!mogoMech.value());
+void onR2Pressed(){ 
+  
   bool newState = !mogoMech.value();
   if (mogoMech.value() == true) {
     Controller1.rumble("..");
@@ -561,7 +560,7 @@ void onR1Pressed() {
       wsSpinToPosition(14, 300, 0, 1);
       #endif
       #ifdef GOLD
-      wsSpinToPosition(17, 300, 0, 1);
+      wsSpinToPosition(22, 200, 0, 1.0);
       #endif
       waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
       conveyor.spin(fwd, 2, volt);
@@ -570,7 +569,7 @@ void onR1Pressed() {
     });
   
     roller.spin(fwd, 12.0, volt);
-    conveyor.spin(fwd, INTAKE_SPEED, volt);
+    conveyor.spin(fwd, 12.0, volt);
   } else if (wsState == PRESCORING)
   {
     //antijamEnable = true;
@@ -703,8 +702,8 @@ int main() {
   colorDetect.setLight(ledState::on);
   colorDetect.setLightPower(100, percent);
 
-  
-    pre_auton();
+  // THIS IS A WHILE LOOP
+  pre_auton();
   
   
  

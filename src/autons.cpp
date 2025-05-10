@@ -105,16 +105,16 @@ void redGreenAutonCenter(){
 
   
   chassis.drive_min_voltage = 3;
-  chassis.drive_max_voltage = 4;
-  chassis.drive_distance(-23);
+  chassis.drive_max_voltage = 3.5;
+  chassis.drive_distance(-24);
 
   // //grab & re-grab mogo
-  // mogoMech.set(true);
-  // wait(.1, sec); //grab mogo
-  // chassis.drive_distance(5);
-  // mogoMech.set(false);
-  // wait(.1, sec);
-  // chassis.drive_distance(-5);
+  mogoMech.set(true);
+  wait(.1, sec); //grab mogo
+  chassis.drive_distance(5);
+  mogoMech.set(false);
+  wait(.1, sec);
+  chassis.drive_distance(-5);
   mogoMech.set(true);
   wait(.1, sec);
   
@@ -138,8 +138,8 @@ void redGreenAutonCenter(){
   chassis.drive_max_voltage = 9;
 
 
-  chassis.turn_to_point(60, -6);
-  chassis.drive_to_point(60, -6);
+  chassis.turn_to_point(60, -7.0);
+  chassis.drive_to_point(60, -7.0);
   wait(.3, sec);
   chassis.drive_distance(-6);
   wait(.3, sec);//wait for ring to flip over the top
@@ -162,10 +162,10 @@ void redGreenAutonCenter(){
   chassis.drive_to_point(24,-24);
   
   //go to alliance stake
-  chassis.turn_to_point(0, -60);
+  chassis.turn_to_point(-2, -60);
 
   wait(2, sec);
-  chassis.drive_to_point(0,-60);
+  chassis.drive_to_point(-2,-60);
 
   wsState = 0;
   onR1Pressed();
@@ -195,21 +195,22 @@ void redGreenAutonCenter(){
   chassis.turn_to_point(0, -72);
   chassis.set_turn_exit_conditions(2, 100, 1000);
 
-
-
+  drive_for_time(300, reverse, 7);
+  chassis.turn_to_point(0, -24, 180);
 
   //touch the ladder near goal that gold bot left behind
-  drive_for_time(200, reverse, 7);
-  intake.spin(fwd, 12 ,volt);
+  drive_for_time(1200, reverse, 7);
+
+  // intake.spin(fwd, 12 ,volt);
   wallStake.spin(reverse, 12, volt);
-  chassis.heading_max_voltage = 12;
-  chassis.drive_to_point(-24, -18);
-  chassis.heading_max_voltage = 4;
-  chassis.turn_to_point(0, 0);
-  wallStake.spin(fwd, 8, volt);
+  // chassis.heading_max_voltage = 12;
+  // chassis.drive_to_point(-24, -18);
+  // chassis.heading_max_voltage = 4;
+  // chassis.turn_to_point(0, 0);
+  //wallStake.spin(fwd, 8, volt);
   wait(.6, sec);
   wallStake.stop();
-  drive_for_time(600, fwd, 4);
+  // drive_for_time(600, fwd, 4);
 
 
   //leave at end of auton
