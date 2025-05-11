@@ -55,7 +55,7 @@ thread wsThread;
 
 #endif
 
-
+#define DEFAULT_AUTON 1
 
 #ifdef GREEN
 #define INTAKE_SPEED 10.5
@@ -162,7 +162,7 @@ motor_group intakeMain = motor_group(roller, conveyor);
 motor_group admMain = motor_group(L1, R1, L2, R2, L3, R3, L4, R4);
 // motor wallStake = motor(PORT1, ratio18_1, false);
 
-int current_auton_selection = 0;
+int current_auton_selection = DEFAULT_AUTON;
 int wallStakeState = 0;
 bool auto_started = false;
 
