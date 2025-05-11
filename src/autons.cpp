@@ -172,14 +172,15 @@ void redGreenAutonCenter(){
   
   // chassis.drive_to_point(8,-56);
   // chassis.turn_to_angle(-135);
-  wait(400,msec);
+  wait(400, msec);
   chassis.turn_to_point(0, -72);
   drive_for_time(650, fwd, 6);//align with alliance stake
   //score, go left and right to align
   chassis.drive_distance(-9.0);
   chassis.turn_to_point(0, -72);
-  conveyor.spin(reverse, 4, volt);
-  wait(100,msec);
+  wait(300, msec);
+  conveyor.spin(reverse, 2.5, volt);
+  wait(100, msec);
 
   //put in scoring position
   
