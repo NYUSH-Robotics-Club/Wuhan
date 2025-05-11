@@ -30,8 +30,8 @@
 using namespace vex;
 competition Competition;
 
-motor_group leftDriveMotors = motor_group(L1, L2, L3);
-motor_group rightDriveMotors = motor_group(R1, R2, R3);
+motor_group leftDriveMotors = motor_group(L1, L2, L3, R4);
+motor_group rightDriveMotors = motor_group(R1, R2, R3, R4);
 motor_group wallStakeMain = motor_group(wallStake1, wallStake2);
 
 
