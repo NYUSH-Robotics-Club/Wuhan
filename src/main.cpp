@@ -50,8 +50,8 @@ thread wsThread;
 #define VERT PORT5
 #define HORI PORT6
 #define INERTIAL PORT21
-#define RING_SORT_DELAY 190 //220
-#define INTAKE_SPEED 9.0 
+#define RING_SORT_DELAY 160 //220
+#define INTAKE_SPEED 10.5 
 
 #endif
 
