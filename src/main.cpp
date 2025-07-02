@@ -30,10 +30,9 @@
 using namespace vex;
 competition Competition;
 
-motor_group leftDriveMotors = motor_group(L1, L2, L3, R4);
+motor_group leftDriveMotors = motor_group(L1, L2, L3, L4);
 motor_group rightDriveMotors = motor_group(R1, R2, R3, R4);
 motor_group wallStakeMain = motor_group(wallStake1, wallStake2);
-
 
 float ringColor;
 
@@ -52,7 +51,6 @@ thread wsThread;
 #define INERTIAL PORT21
 #define RING_SORT_DELAY 160 //220
 #define INTAKE_SPEED 10.5 
-
 #endif
 
 #define DEFAULT_AUTON 1
@@ -160,7 +158,6 @@ Drive chassis(
 
 motor_group intakeMain = motor_group(roller, conveyor);
 motor_group admMain = motor_group(L1, R1, L2, R2, L3, R3, L4, R4);
-// motor wallStake = motor(PORT1, ratio18_1, false);
 
 int current_auton_selection = DEFAULT_AUTON;
 int wallStakeState = 0;
@@ -468,9 +465,6 @@ void wallStakeAutoHold() {
     } else {
       antijamEnable = true; // enable antijam
     }
-    // if (!wallStakeFeedFwdDis && wallStake.position(degrees) < 100) {
-    //   wallStake.spin(reverse, 1, volt);
-    // }
 
     wait(200, msec);
   }

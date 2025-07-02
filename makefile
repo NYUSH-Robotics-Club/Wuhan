@@ -3,6 +3,10 @@
 # show compiler output
 VERBOSE = 0
 
+# Robot configuration - uncomment one of the following lines
+CPPFLAGS += -DGREEN
+# CPPFLAGS += -DGOLD
+
 # include toolchain options
 include vex/mkenv.mk
 

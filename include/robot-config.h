@@ -6,6 +6,8 @@ extern brain Brain;
 
 // VEXcode devices
 extern controller Controller1;
+
+// Device declarations
 extern motor roller;
 extern motor conveyor;
 extern motor wallStake1;
@@ -29,9 +31,6 @@ extern digital_out ringChuck;
 extern digital_in ringSwitch;
 extern rotation rotationWallStake;
 extern digital_in doinkerSwitches;
-// extern motor_group leftDriveMotors;
-// extern motor_group rightDriveMotors;
-// extern motor_group allDriveMotors;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
