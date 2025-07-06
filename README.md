@@ -470,6 +470,11 @@ CPPFLAGS += -DGREEN
 
 ## 🔧 JAR-Template底盘系统
 
+### **JAR-Template名称含义**
+- **JAR**: 开发者名字缩写，代表这个库的创作者
+- **Template**: 模板，表示这是一个可重用的标准化底盘控制框架
+- **目标**: 为VEX机器人竞赛提供高性能、易用的底盘控制解决方案
+
 ### **核心特性**
 - **精确定位**: 使用编码器和IMU进行位置追踪
 - **PID控制**: 独立的驱动、转向、摆动PID控制器
@@ -493,6 +498,8 @@ chassis.set_turn_constants(12, .4, 0.01, 3.1, 15);
 - `chassis.turn_to_angle(angle)`: 转向指定角度
 - `chassis.drive_to_point(x, y)`: 驱动到指定坐标
 - `chassis.turn_to_point(x, y)`: 转向指定坐标
+
+*详细算法解析请参见下方的"JAR-Template底盘系统详细算法解析"部分*
 
 ## 🎨 颜色分拣系统详解
 
@@ -631,3 +638,289 @@ VEXCODE-2024-2025/
 1. 使用Brain屏幕查看传感器数据
 2. 使用Controller屏幕查看状态信息
 3. 使用printf输出调试信息到终端
+
+## 🔧 JAR-Template底盘系统详细算法解析
+
+### **系统架构概述**
+JAR-Template是一个先进的机器人底盘控制系统，集成了多种算法来实现精确的位置控制和路径规划。
+
+### **核心算法组件**
+
+#### **1. PID控制器算法**
+
+PID控制器是整个系统的核心，使用经典的比例-积分-微分控制算法：
+
+```cpp
+output = kP*error + kI*accumulated_error + kD*(error-previous_error)
+```
+
+**算法特点：**
+- **比例项(P)**: 根据当前误差提供即时响应
+- **积分项(I)**: 消除稳态误差，只在误差小于`starti`时开始积分
+- **微分项(D)**: 预测误差变化趋势，提供阻尼效果
+- **零点穿越重置**: 当误差从正变负或从负变正时，自动清零积分项
+- **智能积分**: 防止积分饱和，提高系统稳定性
+
+**稳定判定算法：**
+```cpp
+// 机器人被认为已稳定当：
+// 1. 误差小于settle_error持续时间超过settle_time
+// 2. 或者总运行时间超过timeout
+if (time_spent_settled > settle_time || time_spent_running > timeout) {
+    return true; // 已稳定
+}
+```
+
+#### **2. 里程计算法(Odometry)**
+
+使用**Pilons弧长法**进行位置追踪，这是VEX机器人中最精确的定位算法：
+
+**数学原理：**
+1. **局部坐标系计算**：
+```cpp
+if (orientation_delta_rad == 0) {
+    // 直线运动
+    local_X = Sideways_delta;
+    local_Y = Forward_delta;
+} else {
+    // 弧形运动
+    local_X = (2*sin(δθ/2)) * ((Sideways_delta/δθ) + SidewaysTracker_center_distance);
+    local_Y = (2*sin(δθ/2)) * ((Forward_delta/δθ) + ForwardTracker_center_distance);
+}
+```
+
+2. **全局坐标系转换**：
+```cpp
+// 将局部位移转换为全局坐标
+global_angle = local_polar_angle - prev_orientation - (orientation_delta/2);
+X_delta = local_polar_length * cos(global_angle);
+Y_delta = local_polar_length * sin(global_angle);
+```
+
+**追踪轮配置：**
+- **前向追踪轮**: 测量前后移动距离
+- **侧向追踪轮**: 测量左右移动距离  
+- **IMU陀螺仪**: 提供精确的角度测量
+- **中心距离补偿**: 考虑追踪轮到机器人中心的距离
+
+#### **3. 点到点导航算法**
+
+**基础drive_to_point算法：**
+```cpp
+while (!drivePID.is_settled()) {
+    // 计算到目标点的距离和角度
+    distance_error = hypot(target_X - current_X, target_Y - current_Y);
+    heading_error = atan2(target_X - current_X, target_Y - current_Y) - current_heading;
+    
+    // 双PID控制
+    drive_output = drivePID.compute(distance_error);
+    heading_output = headingPID.compute(heading_error);
+    
+    // 角度缩放因子：当朝向偏差大时减少前进速度
+    heading_scale_factor = cos(heading_error);
+    drive_output *= heading_scale_factor;
+    
+    // 输出到电机
+    left_voltage = drive_output + heading_output;
+    right_voltage = drive_output - heading_output;
+}
+```
+
+#### **4. Boomerang控制器算法**
+
+这是JAR-Template最先进的路径规划算法，用于`drive_to_pose`函数：
+
+**算法原理：**
+1. **胡萝卜点(Carrot Point)计算**：
+```cpp
+// 胡萝卜点始终在目标点前方
+carrot_X = target_X - sin(target_angle) * (lead * distance_to_target + setback);
+carrot_Y = target_Y - cos(target_angle) * (lead * distance_to_target + setback);
+```
+
+2. **动态目标追踪**：
+   - 机器人始终朝向动态移动的胡萝卜点
+   - 胡萝卜点随着机器人接近目标而移动
+   - 当接近目标时切换到最终角度控制
+
+3. **智能后退逻辑**：
+   - 如果后退到达目标更快，算法自动选择后退
+   - 避免不必要的转向，提高效率
+
+**参数说明：**
+- **lead**: 胡萝卜点的前置距离系数（通常0.5）
+- **setback**: 胡萝卜点的固定后退距离
+- **crossed_center_line**: 检测是否穿过目标线，防止震荡
+
+#### **5. 转向算法**
+
+**turn_to_angle算法：**
+```cpp
+while (!turnPID.is_settled()) {
+    error = reduce_negative_180_to_180(target_angle - current_angle);
+    output = turnPID.compute(error);
+    
+    // 差速转向：左右轮反向旋转
+    left_voltage = output;
+    right_voltage = -output;
+}
+```
+
+**turn_to_point算法：**
+```cpp
+// 计算到目标点的角度
+target_angle = atan2(target_X - current_X, target_Y - current_Y) + extra_angle;
+// 然后使用turn_to_angle算法
+```
+
+#### **6. 全向驱动算法**
+
+对于麦克纳姆轮等全向驱动系统：
+
+```cpp
+// 同时控制位置和角度
+while (!(drivePID.is_settled() && turnPID.is_settled())) {
+    drive_output = drivePID.compute(distance_error);
+    turn_output = turnPID.compute(angle_error);
+    
+    // 麦克纳姆轮运动学计算
+    heading_error = atan2(Y_error, X_error);
+    
+    // 四个轮子的速度分配
+    LF_speed = drive_output * cos(current_heading + heading_error - π/4) + turn_output;
+    LB_speed = drive_output * cos(-current_heading - heading_error + 3π/4) + turn_output;
+    RB_speed = drive_output * cos(current_heading + heading_error - π/4) - turn_output;
+    RF_speed = drive_output * cos(-current_heading - heading_error + 3π/4) - turn_output;
+}
+```
+
+### **控制参数优化**
+
+#### **当前系统参数：**
+```cpp
+// 驱动PID参数
+drive_kP = 12;    // 比例增益：控制响应速度
+drive_kI = 1.5;   // 积分增益：消除稳态误差
+drive_kD = 0;     // 微分增益：提供阻尼
+drive_starti = 0; // 积分启动阈值
+drive_min_voltage = 10; // 最小启动电压
+
+// 转向PID参数
+heading_kP = 6;   // 角度控制比例增益
+heading_kI = 0.5; // 角度控制积分增益
+heading_kD = 0;   // 角度控制微分增益
+heading_min_voltage = 1.2; // 转向最小电压
+
+// 旋转PID参数
+turn_kP = 12;     // 原地转向比例增益
+turn_kI = 0.4;    // 原地转向积分增益
+turn_kD = 0.01;   // 原地转向微分增益
+turn_starti = 15; // 积分启动阈值
+turn_min_voltage = 3.1; // 转向最小电压
+```
+
+#### **参数调优指南：**
+1. **kP值过大**: 系统震荡，超调严重
+2. **kP值过小**: 响应慢，可能无法到达目标
+3. **kI值过大**: 系统不稳定，可能震荡
+4. **kI值过小**: 存在稳态误差
+5. **kD值过大**: 系统对噪声敏感
+6. **kD值过小**: 缺乏阻尼，可能超调
+
+### **算法优化特性**
+
+#### **1. 智能电压缩放**
+```cpp
+// 根据角度误差缩放驱动电压
+heading_scale_factor = cos(heading_error);
+drive_output *= heading_scale_factor;
+
+// 当角度误差大时，减少前进速度，优先纠正方向
+```
+
+#### **2. 最小电压阈值**
+```cpp
+// 确保电机有足够力矩克服静摩擦
+if (abs(output) < min_voltage && abs(output) > 0) {
+    output = (output > 0) ? min_voltage : -min_voltage;
+}
+```
+
+#### **3. 角度归一化**
+```cpp
+// 将角度限制在[-180°, 180°]范围内
+float reduce_negative_180_to_180(float angle) {
+    while (angle > 180) angle -= 360;
+    while (angle < -180) angle += 360;
+    return angle;
+}
+```
+
+#### **4. 自适应积分区间**
+```cpp
+// 只在误差较小时开始积分，防止积分饱和
+if (fabs(error) < starti) {
+    accumulated_error += error;
+}
+```
+
+### **实时性能优化**
+
+#### **1. 200Hz控制循环**
+- 里程计更新频率：200Hz（每5ms）
+- PID计算频率：100Hz（每10ms）
+- 确保控制系统的实时响应
+
+#### **2. 多线程架构**
+```cpp
+// 里程计在独立线程中运行
+vex::task odom_task = vex::task(position_track_task);
+
+// 主控制循环与位置追踪并行执行
+while (!PID.is_settled()) {
+    // PID计算和电机控制
+    task::sleep(10); // 10ms控制周期
+}
+```
+
+#### **3. 内存优化**
+- 使用浮点数进行精确计算
+- 避免重复的三角函数计算
+- 优化的数据结构减少内存占用
+
+### **运动函数API**
+
+#### **基础运动函数**
+- `drive_distance(distance)`: 直线驱动指定距离
+- `turn_to_angle(angle)`: 转向指定角度
+- `drive_to_point(x, y)`: 驱动到指定坐标点
+- `turn_to_point(x, y)`: 转向指定坐标点
+
+#### **高级运动函数**
+- `drive_to_pose(x, y, angle)`: 使用Boomerang算法到达指定姿态
+- `holonomic_drive_to_pose(x, y, angle)`: 全向驱动到指定姿态
+- `left_swing_to_angle(angle)`: 左轮固定的摆动转向
+- `right_swing_to_angle(angle)`: 右轮固定的摆动转向
+
+### **错误处理和安全机制**
+
+#### **1. 超时保护**
+```cpp
+if (time_spent_running > timeout && timeout != 0) {
+    return true; // 强制退出，防止死循环
+}
+```
+
+#### **2. 电压限制**
+```cpp
+// 防止电机过载
+output = clamp(output, -max_voltage, max_voltage);
+```
+
+#### **3. 稳定性检测**
+```cpp
+// 多重条件确保运动完成
+bool is_settled = (error < settle_error) && (time_settled > settle_time);
+```
+
+这个算法系统的设计哲学是**精确性、稳定性和效率**的完美结合，使机器人能够在复杂的比赛环境中实现毫米级的定位精度和流畅的运动控制。
