@@ -158,6 +158,7 @@ Drive chassis(
 
 motor_group intakeMain = motor_group(roller, conveyor);
 motor_group admMain = motor_group(L1, R1, L2, R2, L3, R3, L4, R4);
+// motor wallStake = motor(PORT1, ratio18_1, false);
 
 int current_auton_selection = DEFAULT_AUTON;
 int wallStakeState = 0;
@@ -407,8 +408,8 @@ void colorSort() {
     ringColor = colorDetect.hue();
     printf("hue = %.2f\n", ringColor);
     //conveyorPosition = conveyor.position(degrees);
-    bool ringIsRed = ringColor > 360 || ringColor < 20;
-    bool ringIsBlue = ringColor > 180 && ringColor < 260;
+    bool ringIsRed = ringColor >= 350 || ringColor <= 10;
+    bool ringIsBlue = ringColor >= 205 && ringColor <= 225;
 
     if ((ringIsRed && !isRed) || (ringIsBlue && isRed)) {
       if (isRed) {
@@ -465,6 +466,9 @@ void wallStakeAutoHold() {
     } else {
       antijamEnable = true; // enable antijam
     }
+    // if (!wallStakeFeedFwdDis && wallStake.position(degrees) < 100) {
+    //   wallStake.spin(reverse, 1, volt);
+    // }
 
     wait(200, msec);
   }
@@ -558,7 +562,7 @@ void onR1Pressed() {
       wsSpinToPosition(14, 300, 0, 1);
       #endif
       #ifdef GOLD
-      wsSpinToPosition(22, 200, 0, 1.0);
+      wsSpinToPosition(14, 200, 0, 1.0);
       #endif
       waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
       conveyor.spin(fwd, 2, volt);
@@ -698,7 +702,7 @@ int main() {
 
   colorDetect.integrationTime(5);
   colorDetect.setLight(ledState::on);
-  colorDetect.setLightPower(100, percent);
+  colorDetect.setLightPower(25, percent);
 
   // THIS IS A WHILE LOOP
   pre_auton();

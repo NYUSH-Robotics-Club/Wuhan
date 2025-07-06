@@ -4,7 +4,7 @@
 
 motor_group adm = motor_group(L1, R1, L2, R2, L3, R3, L4, R4);
 motor_group intake = motor_group(roller, conveyor);
-motor_group wallStakeMain = motor_group(wallStake1, wallStake2);
+motor_group wallStake = motor_group(wallStake1, wallStake2);
 
 
 float autoRingColor, autoConveyorPosition;
@@ -51,7 +51,7 @@ void default_constants(){
   wait(100, msec);
   Controller1.rumble("-.-");
 
-  wallStakeMain.setVelocity(100, percent);
+  wallStake.setVelocity(100, percent);
 
   /*chassis.set_drive_constants(10, 1.5, 0, 10, 0);
   chassis.set_heading_constants(6, .4, 0, 1, 0);
@@ -184,10 +184,10 @@ void redGreenAutonCenter(){
 
   //put in scoring position
   
-  wallStakeMain.spin(fwd, 4.5, volt);
+  wallStake.spin(fwd, 4.5, volt);
 
   wait(1.6, sec);
-  wallStakeMain.stop();
+  wallStake.stop();
 
  
   chassis.set_turn_exit_conditions(2, 100, 400);
@@ -204,14 +204,14 @@ void redGreenAutonCenter(){
   tipper.set(true);
 
   // intake.spin(fwd, 12 ,volt);
-  wallStakeMain.spin(reverse, 12, volt);
+  wallStake.spin(reverse, 12, volt);
   // chassis.heading_max_voltage = 12;
   // chassis.drive_to_point(-24, -18);
   // chassis.heading_max_voltage = 4;
   // chassis.turn_to_point(0, 0);
-  //wallStakeMain.spin(fwd, 8, volt);
+  //wallStake.spin(fwd, 8, volt);
   wait(.6, sec);
-  wallStakeMain.stop();
+  wallStake.stop();
   // drive_for_time(600, fwd, 4);
 
 
@@ -337,10 +337,10 @@ void blueGreenAutonCenter(){
 
   //put in scoring position
   
-  wallStakeMain.spin(fwd, 4.5, volt);
+  wallStake.spin(fwd, 4.5, volt);
 
   wait(1.6, sec);
-  wallStakeMain.stop();
+  wallStake.stop();
 
  
   chassis.set_turn_exit_conditions(2, 100, 400);
@@ -359,14 +359,14 @@ void blueGreenAutonCenter(){
   tipper.set(true);
 
   // intake.spin(fwd, 12 ,volt);
-  //wallStakeMain.spin(reverse, 12, volt);
+  //wallStake.spin(reverse, 12, volt);
   // chassis.heading_max_voltage = 12;
   // chassis.drive_to_point(-24, -18);
   // chassis.heading_max_voltage = 4;
   // chassis.turn_to_point(0, 0);
-  //wallStakeMain.spin(fwd, 8, volt);
+  //wallStake.spin(fwd, 8, volt);
   //wait(2.6, sec);
-  //wallStakeMain.stop();
+  //wallStake.stop();
   // drive_for_time(600, fwd, 4);
   wsState = 0;
   onR1Pressed();
@@ -696,9 +696,9 @@ void Prog_Skills(){
   // conveyor.spin(forward);
   // waitUntil(ringDist.objectDistance(inches) < 2);
   // drive_for_time(500, fwd, 4);
-  // wallStakeMain.spin(fwd, 12, volt);
+  // wallStake.spin(fwd, 12, volt);
   // wait(1, seconds);
-  // wallStakeMain.spin(reverse, 12, volt);
+  // wallStake.spin(reverse, 12, volt);
   // wait(1, sec);
   // chassis.drive_distance(-10);
   //grab ring in corner
@@ -753,13 +753,13 @@ void odom_test(){
   chassis.set_heading(90);
   chassis.turn_to_angle(127.5);
   chassis.drive_distance(5.5);
-  wallStakeMain.spin(fwd, 12, volt);
+  wallStake.spin(fwd, 12, volt);
   wait(.5, sec);
   chassis.drive_distance(-15.25);
-  wallStakeMain.spin(reverse, 12, volt);
+  wallStake.spin(reverse, 12, volt);
   chassis.turn_to_angle(180);
   chassis.drive_distance(-22); // 17.5 bare minimum to reach goal
-  wallStakeMain.stop();
+  wallStake.stop();
   mogoMech.set(true);
   chassis.turn_to_angle(-90);
   intake.spin(fwd, 12, volt);
