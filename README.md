@@ -5,7 +5,7 @@ CPSLO VexCode 2024-2025
 
 此项目支持两种不同的机器人配置：
 
-### GREEN配置（已更新为匹配Python代码端口）
+### GREEN配置（主配置）
 - **驱动电机**: 
   - 左侧: PORT1-PORT4 (比例 6:1)
   - 右侧: PORT5-PORT8 (比例 6:1)
@@ -20,6 +20,10 @@ CPSLO VexCode 2024-2025
   - 移动目标机构: Brain.ThreeWirePort.H
   - 推杆右: Brain.ThreeWirePort.G
   - 推杆左: Brain.ThreeWirePort.F
+- **传感器**:
+  - 颜色检测: PORT19 (光学传感器)
+  - 距离传感器: PORT20
+  - IMU陀螺仪: PORT21
 
 ### GOLD配置（备用配置）
 - 金色机器人的备用端口配置
@@ -31,27 +35,6 @@ CPSLO VexCode 2024-2025
 CPPFLAGS += -DGREEN
 # CPPFLAGS += -DGOLD
 ```
-
-## 端口映射对照表（Python -> C++）
-
-| Python设备 | Python端口 | C++变量名 | C++端口 |
-|------------|-------------|-----------|---------|
-| motor1 | PORT1 | L1 | PORT1 |
-| motor2 | PORT2 | L2 | PORT2 |
-| motor3 | PORT3 | L3 | PORT3 |
-| motor4 | PORT4 | L4 | PORT4 |
-| motor5 | PORT5 | R1 | PORT5 |
-| motor6 | PORT6 | R2 | PORT6 |
-| motor7 | PORT7 | R3 | PORT7 |
-| motor8 | PORT8 | R4 | PORT8 |
-| roller | PORT11 | roller | PORT11 |
-| conveyor | PORT12 | conveyor | PORT12 |
-| wall_stake_left | PORT13 | wallStake1 | PORT13 |
-| wall_stake_right | PORT14 | wallStake2 | PORT14 |
-| wall_stake_rotation | PORT15 | rotationWallStake | PORT15 |
-| mogo_mech | ThreeWirePort.H | mogoMech | ThreeWirePort.H |
-| arm_grip | ThreeWirePort.G | doinker_right | ThreeWirePort.G |
-| arm_extend | ThreeWirePort.F | doinker_left | ThreeWirePort.F |
 
 ## 🎮 遥控器操作键位
 
@@ -100,3 +83,27 @@ CPPFLAGS += -DGREEN
 - **Brain屏幕点击**: 循环切换自动程序
 - **X键**: 锁定选择并校准陀螺仪
 - **Y键**: 解锁自动程序选择
+
+## 项目结构
+
+```
+VEXCODE-2024-2025/
+├── src/                    # 源代码目录
+│   ├── main.cpp           # 主程序文件
+│   ├── robot-config.cpp   # 机器人配置
+│   └── autons.cpp         # 自动程序
+├── include/               # 头文件目录
+│   ├── robot-config.h     # 机器人配置头文件
+│   └── autons.h          # 自动程序头文件
+├── JAR-Template/          # 底盘驱动系统库
+└── vex/                   # VEX编译配置
+```
+
+## 功能特性
+
+- **高级底盘控制**: 使用JAR-Template库实现精确的位置追踪和PID控制
+- **智能颜色分拣**: 自动识别环颜色并根据阵营进行分拣
+- **多状态壁桩系统**: 支持装载、预得分、得分多种状态
+- **完整的自动程序**: 支持红蓝双方多种策略
+- **气动系统控制**: 移动目标机构和推杆系统
+- **传感器集成**: IMU、光学传感器、距离传感器等
