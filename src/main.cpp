@@ -544,6 +544,22 @@ void wsSpinToPosition(double position, double kP, double kD, double tolerance)
   wallStakeMain.stop(hold);
 }
 
+void wsSpinToAbsolutePosition(double absolutePosition, double kP, double kD, double tolerance)
+{
+  double error = absolutePosition - rotationWallStake.position(deg);
+  double lastError = 0;
+
+  while(fabs(error) > tolerance)
+  {
+    error = absolutePosition - rotationWallStake.position(deg);
+    wallStakeMain.spin(fwd, (error * kP) + ((error - lastError) * kD), vex::voltageUnits::mV);
+    lastError = error;
+    wait(10, msec);
+  }
+
+  wallStakeMain.stop(hold);
+}
+
 int wsState = 0;
 
 void onR1Pressed() {
@@ -559,10 +575,10 @@ void onR1Pressed() {
     //antijamEnable = false;
     wsThread = thread([](){
       #ifdef GREEN
-      wsSpinToPosition(14, 300, 0, 1);
+      wsSpinToPosition(16, 300, 0, 1);
       #endif
       #ifdef GOLD
-      wsSpinToPosition(14, 200, 0, 1.0);
+      wsSpinToPosition(16, 200, 0, 1.0);
       #endif
       waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
       conveyor.spin(fwd, 2, volt);
@@ -577,7 +593,7 @@ void onR1Pressed() {
     //antijamEnable = true;
     wsThread = thread([](){
       conveyor.spin(reverse, 4, volt);
-      wsSpinToPosition(68, 250, 0, 3);
+      wsSpinToPosition(75, 250, 0, 3);
       conveyor.stop();
       if (Controller1.ButtonY.pressing())
       {
@@ -594,9 +610,9 @@ void onR1Pressed() {
     wsThread = thread([](){
       wsState = 0;
       wsSpinToPosition(60, 200, 0, 5);
-      wallStakeMain.spin(reverse, 12, volt);
-      wait(400, msec);
-      wallStakeMain.stop(coast);
+      // 得分后平滑回到0度位置
+      wait(200, msec); // 短暂等待确保得分完成
+      wsSpinToAbsolutePosition(0, 150, 0, 2); // 使用较低的kP值平滑回到0度
     });
     //antijamEnable = true;
     
