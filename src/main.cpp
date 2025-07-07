@@ -560,15 +560,70 @@ void wsSpinToAbsolutePosition(double absolutePosition, double kP, double kD, dou
   wallStakeMain.stop(hold);
 }
 
+// 归一化角度到0-360度范围
+double normalizeAngle360(double angle) {
+  while (angle < 0) angle += 360;
+  while (angle >= 360) angle -= 360;
+  return angle;
+}
+
+// 计算角度误差，处理环绕问题
+double calculateAngleError(double target, double current) {
+  double error = target - current;
+  
+  // 处理环绕问题：如果误差超过180度，选择更短的路径
+  if (error > 180) {
+    error -= 360;
+  } else if (error < -180) {
+    error += 360;
+  }
+  
+  return error;
+}
+
+// 改进的绝对位置控制函数，处理角度传感器的环绕问题
+void wsSpinToAbsolutePositionSafe(double absolutePosition, double kP, double kD, double tolerance)
+{
+  double currentPos = normalizeAngle360(rotationWallStake.position(deg));
+  double targetPos = normalizeAngle360(absolutePosition);
+  
+  double error = calculateAngleError(targetPos, currentPos);
+  double lastError = 0;
+
+  while(fabs(error) > tolerance)
+  {
+    currentPos = normalizeAngle360(rotationWallStake.position(deg));
+    error = calculateAngleError(targetPos, currentPos);
+    
+    wallStakeMain.spin(fwd, (error * kP) + ((error - lastError) * kD), vex::voltageUnits::mV);
+    lastError = error;
+    wait(10, msec);
+  }
+
+  wallStakeMain.stop(hold);
+}
+
+#define ZERO_STATE 0
+#define LOADING 1
+#define PRESCORING 2
+#define SCORING 3
+
 int wsState = 0;
 
 void onR1Pressed() {
-  wsState = ++wsState & 3;
+  wsState = (wsState + 1) % 4; // 循环0,1,2,3
 
   wsThread.interrupt();
   
-  
-  if (wsState == LOADING)
+  if (wsState == ZERO_STATE)
+  {
+    // 归零状态：移动到角度传感器的0度位置
+    wsThread = thread([](){
+      wsSpinToAbsolutePositionSafe(0, 200, 0, 3); // 归零到0度
+      Controller1.rumble("."); // 归零完成提示
+    });
+  }
+  else if (wsState == LOADING)
   {
     
     ringSortDisable = true;
@@ -601,18 +656,19 @@ void onR1Pressed() {
         wallStakeMain.spin(reverse, 12, volt);
         wait(500, msec);
         wallStakeMain.stop(coast);
-        wsState = 0;
+        wsState = ZERO_STATE; // 返回归零状态
       }
       
     });
   } else if (wsState == SCORING)
   {
     wsThread = thread([](){
-      wsState = 0;
       wsSpinToPosition(60, 200, 0, 5);
       // 得分后平滑回到0度位置
       wait(200, msec); // 短暂等待确保得分完成
-      wsSpinToAbsolutePosition(0, 150, 0, 2); // 使用较低的kP值平滑回到0度
+      wsSpinToAbsolutePositionSafe(0, 150, 0, 3); // 使用安全的归零函数
+      wsState = ZERO_STATE; // 自动返回归零状态
+      Controller1.rumble(".."); // 得分并归零完成提示
     });
     //antijamEnable = true;
     
@@ -670,7 +726,7 @@ void onAxis2Changed() {
     return;
   }
   wsThread.interrupt();
-  wsState = 0;
+  wsState = ZERO_STATE; // 手动控制时重置到归零状态
   conveyor.stop();
   wallStakeFeedFwdDis = true;
   wallStakeMain.spin(fwd, position * 0.12, volt);
