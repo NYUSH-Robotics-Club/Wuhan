@@ -73,6 +73,7 @@ void odom_constants(){
 
 #ifdef GREEN
 void redGreenAutonCenter(){
+  odom_constants(); // 初始化底盘常数和陀螺仪
   double startTime = Brain.timer(msec);
 
 
@@ -225,7 +226,7 @@ void redGreenAutonCenter(){
 
 void blueGreenAutonCenter(){
 
-  
+  odom_constants(); // 初始化底盘常数和陀螺仪
 
   double startTime = Brain.timer(msec);
 
@@ -382,6 +383,7 @@ void blueGreenAutonCenter(){
 }
 
 void redGreenAutonOther(){
+  odom_constants(); // 初始化底盘常数和陀螺仪
   
   //score alliance stake
   
@@ -389,6 +391,7 @@ void redGreenAutonOther(){
 }
 
 void blueGreenAutonOther(){
+  odom_constants(); // 初始化底盘常数和陀螺仪
  
   //score alliance stake
   
@@ -398,6 +401,7 @@ void blueGreenAutonOther(){
 
 #ifdef GOLD
 void redGoldAuton(){
+  odom_constants(); // 初始化底盘常数和陀螺仪
 
   chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
@@ -523,6 +527,8 @@ void redGoldAuton(){
 }
 
 void blueGoldAuton() {
+  odom_constants(); // 初始化底盘常数和陀螺仪
+
   chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
   chassis.drive_timeout = 2000;

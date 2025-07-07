@@ -46,8 +46,8 @@ thread wsThread;
 
 // Note: Updated green ports since they were wrong, I think gold is wrong too but not 100% sure
 #ifdef GOLD
-#define VERT PORT5
-#define HORI PORT9
+#define VERT PORT9
+#define HORI PORT10
 #define INERTIAL PORT21
 #define RING_SORT_DELAY 160 //220
 #define INTAKE_SPEED 10.5 
@@ -56,12 +56,12 @@ thread wsThread;
 #define DEFAULT_AUTON 1
 
 #ifdef GREEN
-#define INTAKE_SPEED 10.5
 #define VERT PORT9
 #define HORI PORT10
 #define INERTIAL PORT21
 //#define RING_SORT_DELAY 335
 #define RING_SORT_DELAY 295
+#define INTAKE_SPEED 10.5
 #endif
 
 
