@@ -664,9 +664,11 @@ void onR1Pressed() {
   {
     wsThread = thread([](){
       wsSpinToPosition(60, 200, 0, 5);
-      // 得分后平滑回到0度位置
+      // 得分后直接砸回去到0度位置
       wait(200, msec); // 短暂等待确保得分完成
-      wsSpinToAbsolutePositionSafe(0, 150, 0, 3); // 使用安全的归零函数
+      wallStakeMain.spin(reverse, 12, volt);
+      wait(400, msec);
+      wallStakeMain.stop(coast);
       wsState = ZERO_STATE; // 自动返回归零状态
       Controller1.rumble(".."); // 得分并归零完成提示
     });
