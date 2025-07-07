@@ -59,7 +59,7 @@ thread wsThread;
 #define INTAKE_SPEED 10.5
 #define VERT PORT9
 #define HORI PORT10
-#define INERTIAL PORT9
+#define INERTIAL PORT21
 //#define RING_SORT_DELAY 335
 #define RING_SORT_DELAY 295
 #endif

@@ -41,7 +41,7 @@ digital_in doinkerSwitches = digital_in(Brain.ThreeWirePort.A);
 // Sensors
 distance ringDist = distance(PORT18);
 optical colorDetect = optical(PORT19);
-inertial inertialSensor = inertial(PORT9);
+inertial inertialSensor = inertial(PORT21);
 
 // Tracking wheels for odometry
 rotation verticalTracker = rotation(PORT9);    // 垂直追踪轮（前后位移）
