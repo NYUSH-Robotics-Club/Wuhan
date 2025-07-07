@@ -43,6 +43,10 @@ distance ringDist = distance(PORT18);
 optical colorDetect = optical(PORT19);
 inertial inertialSensor = inertial(PORT9);
 
+// Tracking wheels for odometry
+rotation verticalTracker = rotation(PORT9);    // 垂直追踪轮（前后位移）
+rotation horizontalTracker = rotation(PORT10);  // 水平追踪轮（左右位移）
+
 // Unused devices
 digital_out ringChuck = digital_out(Brain.ThreeWirePort.C); //not used
 digital_in ringSwitch = digital_in(Brain.ThreeWirePort.E);//not used
@@ -55,7 +59,7 @@ motor wallStake1 = motor(PORT11, ratio36_1, true);
 motor wallStake2 = motor(PORT12, ratio36_1, false);
 motor L1 = motor(PORT7, ratio6_1, true);
 motor L2 = motor(PORT8, ratio6_1, false);
-motor L3 = motor(PORT9, ratio6_1, true);
+motor L3 = motor(PORT6, ratio6_1, true);  // 移动到PORT6避免冲突
 motor L4 = motor(PORT10, ratio6_1, false);
 motor R1 = motor(PORT1, ratio6_1, false);
 motor R2 = motor(PORT2, ratio6_1, true);
@@ -66,8 +70,8 @@ rotation rotationWallStake = rotation(PORT15); //reverse
 // rotation verticalTraker = rotation(PORT6); //reverse
 // rotation horizontalTraker = rotation(PORT8); 
 
-
-
+// Tracking wheels for odometry
+rotation horizontalTracker = rotation(PORT9);  // 水平追踪轮（左右位移）
 
 // vex::motor_group leftDriveMotors = motor_group(L1,L2,L3);
 // vex::motor_group rightDriveMotors = motor_group(R1,R2,R3);

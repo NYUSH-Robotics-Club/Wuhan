@@ -30,6 +30,8 @@ extern digital_out tipper;
 extern digital_out ringChuck;
 extern digital_in ringSwitch;
 extern rotation rotationWallStake;
+extern rotation verticalTracker;
+extern rotation horizontalTracker;
 extern digital_in doinkerSwitches;
 
 /**
