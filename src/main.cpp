@@ -719,6 +719,19 @@ void onDownPressed() {
 
 void enableRingDetectOverride() { ringDetectOverride = true; }
 
+void onBPressed() {
+  // 只有在手动控制模式且自动程序已锁定时才允许运行
+  if (!auto_started && auto_locked) {
+    Controller1.rumble("---"); // 三次震动表示自动程序开始
+    auto_started = true; // 设置自动程序开始标志
+    autonomous(); // 直接调用自动程序函数
+    auto_started = false; // 重置标志以便下次使用
+    Controller1.rumble(".-."); // 自动程序完成提示
+  } else if (!auto_locked) {
+    Controller1.rumble(".."); // 提示需要先锁定自动程序
+  }
+}
+
 void onAxis2Changed() {
   int position = Controller1.Axis2.position();
   if (abs(position) < 50) {
@@ -759,7 +772,6 @@ int main() {
  
 
   Controller1.Axis2.changed(onAxis2Changed);
-  Controller1.ButtonB.pressed(toggleDoinker);
   Controller1.ButtonL1.pressed(enableRingDetectOverride);
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
   Controller1.ButtonLeft.pressed(onLeftPressed);
@@ -770,6 +782,7 @@ int main() {
   Controller1.ButtonRight.pressed(onRightPressed);
   Controller1.ButtonDown.pressed(onDownPressed);
   Controller1.ButtonA.pressed(onAPressed);
+  Controller1.ButtonB.pressed(onBPressed);
 
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
