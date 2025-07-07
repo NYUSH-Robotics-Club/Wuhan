@@ -83,10 +83,13 @@ CPPFLAGS += -DGREEN
 
 #### **特殊功能说明**
 - **B键**: 运行自动程序功能
-  1. 必须先用X键锁定自动程序
-  2. 按B键后会有三次震动提示自动程序开始
-  3. 自动程序完成后会有"点-线-点"震动提示
-  4. 如果未锁定程序，按B键会有两次震动提示需要先锁定
+  1. **前提条件**: 必须先用X键锁定自动程序（陀螺仪校准完成）
+  2. **操作效果**: 按B键后立即执行当前锁定的自动程序
+  3. **震动提示**: 
+     - 开始时：三次短震动（"---"）表示自动程序启动
+     - 完成时：点-线-点震动（".-."）表示自动程序结束
+  4. **安全机制**: 如果未锁定程序，按B键只会有两次短震动（".."）提示需要先锁定
+  5. **使用场景**: 主要用于调试和练习，比赛时系统会自动启动
 - **X键**: 在自动程序选择界面使用，锁定当前选择的程序并开始陀螺仪校准，防止误操作
 - **Y键**: 有两个功能：
   1. 在自动程序锁定后，可以解锁重新选择程序
@@ -669,11 +672,90 @@ VEXCODE-2024-2025/
 2. 确认makefile中的机器人配置（GREEN/GOLD）
 3. 编译并下载到机器人大脑
 
-### **自动程序使用**
-1. 开机后进入自动程序选择界面
-2. 点击Brain屏幕循环选择程序
-3. 按X键锁定选择的自动程序并校准陀螺仪
-4. 确认机器人位置正确后开始比赛
+### **自动程序启动步骤** 
+
+#### **步骤一：选择自动程序 (比赛前)**
+
+1. **开机进入选择界面**
+   - 机器人开机后会自动进入自动程序选择界面
+   - Brain屏幕会显示当前可选的自动程序列表
+
+2. **循环选择程序**
+   - **操作**: 点击Brain屏幕任意位置
+   - **效果**: 在可用程序之间循环切换
+   - **屏幕显示**: 程序名称会依次显示
+
+   **GREEN机器人可选程序：**
+   - `Red Right - RUSH CENTER (GREEN)`
+   - `Red Right - RUSH RIGHT (GREEN)` 
+   - `Blue Left - RUSH CENTER (GREEN)`
+   - `Blue Left - RUSH LEFT (GREEN)`
+
+   **GOLD机器人可选程序：**
+   - `Red Left - RUSH LEFT (GOLD)`
+   - `Blue Right - RUSH RIGHT (GOLD)`
+
+3. **锁定程序并校准**
+   - **操作**: 按下控制器的**X键**
+   - **效果**: 
+     - 控制器震动一次短震动（".-"）
+     - 程序被锁定，屏幕不再响应点击
+     - IMU陀螺仪开始校准
+     - 执行`odom_constants()`设置底盘参数
+   - **注意**: 校准过程中机器人必须保持完全静止
+
+4. **确认位置精度**
+   - **屏幕显示信息**:
+     ```
+     X = 当前值, expected 预期值
+     Y = 当前值, expected 预期值  
+     H = 当前值, expected 预期值
+     X error: 误差值
+     Y error: 误差值
+     Heading error: 误差值
+     Correct position / Wrong position!
+     ```
+   - **要求**: X和Y误差都应小于0.5英寸
+   - **如果位置错误**: 重新摆放机器人到正确起始位置
+
+#### **步骤二：解锁重新选择 (如需更改)**
+
+- **操作**: 按下控制器的**Y键**
+- **效果**: 
+  - 控制器震动三次长震动（"---"）
+  - 程序解锁，可重新选择
+  - 返回步骤一重新选择
+
+#### **步骤三：比赛中启动自动程序**
+
+**方法一：比赛正式启动（推荐）**
+- 比赛开始时，系统会自动调用`autonomous()`函数
+- 无需手动操作，已锁定的程序会自动运行
+
+**方法二：手动启动自动程序（调试用）**
+- **前提**: 必须已经锁定自动程序（完成步骤一）
+- **操作**: 按下控制器的**B键**
+- **效果**:
+  - 控制器震动三次短震动（"---"）表示开始
+  - 立即执行当前锁定的自动程序
+  - 程序结束后震动（".-."）表示完成
+- **安全机制**: 如果未锁定程序，按B键只会震动两次（".."）提示需要先锁定
+
+#### **操作流程总结**
+
+```
+开机 → 点击屏幕选择程序 → 按X键锁定+校准 → 确认位置 → 比赛开始自动运行
+     ↑                                    ↓
+     ← 按Y键解锁（如需重新选择） ←———————————————
+```
+
+#### **重要注意事项**
+
+1. **校准时机**: 必须在机器人静止时按X键校准
+2. **位置精度**: 起始位置误差必须小于0.5英寸
+3. **程序锁定**: 比赛前必须锁定程序，否则自动程序不会运行
+4. **队友配合**: 确保选择的程序与队友的程序配合
+5. **场地方向**: 确认机器人朝向正确（面向场地中央）
 
 ### **手动控制**
 1. 使用左摇杆控制底盘移动
@@ -685,6 +767,7 @@ VEXCODE-2024-2025/
 1. 使用Brain屏幕查看传感器数据
 2. 使用Controller屏幕查看状态信息
 3. 使用printf输出调试信息到终端
+4. 使用B键手动测试已锁定的自动程序
 
 ## 🔧 JAR-Template底盘系统详细算法解析
 
@@ -784,197 +867,3 @@ while (!drivePID.is_settled()) {
 carrot_X = target_X - sin(target_angle) * (lead * distance_to_target + setback);
 carrot_Y = target_Y - cos(target_angle) * (lead * distance_to_target + setback);
 ```
-
-2. **动态目标追踪**：
-   - 机器人始终朝向动态移动的胡萝卜点
-   - 胡萝卜点随着机器人接近目标而移动
-   - 当接近目标时切换到最终角度控制
-
-3. **智能后退逻辑**：
-   - 如果后退到达目标更快，算法自动选择后退
-   - 避免不必要的转向，提高效率
-
-**参数说明：**
-- **lead**: 胡萝卜点的前置距离系数（通常0.5）
-- **setback**: 胡萝卜点的固定后退距离
-- **crossed_center_line**: 检测是否穿过目标线，防止震荡
-
-#### **5. 转向算法**
-
-**turn_to_angle算法：**
-```cpp
-while (!turnPID.is_settled()) {
-    error = reduce_negative_180_to_180(target_angle - current_angle);
-    output = turnPID.compute(error);
-    
-    // 差速转向：左右轮反向旋转
-    left_voltage = output;
-    right_voltage = -output;
-}
-```
-
-**turn_to_point算法：**
-```cpp
-// 计算到目标点的角度
-target_angle = atan2(target_X - current_X, target_Y - current_Y) + extra_angle;
-// 然后使用turn_to_angle算法
-```
-
-#### **6. 全向驱动算法**
-
-对于麦克纳姆轮等全向驱动系统：
-
-```cpp
-// 同时控制位置和角度
-while (!(drivePID.is_settled() && turnPID.is_settled())) {
-    drive_output = drivePID.compute(distance_error);
-    turn_output = turnPID.compute(angle_error);
-    
-    // 麦克纳姆轮运动学计算
-    heading_error = atan2(Y_error, X_error);
-    
-    // 四个轮子的速度分配
-    LF_speed = drive_output * cos(current_heading + heading_error - π/4) + turn_output;
-    LB_speed = drive_output * cos(-current_heading - heading_error + 3π/4) + turn_output;
-    RB_speed = drive_output * cos(current_heading + heading_error - π/4) - turn_output;
-    RF_speed = drive_output * cos(-current_heading - heading_error + 3π/4) - turn_output;
-}
-```
-
-### **控制参数优化**
-
-#### **当前系统参数：**
-```cpp
-// 驱动PID参数
-drive_kP = 12;    // 比例增益：控制响应速度
-drive_kI = 1.5;   // 积分增益：消除稳态误差
-drive_kD = 0;     // 微分增益：提供阻尼
-drive_starti = 0; // 积分启动阈值
-drive_min_voltage = 10; // 最小启动电压
-
-// 转向PID参数
-heading_kP = 6;   // 角度控制比例增益
-heading_kI = 0.5; // 角度控制积分增益
-heading_kD = 0;   // 角度控制微分增益
-heading_min_voltage = 1.2; // 转向最小电压
-
-// 旋转PID参数
-turn_kP = 12;     // 原地转向比例增益
-turn_kI = 0.4;    // 原地转向积分增益
-turn_kD = 0.01;   // 原地转向微分增益
-turn_starti = 15; // 积分启动阈值
-turn_min_voltage = 3.1; // 转向最小电压
-```
-
-#### **参数调优指南：**
-1. **kP值过大**: 系统震荡，超调严重
-2. **kP值过小**: 响应慢，可能无法到达目标
-3. **kI值过大**: 系统不稳定，可能震荡
-4. **kI值过小**: 存在稳态误差
-5. **kD值过大**: 系统对噪声敏感
-6. **kD值过小**: 缺乏阻尼，可能超调
-
-### **算法优化特性**
-
-#### **1. 智能电压缩放**
-```cpp
-// 根据角度误差缩放驱动电压
-heading_scale_factor = cos(heading_error);
-drive_output *= heading_scale_factor;
-
-// 当角度误差大时，减少前进速度，优先纠正方向
-```
-
-#### **2. 最小电压阈值**
-```cpp
-// 确保电机有足够力矩克服静摩擦
-if (abs(output) < min_voltage && abs(output) > 0) {
-    output = (output > 0) ? min_voltage : -min_voltage;
-}
-```
-
-#### **3. 角度归一化**
-```cpp
-// 将角度限制在[-180°, 180°]范围内
-float reduce_negative_180_to_180(float angle) {
-    while (angle > 180) angle -= 360;
-    while (angle < -180) angle += 360;
-    return angle;
-}
-```
-
-#### **4. 自适应积分区间**
-```cpp
-// 只在误差较小时开始积分，防止积分饱和
-if (fabs(error) < starti) {
-    accumulated_error += error;
-}
-```
-
-### **实时性能优化**
-
-#### **1. 200Hz控制循环**
-- 里程计更新频率：200Hz（每5ms）
-- PID计算频率：100Hz（每10ms）
-- 确保控制系统的实时响应
-
-#### **2. 多线程架构**
-```cpp
-// 里程计在独立线程中运行
-vex::task odom_task = vex::task(position_track_task);
-
-// 主控制循环与位置追踪并行执行
-while (!PID.is_settled()) {
-    // PID计算和电机控制
-    task::sleep(10); // 10ms控制周期
-}
-```
-
-#### **3. 内存优化**
-- 使用浮点数进行精确计算
-- 避免重复的三角函数计算
-- 优化的数据结构减少内存占用
-
-### **运动函数API**
-
-#### **基础运动函数**
-- `drive_distance(distance)`: 直线驱动指定距离
-- `turn_to_angle(angle)`: 转向指定角度
-- `drive_to_point(x, y)`: 驱动到指定坐标点
-- `turn_to_point(x, y)`: 转向指定坐标点
-
-#### **高级运动函数**
-- `drive_to_pose(x, y, angle)`: 使用Boomerang算法到达指定姿态
-- `holonomic_drive_to_pose(x, y, angle)`: 全向驱动到指定姿态
-- `left_swing_to_angle(angle)`: 左轮固定的摆动转向
-- `right_swing_to_angle(angle)`: 右轮固定的摆动转向
-
-### **错误处理和安全机制**
-
-#### **1. 超时保护**
-```cpp
-if (time_spent_running > timeout && timeout != 0) {
-    return true; // 强制退出，防止死循环
-}
-```
-
-#### **2. 电压限制**
-```cpp
-// 防止电机过载
-output = clamp(output, -max_voltage, max_voltage);
-```
-
-#### **3. 稳定性检测**
-```cpp
-// 多重条件确保运动完成
-bool is_settled = (error < settle_error) && (time_settled > settle_time);
-```
-
-这个算法系统的设计哲学是**精确性、稳定性和效率**的完美结合，使机器人能够在复杂的比赛环境中实现毫米级的定位精度和流畅的运动控制。
-
-| 系统 | 传感器类型 | GREEN端口 | GOLD端口 | 功能 |
-|------|------------|-----------|----------|------|
-| **壁桩PID** | 旋转传感器 | PORT15 | PORT15 | 壁桩角度控制 |
-| **底盘PID** | IMU陀螺仪 | PORT21 | PORT21 | 底盘转向控制 |
-| **里程计垂直** | 旋转传感器 | PORT9 | PORT5 | 前后位移追踪 |
-| **里程计水平** | 旋转传感器 | PORT10 | PORT9 | 左右位移追踪 |
