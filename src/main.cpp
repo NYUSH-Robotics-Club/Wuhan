@@ -128,7 +128,7 @@ Drive chassis(
 
 // Input the Forward Tracker diameter (reverse it to make the direction switch):
 #ifdef GREEN
-    -2.0259270425f,
+    2.0259270425f,
 #endif
 #ifdef GOLD
     -2.038463892801825f,
@@ -465,15 +465,6 @@ void wallStakeAutoHold()
 
   while (1)
   {
-    printf("%d %d %d %d %d %d %d %d\n",
-           L1.direction(),
-           L2.direction(),
-           L3.direction(),
-           L4.direction(),
-           R1.direction(),
-           R2.direction(),
-           R3.direction(),
-           R4.direction());
     Brain.Screen.setCursor(1, 1);
     Brain.Screen.print(wallStakeMain.position(degrees));
     Brain.Screen.print("   ");
@@ -506,7 +497,10 @@ void usercontrol(void)
 
   while (true)
   {
-    chassis.control_arcade();
+    if (!auto_locked)
+    {
+      chassis.control_arcade();
+    }
     wait(5, msec);
   }
 }
@@ -586,17 +580,17 @@ void onR1Pressed()
     // antijamEnable = false;
     wsThread = thread([]()
                       {
+    pusher.set(false);
 #ifdef GREEN
       wsSpinToPosition(14, 300, 0, 1);
 #endif
 #ifdef GOLD
       wsSpinToPosition(22, 200, 0, 1.0);
 #endif
-      waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
-      conveyor.spin(fwd, 2, volt);
-      wallStakeMain.stop(coast);
-      ringSortDisable = false; });
-
+    waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
+    conveyor.spin(fwd, 2, volt);
+    wallStakeMain.stop(coast);
+    ringSortDisable = false; });
     roller.spin(fwd, 12.0, volt);
     conveyor.spin(fwd, 12.0, volt);
   }
@@ -605,17 +599,19 @@ void onR1Pressed()
     // antijamEnable = true;
     wsThread = thread([]()
                       {
-                        conveyor.spin(reverse, 4, volt);
-                        wsSpinToPosition(68, 250, 0, 3);
-                        conveyor.stop();
-                        if (Controller1.ButtonY.pressing())
-                        {
-                          wsSpinToPosition(59, 200, 0, 2);
-                          wallStakeMain.spin(reverse, 12, volt);
-                          wait(500, msec);
-                          wallStakeMain.stop(coast);
-                          wsState = 0;
-                        } });
+    pusher.set(true);
+    wait(200,msec);
+    conveyor.spin(reverse, 4, volt);
+    wsSpinToPosition(68, 250, 0, 3);
+    conveyor.stop();
+    if (Controller1.ButtonY.pressing())
+    {
+      wsSpinToPosition(59, 200, 0, 2);
+      wallStakeMain.spin(reverse, 12, volt);
+      wait(500, msec);
+      wallStakeMain.stop(coast);
+      wsState = 0;
+    } });
   }
   else if (wsState == SCORING)
   {
@@ -626,6 +622,7 @@ void onR1Pressed()
       wallStakeMain.spin(reverse, 12, volt);
       wait(400, msec);
       wallStakeMain.stop(coast); });
+    pusher.set(false);
     // antijamEnable = true;
   }
 
@@ -671,7 +668,8 @@ void onAPressed()
 
 void onDownPressed()
 {
-  doinker_left.set(!doinker_left.value());
+  // doinker_left.set(!doinker_left.value());
+  pusher.set(!pusher.value());
 }
 
 void enableRingDetectOverride() { ringDetectOverride = true; }

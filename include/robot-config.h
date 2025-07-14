@@ -24,6 +24,8 @@ extern distance ringDist;
 extern digital_out mogoMech;
 extern digital_out doinker_right;
 extern digital_out doinker_left;
+extern digital_out doinker_clamp;
+extern digital_out pusher;
 extern digital_out tipper;
 extern digital_out ringChuck;
 extern digital_in ringSwitch;
@@ -35,7 +37,7 @@ extern digital_in doinkerSwitches;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
- * 
+ *
  * This should be called at the start of your int main function.
  */
-void  vexcodeInit( void );
+void vexcodeInit(void);

@@ -24,7 +24,7 @@ motor R2 = motor(PORT6, ratio6_1, false);
 motor R3 = motor(PORT7, ratio6_1, true);
 motor R4 = motor(PORT8, ratio6_1, false);
 
-rotation rotationWallStake = rotation(PORT15); // reverse
+rotation rotationWallStake = rotation(PORT16); // reverse
 
 // vex::motor_group leftDriveMotors = motor_group(L1,L2,L3);
 // vex::motor_group rightDriveMotors = motor_group(R1,R2,R3);
@@ -36,8 +36,10 @@ inertial inertialSensor = inertial(PORT21);
 
 digital_out mogoMech = digital_out(Brain.ThreeWirePort.H);
 digital_out doinker_right = digital_out(Brain.ThreeWirePort.G);
-digital_out doinker_left = digital_out(Brain.ThreeWirePort.F);
+digital_out doinker_left = digital_out(Brain.ThreeWirePort.C);
+digital_out pusher = digital_out(Brain.ThreeWirePort.F);
 digital_out tipper = digital_out(Brain.ThreeWirePort.D);
+digital_out doinker_clamp = digital_out(Brain.ThreeWirePort.E);
 
 digital_in doinkerSwitches = digital_in(Brain.ThreeWirePort.A);
 
