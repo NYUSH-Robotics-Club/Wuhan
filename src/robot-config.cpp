@@ -44,7 +44,7 @@ digital_out doinker_clamp = digital_out(Brain.ThreeWirePort.E);
 digital_in doinkerSwitches = digital_in(Brain.ThreeWirePort.A);
 
 digital_out ringChuck = digital_out(Brain.ThreeWirePort.C); // not used
-digital_in ringSwitch = digital_in(Brain.ThreeWirePort.E);  // not used
+digital_in ringSwitch = digital_in(Brain.ThreeWirePort.B);  // not used - changed from E to B to avoid conflict
 #endif
 
 #ifdef GOLD

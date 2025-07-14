@@ -522,6 +522,8 @@ void onevent_Controller1ButtonL2_released_0() { intakeMain.stop(); }
 
 void toggleDoinker() { doinker_right.set(!doinker_right.value()); }
 
+void toggleClamp() { doinker_clamp.set(!doinker_clamp.value()); }
+
 void onR2Pressed()
 {
 
@@ -582,7 +584,7 @@ void onR1Pressed()
                       {
     pusher.set(false);
 #ifdef GREEN
-      wsSpinToPosition(14, 300, 0, 1);
+      wsSpinToPosition(16, 300, 0, 1);
 #endif
 #ifdef GOLD
       wsSpinToPosition(22, 200, 0, 1.0);
@@ -604,7 +606,7 @@ void onR1Pressed()
     conveyor.spin(reverse, 4, volt);
     wsSpinToPosition(68, 250, 0, 3);
     conveyor.stop();
-    if (Controller1.ButtonY.pressing())
+    if (Controller1.ButtonA.pressing())
     {
       wsSpinToPosition(59, 200, 0, 2);
       wallStakeMain.spin(reverse, 12, volt);
@@ -712,6 +714,7 @@ int main()
 
   Controller1.Axis2.changed(onAxis2Changed);
   Controller1.ButtonB.pressed(toggleDoinker);
+  Controller1.ButtonY.pressed(toggleClamp);
   Controller1.ButtonL1.pressed(enableRingDetectOverride);
   Controller1.ButtonL2.pressed(enableRingDetectOverride);
   Controller1.ButtonLeft.pressed(onLeftPressed);

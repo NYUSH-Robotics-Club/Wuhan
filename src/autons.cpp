@@ -224,11 +224,12 @@ void blueGreenAutonCenter()
   // chassis.set_heading(-30);
   roller.spin(fwd, 12, volt);
   doinker_right.set(true); // extend doinker
-  doinker_clamp.set(false);
+  doinker_clamp.set(true);
   // chassis.drive_to_point(14.2, -13.3);
   chassis.drive_distance(34); // switched to drive_distance for better consistency | used to be 35
   // doinker_right.set(false);   // clamp doinker
-  doinker_clamp.set(true);
+  doinker_clamp.set(false);
+  doinker_right.set(false);
   roller.spin(reverse, 12, volt);
 
   chassis.drive_to_point(-30.1, -42.3);
@@ -242,10 +243,10 @@ void blueGreenAutonCenter()
   chassis.heading_max_voltage = 4;
   chassis.drive_distance(2);
   // doinker_right.set(true); // unclamp doinker
-  doinker_clamp.set(false);
+  doinker_clamp.set(true);
   wait(.3, sec);
   chassis.drive_distance(-8);
-  doinker_right.set(false); // retract doinker
+  // doinker_right.set(false); // retract doinker
   chassis.turn_to_angle(chassis.get_absolute_heading() - 160);
 
   chassis.drive_min_voltage = 3;
