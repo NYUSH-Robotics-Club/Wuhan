@@ -221,6 +221,7 @@ void blueGreenAutonCenter()
   chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
 
+  // 夹盘子
   // chassis.set_heading(-30);
   roller.spin(fwd, 12, volt);
   doinker_right.set(true); // extend doinker
@@ -229,16 +230,16 @@ void blueGreenAutonCenter()
   chassis.drive_distance(34); // switched to drive_distance for better consistency | used to be 35
   // doinker_right.set(false);   // clamp doinker
   doinker_clamp.set(false);
-  doinker_right.set(false);
   roller.spin(reverse, 12, volt);
 
   chassis.drive_to_point(-30.1, -42.3);
+  doinker_right.set(false);
   chassis.turn_to_point(-24, 0);
   // chassis.drive_to_point(-38, -53);
   // chassis.drive_to_point(-27, -28);
 
   chassis.drive_stop(hold);
-
+  
   chassis.drive_max_voltage = 8;
   chassis.heading_max_voltage = 4;
   chassis.drive_distance(2);
@@ -248,12 +249,11 @@ void blueGreenAutonCenter()
   chassis.drive_distance(-8);
   // doinker_right.set(false); // retract doinker
   chassis.turn_to_angle(chassis.get_absolute_heading() - 160);
-
   chassis.drive_min_voltage = 3;
   chassis.drive_max_voltage = 4;
   chassis.drive_distance(-23);
 
-  // //grab & re-grab mogo
+  // 抓盘子
   mogoMech.set(true);
   wait(.1, sec); // grab mogo
   chassis.drive_distance(5);
@@ -263,6 +263,10 @@ void blueGreenAutonCenter()
   mogoMech.set(true);
   wait(.1, sec);
 
+  // 将放环手臂举到90度
+  wallStake.spin(fwd, 8, volt);
+  wait(0.8, sec);  // 等待机械臂移动到位
+  wallStake.stop(hold);
   chassis.drive_min_voltage = 0;
   chassis.drive_max_voltage = 9;
 
@@ -306,6 +310,11 @@ void blueGreenAutonCenter()
   chassis.turn_to_point(0, -60);
 
   wait(2.8, sec);
+  
+  // 将放环手臂打回正常位置
+  wallStake.spin(reverse, 8, volt);
+  wait(0.8, sec);  // 等待机械臂回到初始位置
+  wallStake.stop(hold);
   chassis.drive_to_point(0, -60);
 
   wsState = 0;
@@ -323,12 +332,12 @@ void blueGreenAutonCenter()
   wait(100, msec);
 
   // put in scoring position
-
-  wallStake.spin(fwd, 4.5, volt);
+  onR1Pressed();
+  // wallStake.spin(fwd, 4.5, volt);
 
   wait(1.6, sec);
-  wallStake.stop();
-
+  // wallStake.stop();
+  onR1Pressed();
   chassis.set_turn_exit_conditions(2, 100, 400);
   chassis.turn_to_point(-6, -72);
   chassis.turn_to_point(6, -72);
