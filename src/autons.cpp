@@ -218,7 +218,7 @@ void blueGreenAutonCenter()
 
   double startTime = Brain.timer(msec);
 
-  chassis.drive_max_voltage = 12;
+  chassis.drive_max_voltage = 8;
   chassis.heading_max_voltage = 12;
 
   // 夹盘子
@@ -227,13 +227,15 @@ void blueGreenAutonCenter()
   doinker_right.set(true); // extend doinker
   doinker_clamp.set(true);
   // chassis.drive_to_point(14.2, -13.3);
-  chassis.drive_distance(33); // switched to drive_distance for better consistency | used to be 35
+  chassis.drive_distance(32); // switched to drive_distance for better consistency | used to be 35
   // doinker_right.set(false);   // clamp doinker
   doinker_clamp.set(false);
   roller.spin(reverse, 12, volt);
-
-  chassis.drive_to_point(-30.1, -42.3);
+  chassis.drive_max_voltage = 12;
   doinker_right.set(false);
+  chassis.drive_to_point(-30.1, -42.3);
+  doinker_right.set(true);
+  doinker_clamp.set(true);
   chassis.turn_to_point(-24, 0);
   // chassis.drive_to_point(-38, -53);
   // chassis.drive_to_point(-27, -28);
@@ -244,12 +246,9 @@ void blueGreenAutonCenter()
   chassis.heading_max_voltage = 4;
   chassis.drive_distance(2);
   // doinker_right.set(true); // unclamp doinker
-  doinker_right.set(true);
-  doinker_clamp.set(true);
-  doinker_right.set(false);
   wait(.3, sec);
   chassis.drive_distance(-8);
-  // doinker_right.set(false); // retract doinker
+  doinker_right.set(false); // retract doinker
   chassis.turn_to_angle(chassis.get_absolute_heading() - 160);
   chassis.drive_min_voltage = 3;
   chassis.drive_max_voltage = 4;
@@ -325,7 +324,6 @@ void blueGreenAutonCenter()
 
   // chassis.drive_to_point(8,-56);
   // chassis.turn_to_angle(-135);
-  /*
   wait(400, msec);
   chassis.turn_to_point(0, -72);
   drive_for_time(650, fwd, 6); // align with alliance stake
@@ -337,17 +335,17 @@ void blueGreenAutonCenter()
   // waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
   conveyor.spin(fwd, 2, volt);
   ringSortDisable = false;
-  wait(500, msec);
+  wait(800, msec);
   pusher.set(true);
-  wait(200, msec);
   conveyor.spin(reverse, 4, volt);
+  wait(800, msec);
   wsSpinToPosition(68, 250, 0, 3);
   conveyor.stop();
-
+  
   // put in scoring position
-  // wallStake.spin(fwd, 4.5, volt);
-  wsSpinToPosition(80, 200, 0, 5);
-
+  wallStake.spin(fwd, 4.5, volt);
+  // wsSpinToPosition(80, 200, 0, 5);
+  
   wait(1.6, sec);
   // wallStake.stop();
   chassis.set_turn_exit_conditions(2, 100, 400);
@@ -355,19 +353,21 @@ void blueGreenAutonCenter()
   chassis.turn_to_point(6, -72);
   chassis.turn_to_point(0, -72);
   chassis.set_turn_exit_conditions(2, 100, 1000);
-
+  // /*
+  
   drive_for_time(300, reverse, 7);
   thread wsThread;
   wsThread = thread([]()
-                    {
-      wsState = 0;
-      wsSpinToPosition(60, 200, 0, 5);
-      wallStake.spin(reverse, 12, volt);
-      wait(400, msec);
-      wallStake.stop(coast); });
+  {
+    wsState = 0;
+    wsSpinToPosition(60, 200, 0, 5);
+  });
   pusher.set(false);
   chassis.turn_to_point(0, -24);
-
+  wsThread.interrupt();
+  wallStake.spin(reverse, 12, volt);
+  wait(400, msec);
+  wallStake.stop(coast); 
   // touch the ladder near goal that gold bot left behind
   drive_for_time(1200, forward, 7);
   tipper.set(true);
@@ -388,7 +388,7 @@ void blueGreenAutonCenter()
   // leave at end of auton
   chassis.drive_stop(vex::coast);
 
-  */
+  // */
   double endTime = Brain.timer(msec);
   printf("Autonomous finished in %.2f seconds\n", (endTime - startTime) / 1000);
 }
