@@ -541,6 +541,9 @@ void onRightPressed()
 
   // tipper.set(!tipper.value());
   autonomous();
+  // doinker_clamp.set(true);
+  // wait(2, sec);
+  // doinker_clamp.set(false);
 }
 
 void wsSpinToPosition(double position, double kP, double kD, double tolerance)
