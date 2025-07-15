@@ -489,6 +489,22 @@ void wallStakeAutoHold()
   }
 }
 
+// 自定义控制函数：左右转使用右摇杆X轴
+void customDriveControl()
+{
+  // 获取控制器输入值
+  float throttle_raw = Controller1.Axis3.value();      // 左摇杆Y轴：前后移动
+  float turn_raw = Controller1.Axis1.value();          // 右摇杆X轴：左右转向
+  
+  // 应用deadband（死区）处理
+  float throttle = (abs(throttle_raw) < 10) ? 0 : throttle_raw;
+  float turn = (abs(turn_raw) < 10) ? 0 : turn_raw;
+  
+  // 使用arcade驱动逻辑：左侧 = 前进 + 转向，右侧 = 前进 - 转向
+  leftDriveMotors.spin(fwd, (throttle + turn) * 12.0 / 100.0, volt);
+  rightDriveMotors.spin(fwd, (throttle - turn) * 12.0 / 100.0, volt);
+}
+
 void usercontrol(void)
 {
   // ringSortDisable = true;
@@ -499,7 +515,7 @@ void usercontrol(void)
   {
     if (!auto_locked)
     {
-      chassis.control_arcade();
+      customDriveControl();  // 使用自定义控制替代chassis.control_arcade()
     }
     wait(5, msec);
   }
