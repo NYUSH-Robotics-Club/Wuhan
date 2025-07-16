@@ -34,7 +34,7 @@ motor_group wallStakeMain = motor_group(wallStake1, wallStake2);
 
 float ringColor;
 
-bool wallStakeFeedFwdDis, isRed = false, ringSortDisable = false, ringDetectOverride, antijamEnable = true;
+bool wallStakeFeedFwdDis, isRed = true, ringSortDisable = false, ringDetectOverride, antijamEnable = true;
 
 thread wsThread;
 
@@ -196,6 +196,14 @@ void auto_selector()
     {
       auto_locked = true;
       Controller1.rumble(".-");
+      if (current_auton_selection == 0)
+      {
+        chassis.set_coordinates(32.5, -40.8, 0);
+      }
+      else
+      {
+        chassis.set_coordinates(-24, -48, 0);
+      }
       odom_constants();
       while (Controller1.ButtonX.pressing())
       {
@@ -225,10 +233,10 @@ void auto_selector()
 #define NUM_AUTONS 2
       case 0:
         Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
-        chassis.set_coordinates(24, -48, 0);
-        startingX = 27.99;
-        startingY = -42.07;
-        startingHeading = (360 - 26.08);
+        chassis.set_coordinates(32.5, -40.8, 0);
+        startingX = 40.5;
+        startingY = -43.2;
+        startingHeading = (360 - 44);
         break;
       case 2:
         Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT (GREEN)");

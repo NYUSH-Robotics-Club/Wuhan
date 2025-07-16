@@ -73,18 +73,31 @@ void redGreenAutonCenter()
 {
   double startTime = Brain.timer(msec);
 
-  chassis.drive_max_voltage = 12;
+  chassis.drive_max_voltage = 8;
   chassis.heading_max_voltage = 12;
 
   // chassis.set_heading(-30);
   roller.spin(fwd, 12, volt);
-  doinker_left.set(true); // extend doinker
+  // doinker_left.set(true); // extend doinker
+  doinker_right.set(true);
+  doinker_clamp.set(true);
+  roller.spin(fwd, 12, volt);
+  conveyor.spin(fwd, 9, volt);
   // chassis.drive_to_point(-14.2, -13.3);
-  chassis.drive_distance(34); // switched to drive_distance for better consistency | used to be 35
-  doinker_left.set(false);    // clamp doinker
-  roller.spin(reverse, 12, volt);
+  chassis.drive_distance(30); // switched to drive_distance for better consistency | used to be 35
+  // doinker_left.set(false);    // clamp doinker
+  chassis.turn_to_point(12, -15);
+  chassis.drive_to_point(12, -15);
+  doinker_clamp.set(false);
+  doinker_right.set(false);
+  // roller.spin(reverse, 12, volt);
+  roller.stop();
+  conveyor.stop();
 
+  chassis.drive_max_voltage = 12;
   chassis.drive_to_point(30.1, -42.3);
+  doinker_right.set(true);
+  doinker_clamp.set(true);
   chassis.turn_to_point(24, 0);
   // chassis.drive_to_point(-38, -53);
   // chassis.drive_to_point(-27, -28);
@@ -94,12 +107,12 @@ void redGreenAutonCenter()
   chassis.drive_max_voltage = 8;
   chassis.heading_max_voltage = 4;
   chassis.drive_distance(2);
-  doinker_left.set(true); // unclamp doinker
+  // doinker_left.set(true); // unclamp doinker
   wait(.3, sec);
   chassis.drive_distance(-8);
-  doinker_left.set(false); // retract doinker
+  // doinker_left.set(false); // retract doinker
+  doinker_right.set(false);
   chassis.turn_to_angle(chassis.get_absolute_heading() + 160);
-
   chassis.drive_min_voltage = 3;
   chassis.drive_max_voltage = 3.5;
   chassis.drive_distance(-24);
@@ -114,6 +127,7 @@ void redGreenAutonCenter()
   mogoMech.set(true);
   wait(.1, sec);
 
+  wsSpinToPosition(68, 250, 0, 5);
   chassis.drive_min_voltage = 0;
   chassis.drive_max_voltage = 9;
 
@@ -157,6 +171,9 @@ void redGreenAutonCenter()
   chassis.turn_to_point(-2, -60);
 
   wait(3.0, sec);
+  wallStake.spin(reverse, 8, volt);
+  wait(0.8, sec); // 等待机械臂回到初始位置
+  wallStake.stop(hold);
   chassis.drive_to_point(-2, -60);
 
   wsState = 0;
@@ -175,7 +192,7 @@ void redGreenAutonCenter()
   wait(100, msec);
 
   // put in scoring position
-
+  pusher.set(true);
   wallStake.spin(fwd, 4.5, volt);
 
   wait(1.6, sec);
