@@ -311,7 +311,7 @@ void blueGreenAutonCenter()
   // go to alliance stake
   chassis.turn_to_point(0, -60);
 
-  wait(2.8, sec);
+  wait(2.4, sec);
 
   // 将放环手臂打回正常位置
   wallStake.spin(reverse, 8, volt);
@@ -331,21 +331,15 @@ void blueGreenAutonCenter()
   chassis.drive_distance(-9.5);
   chassis.turn_to_point(0, -72);
   pusher.set(false);
-  wsSpinToPosition(16, 300, 0, 1);
   // waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
   conveyor.spin(fwd, 2, volt);
-  ringSortDisable = false;
-  wait(800, msec);
+  ringSortDisable = true;
+  // wait(800, msec);
   pusher.set(true);
   conveyor.spin(reverse, 4, volt);
-  wait(800, msec);
-  wsSpinToPosition(68, 250, 0, 3);
-  conveyor.stop();
-  
   // put in scoring position
   wallStake.spin(fwd, 4.5, volt);
   // wsSpinToPosition(80, 200, 0, 5);
-  
   wait(1.6, sec);
   // wallStake.stop();
   chassis.set_turn_exit_conditions(2, 100, 400);
@@ -354,20 +348,20 @@ void blueGreenAutonCenter()
   chassis.turn_to_point(0, -72);
   chassis.set_turn_exit_conditions(2, 100, 1000);
   // /*
-  
-  drive_for_time(300, reverse, 7);
+  ringSortDisable = false;
   thread wsThread;
   wsThread = thread([]()
-  {
+                    {
+    wait(100,msec);
     wsState = 0;
-    wsSpinToPosition(60, 200, 0, 5);
-  });
+    wsSpinToPosition(60, 200, 0, 5); });
   pusher.set(false);
+  drive_for_time(300, reverse, 7);
   chassis.turn_to_point(0, -24);
   wsThread.interrupt();
   wallStake.spin(reverse, 12, volt);
   wait(400, msec);
-  wallStake.stop(coast); 
+  wallStake.stop(coast);
   // touch the ladder near goal that gold bot left behind
   drive_for_time(1200, forward, 7);
   tipper.set(true);

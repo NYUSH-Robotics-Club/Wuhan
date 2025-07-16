@@ -34,7 +34,7 @@ motor_group wallStakeMain = motor_group(wallStake1, wallStake2);
 
 float ringColor;
 
-bool wallStakeFeedFwdDis, isRed = true, ringSortDisable = false, ringDetectOverride, antijamEnable = true;
+bool wallStakeFeedFwdDis, isRed = false, ringSortDisable = false, ringDetectOverride, antijamEnable = true;
 
 thread wsThread;
 
@@ -409,7 +409,7 @@ void colorSort()
 
     // Get ring color hue
     ringColor = colorDetect.hue();
-    printf("hue = %.2f\n", ringColor);
+    // printf("hue = %.2f\n", ringColor);
     // conveyorPosition = conveyor.position(degrees);
     bool ringIsRed = ringColor > 360 || ringColor < 20;
     bool ringIsBlue = ringColor > 180 && ringColor < 260;
@@ -701,7 +701,7 @@ int main()
   // leftDriveMotors.setStopping(vex::coast);
   // rightDriveMotors.setStopping(vex::coast);
 
-  // thread colorSortThread = thread(colorSort);
+  thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
 
   //
