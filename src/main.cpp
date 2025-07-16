@@ -44,8 +44,8 @@ thread wsThread;
 
 // Note: Updated green ports since they were wrong, I think gold is wrong too but not 100% sure
 #ifdef GOLD
-#define VERT PORT5
-#define HORI PORT6
+#define VERT PORT9
+#define HORI PORT10
 #define INERTIAL PORT21
 #define RING_SORT_DELAY 160 // 220
 #define INTAKE_SPEED 10.5
@@ -192,32 +192,20 @@ void auto_selector()
 
     Brain.Screen.clearScreen();
 
-    if (Controller1.ButtonX.pressing() && !auto_locked)
-    {
+    if (Controller1.ButtonX.pressing() && !auto_locked) {
       auto_locked = true;
       Controller1.rumble(".-");
-      if (current_auton_selection == 0)
-      {
-        chassis.set_coordinates(32.5, -40.8, 0);
-      }
-      else
-      {
-        chassis.set_coordinates(-24, -48, 0);
-      }
       odom_constants();
-      while (Controller1.ButtonX.pressing())
-      {
+      while (Controller1.ButtonX.pressing()) {
         wait(10, msec);
       }
-      // waitUntil(!chassis.Gyro.isCalibrating());
-      // Controller1.rumble("-.-");
-    }
-    else if (Controller1.ButtonY.pressing() && auto_locked)
-    {
+      //waitUntil(!chassis.Gyro.isCalibrating());
+      //Controller1.rumble("-.-");
+
+    } else if (Controller1.ButtonY.pressing() && auto_locked){
       auto_locked = false;
       Controller1.rumble("---");
-      while (Controller1.ButtonY.pressing())
-      {
+      while (Controller1.ButtonY.pressing()) {
         wait(10, msec);
       }
     }
@@ -229,7 +217,7 @@ void auto_selector()
       default:
         break;
 
-#ifdef GREEN
+#ifdef GOLD
 #define NUM_AUTONS 2
       case 0:
         Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
@@ -253,7 +241,7 @@ void auto_selector()
         break;
 #endif
 
-#ifdef GOLD
+#ifdef GREEN
 #define NUM_AUTONS 2
       case 0:
         Brain.Screen.printAt(50, 50, "Red Left - RUSH LEFT (GOLD)");
@@ -334,7 +322,7 @@ void autonomous(void)
   default:
     break;
 
-#ifdef GREEN
+#ifdef GOLD
   case 0:
     isRed = true;
     ringSortDisable = false;
@@ -365,7 +353,7 @@ void autonomous(void)
     break;
 #endif
 
-#ifdef GOLD
+#ifdef GREEN
   case 0:
     isRed = true;
     ringSortDisable = false;
@@ -594,10 +582,10 @@ void onR1Pressed()
     wsThread = thread([]()
                       {
     pusher.set(false);
-#ifdef GREEN
+#ifdef GOLD
       wsSpinToPosition(16, 300, 0, 1);
 #endif
-#ifdef GOLD
+#ifdef GREEN
       wsSpinToPosition(22, 200, 0, 1.0);
 #endif
     waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);

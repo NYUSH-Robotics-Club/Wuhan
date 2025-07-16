@@ -68,7 +68,7 @@ void odom_constants()
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifdef GREEN
+#ifdef GOLD
 void redGreenAutonCenter()
 {
   double startTime = Brain.timer(msec);
@@ -421,7 +421,7 @@ void blueGreenAutonOther()
 }
 #endif
 
-#ifdef GOLD
+#ifdef GREEN
 void redGoldAuton()
 {
 
