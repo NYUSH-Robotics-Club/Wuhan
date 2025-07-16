@@ -11,20 +11,20 @@ brain Brain;
 controller Controller1 = controller(primary);
 
 #ifdef GREEN
-motor roller = motor(PORT11, ratio6_1, true);
+motor roller = motor(PORT20, ratio6_1, true);
 motor conveyor = motor(PORT12, ratio18_1, true);
-motor wallStake1 = motor(PORT13, ratio36_1, true);
-motor wallStake2 = motor(PORT14, ratio36_1, false);
-motor L1 = motor(PORT1, ratio6_1, false);
-motor L2 = motor(PORT2, ratio6_1, true);
-motor L3 = motor(PORT3, ratio6_1, false);
-motor L4 = motor(PORT4, ratio6_1, true);
-motor R1 = motor(PORT5, ratio6_1, true);
-motor R2 = motor(PORT6, ratio6_1, false);
-motor R3 = motor(PORT7, ratio6_1, true);
-motor R4 = motor(PORT8, ratio6_1, false);
+motor wallStake1 = motor(PORT17, ratio36_1, true);
+motor wallStake2 = motor(PORT18, ratio36_1, false);
+motor L1 = motor(PORT13, ratio6_1, false);
+motor L2 = motor(PORT14, ratio6_1, true);
+motor L3 = motor(PORT15, ratio6_1, false);
+motor L4 = motor(PORT16, ratio6_1, true);
+motor R1 = motor(PORT1, ratio6_1, true);
+motor R2 = motor(PORT2, ratio6_1, false);
+motor R3 = motor(PORT3, ratio6_1, true);
+motor R4 = motor(PORT4, ratio6_1, false);
 
-rotation rotationWallStake = rotation(PORT16); // reverse
+rotation rotationWallStake = rotation(PORT6); // reverse
 
 // vex::motor_group leftDriveMotors = motor_group(L1,L2,L3);
 // vex::motor_group rightDriveMotors = motor_group(R1,R2,R3);
@@ -34,17 +34,17 @@ distance ringDist = distance(PORT18);
 optical colorDetect = optical(PORT19);
 inertial inertialSensor = inertial(PORT21);
 
-digital_out mogoMech = digital_out(Brain.ThreeWirePort.H);
-digital_out doinker_right = digital_out(Brain.ThreeWirePort.G);
-digital_out doinker_left = digital_out(Brain.ThreeWirePort.C);
-digital_out pusher = digital_out(Brain.ThreeWirePort.F);
+digital_out mogoMech = digital_out(Brain.ThreeWirePort.A);
+digital_out doinker_right = digital_out(Brain.ThreeWirePort.C);
+digital_out doinker_left = digital_out(Brain.ThreeWirePort.H);
+digital_out pusher = digital_out(Brain.ThreeWirePort.B);
 digital_out tipper = digital_out(Brain.ThreeWirePort.D);
 digital_out doinker_clamp = digital_out(Brain.ThreeWirePort.E);
 
-digital_in doinkerSwitches = digital_in(Brain.ThreeWirePort.A);
+digital_in doinkerSwitches = digital_in(Brain.ThreeWirePort.F);
 
-digital_out ringChuck = digital_out(Brain.ThreeWirePort.C); // not used
-digital_in ringSwitch = digital_in(Brain.ThreeWirePort.B);  // not used - changed from E to B to avoid conflict
+digital_out ringChuck = digital_out(Brain.ThreeWirePort.G); // not used
+//digital_in ringSwitch = digital_in(Brain.ThreeWirePort.);  // not used - changed from E to B to avoid conflict
 #endif
 
 #ifdef GOLD

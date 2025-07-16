@@ -56,9 +56,9 @@ thread wsThread;
 
 #ifdef GREEN
 #define INTAKE_SPEED 10.5
-#define VERT PORT9
-#define HORI PORT10
-#define INERTIAL PORT21
+#define VERT PORT19
+#define HORI PORT11
+#define INERTIAL PORT5
 // #define RING_SORT_DELAY 335
 #define RING_SORT_DELAY 295
 #endif
@@ -127,10 +127,10 @@ Drive chassis(
     VERT,
 
 // Input the Forward Tracker diameter (reverse it to make the direction switch):
-#ifdef GREEN
+#ifdef GOLD
     2.0259270425f,
 #endif
-#ifdef GOLD
+#ifdef GREEN
     -2.038463892801825f,
 #endif
     // Input Forward Tracker center distance (a positive distance corresponds to a tracker on the right side of the robot, negative is left.)
@@ -528,7 +528,14 @@ void onevent_Controller1ButtonL2_pressed_0()
 
 void onevent_Controller1ButtonL2_released_0() { intakeMain.stop(); }
 
-void toggleDoinker() { doinker_right.set(!doinker_right.value()); }
+void toggleDoinker() { 
+  bool newState = !doinker_right.value();
+  doinker_right.set(!newState); 
+}
+
+void toggleDoinkerLeft() { 
+  bool newState1 = !doinker_left.value();
+  doinker_left.set(!newState1); }
 
 void toggleClamp() { doinker_clamp.set(!doinker_clamp.value()); }
 
@@ -561,15 +568,15 @@ void wsSpinToPosition(double position, double kP, double kD, double tolerance)
 
   rotationWallStake.resetPosition();
 
-  double startPos = rotationWallStake.position(deg);
+  double startPos = -rotationWallStake.position(deg);
   double target = startPos + position;
 
-  double error = target - rotationWallStake.position(deg);
+  double error = target - (-rotationWallStake.position(deg));
   double lastError = 0;
 
   while (fabs(error) > tolerance)
   {
-    error = target - rotationWallStake.position(deg);
+    error = target - (-rotationWallStake.position(deg));
     wallStakeMain.spin(fwd, (error * kP) + ((error - lastError) * kD), vex::voltageUnits::mV);
     lastError = error;
     wait(10, msec);
@@ -593,9 +600,9 @@ void onR1Pressed()
     // antijamEnable = false;
     wsThread = thread([]()
                       {
-    pusher.set(false);
+    pusher.set(true);
 #ifdef GREEN
-      wsSpinToPosition(16, 300, 0, 1);
+      wsSpinToPosition(20, 300, 0, 1);
 #endif
 #ifdef GOLD
       wsSpinToPosition(22, 200, 0, 1.0);
@@ -612,7 +619,7 @@ void onR1Pressed()
     // antijamEnable = true;
     wsThread = thread([]()
                       {
-    pusher.set(true);
+    pusher.set(false);
     wait(200,msec);
     conveyor.spin(reverse, 4, volt);
     wsSpinToPosition(68, 250, 0, 3);
@@ -635,7 +642,7 @@ void onR1Pressed()
       wallStakeMain.spin(reverse, 12, volt);
       wait(400, msec);
       wallStakeMain.stop(coast); });
-    pusher.set(false);
+    pusher.set(true);
     // antijamEnable = true;
   }
 
@@ -713,7 +720,7 @@ int main()
   thread wsAutoHold = thread(wallStakeAutoHold);
 
   //
-
+  doinker_left.set(false);
   rotationWallStake.resetPosition();
   // default_constants();
 

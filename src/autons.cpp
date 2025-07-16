@@ -385,7 +385,7 @@ void blueGreenAutonCenter()
 
   // intake.spin(fwd, 12 ,volt);
   // wallStake.spin(reverse, 12, volt);
-  // chassis.heading_max_voltage = 12;
+  // chassis.heading_max_voltage =12;
   // chassis.drive_to_point(-24, -18);
   // chassis.heading_max_voltage = 4;
   // chassis.turn_to_point(0, 0);
