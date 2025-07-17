@@ -337,7 +337,7 @@ void autonomous(void)
 #ifdef GREEN
   case 0:
     isRed = true;
-    ringSortDisable = false;
+    ringSortDisable = true;
     wallStakeFeedFwdDis = true;
 
     redGreenAutonCenter();

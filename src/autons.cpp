@@ -244,7 +244,7 @@ void blueGreenAutonCenter()
   doinker_right.set(true); // extend doinker
   doinker_clamp.set(true);
   // chassis.drive_to_point(14.2, -13.3);
-  chassis.drive_distance(32); // switched to drive_distance for better consistency | used to be 35
+  chassis.drive_distance(34); // switched to drive_distance for better consistency | used to be 35
   // doinker_right.set(false);   // clamp doinker
   doinker_clamp.set(false);
   roller.spin(reverse, 12, volt);
@@ -259,7 +259,7 @@ void blueGreenAutonCenter()
 
   chassis.drive_stop(hold);
 
-  chassis.drive_max_voltage = 8;
+  chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 4;
   chassis.drive_distance(2);
   // doinker_right.set(true); // unclamp doinker
@@ -328,7 +328,7 @@ void blueGreenAutonCenter()
   // go to alliance stake
   chassis.turn_to_point(0, -60);
 
-  wait(2.4, sec);
+  wait(3.8, sec);
 
   // 将放环手臂打回正常位置
   wallStake.spin(reverse, 8, volt);

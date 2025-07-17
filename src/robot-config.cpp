@@ -31,7 +31,7 @@ rotation rotationWallStake = rotation(PORT6); // reverse
 // vex::motor_group allDriveMotors = motor_group(L1, R1, L2, R2, L3, R3);
 
 distance ringDist = distance(PORT18);
-optical colorDetect = optical(PORT19);
+optical colorDetect = optical(PORT7);
 inertial inertialSensor = inertial(PORT21);
 
 digital_out mogoMech = digital_out(Brain.ThreeWirePort.A);
