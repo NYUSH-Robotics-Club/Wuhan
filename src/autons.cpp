@@ -139,7 +139,7 @@ void redGreenAutonCenter()
   roller.spin(fwd, 12, volt);
   conveyor.spin(fwd, 9, volt);
 
-  chassis.drive_max_voltage = 3.5;
+  chassis.drive_max_voltage = 9;
   chassis.drive_to_point(57, -24);
   chassis.drive_max_voltage = 9;
 
@@ -168,7 +168,7 @@ void redGreenAutonCenter()
   // go to alliance stake
   chassis.turn_to_point(0, -60);
 
-  wait(3.8, sec);
+  wait(2, sec);
 
   // 将放环手臂打回正常位置
   wallStake.spin(reverse, 8, volt);
