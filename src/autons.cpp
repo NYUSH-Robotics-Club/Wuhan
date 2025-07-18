@@ -123,7 +123,9 @@ void redGreenAutonCenter()
   // wallStake.spin(fwd, 8, volt);
   // wait(0.8, sec); // 等待机械臂移动到位
   // wallStake.stop(hold);
-  wsSpinToPosition(68, 250, 0, 5);
+  thread wsThread;
+  wsThread = thread([]()
+                    { wsSpinToPosition(68, 250, 0, 5); });
   chassis.drive_min_voltage = 0;
   chassis.drive_max_voltage = 9;
 
@@ -204,7 +206,7 @@ void redGreenAutonCenter()
   chassis.set_turn_exit_conditions(2, 100, 1000);
   // /*
   ringSortDisable = false;
-  thread wsThread;
+  wsThread.interrupt();
   wsThread = thread([]()
                     {
     wait(100,msec);
