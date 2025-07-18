@@ -198,7 +198,7 @@ void auto_selector()
       Controller1.rumble(".-");
       if (current_auton_selection == 0)
       {
-        chassis.set_coordinates(24, -48.8, 0);
+        chassis.set_coordinates(24, -48, 0);
       }
       else
       {
@@ -232,21 +232,23 @@ void auto_selector()
 #ifdef GREEN
 #define NUM_AUTONS 2
       case 0:
-        Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
+        Brain.Screen.printAt(50, 50, "Red Left - RUSH CENTER (GREEN)");
         chassis.set_coordinates(24, -48, 0);
-        startingX = 40.5;
-        startingY = -43.2;
-        startingHeading = (360 - 44);
+        startingX = 28.01;
+        startingY = -43.24;
+        startingHeading = (360 - 26.08);
         break;
-      case 2:
-        Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT (GREEN)");
-        break;
+      
+        
       case 1:
         Brain.Screen.printAt(50, 50, "Blue Left - RUSH CENTER (GREEN)");
         chassis.set_coordinates(-24, -48, 0);
         startingX = -28.01;
         startingY = -43.24;
         startingHeading = (26.08);
+        break;
+      case 2:
+        Brain.Screen.printAt(50, 50, "Red Right - RUSH RIGHT (GREEN)");
         break;
       case 3:
         Brain.Screen.printAt(50, 50, "Blue Left - RUSH LEFT (GREEN)");
