@@ -428,7 +428,9 @@ void redGoldAuton()
   chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
   chassis.drive_timeout = 2000;
-  wsSpinToPosition(68, 250, 0, 5);
+  thread wsThread;
+  wsThread = thread([]()
+                    { wsSpinToPosition(68, 250, 0, 5); });
   doinker_left.set(true); // put doinker down
   chassis.drive_distance(39);
   doinker_left.set(false); // grab mogo with doinker
@@ -536,8 +538,9 @@ void redGoldAuton()
   // put goal in + corner
   mogoMech.set(false);
   drive_for_time(500, reverse, 10);
-  chassis.drive_distance(14);
-  chassis.turn_to_angle(0);
+  chassis.drive_distance(5);
+  drive_for_time(500, reverse, 10);
+  // chassis.turn_to_angle(0);
   // chassis.drive_max_voltage = 12;
   // chassis.turn_max_voltage = 12;
 
