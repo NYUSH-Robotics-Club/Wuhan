@@ -339,6 +339,7 @@ void autonomous(void)
     isRed = true;
     ringSortDisable = true;
     wallStakeFeedFwdDis = true;
+    auto_locked = false;
 
     redGreenAutonCenter();
     break;
@@ -346,6 +347,7 @@ void autonomous(void)
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
+    auto_locked = false;
 
     redGreenAutonOther();
     break;
@@ -353,6 +355,7 @@ void autonomous(void)
     isRed = false;
     wallStakeFeedFwdDis = true; // BLUE GREEN CENTER
     ringSortDisable = true;
+    auto_locked = false;
 
     blueGreenAutonCenter();
     break;
@@ -360,6 +363,7 @@ void autonomous(void)
     isRed = false;
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
+    auto_locked = false;
 
     blueGreenAutonOther();
     break;
@@ -419,8 +423,8 @@ void colorSort()
     ringColor = colorDetect.hue();
     // printf("hue = %.2f\n", ringColor);
     // conveyorPosition = conveyor.position(degrees);
-    bool ringIsRed = ringColor > 30 && ringColor < 50;//green one 10-30
-    bool ringIsBlue = ringColor > 195 && ringColor < 210;//
+    bool ringIsRed = ringColor > 30 && ringColor < 50;    // green one 10-30
+    bool ringIsBlue = ringColor > 195 && ringColor < 210; //
 
     if ((ringIsRed && !isRed) || (ringIsBlue && isRed))
     {
@@ -528,14 +532,17 @@ void onevent_Controller1ButtonL2_pressed_0()
 
 void onevent_Controller1ButtonL2_released_0() { intakeMain.stop(); }
 
-void toggleDoinker() { 
+void toggleDoinker()
+{
   bool newState = !doinker_right.value();
-  doinker_right.set(!newState); 
+  doinker_right.set(!newState);
 }
 
-void toggleDoinkerLeft() { 
+void toggleDoinkerLeft()
+{
   bool newState1 = !doinker_left.value();
-  doinker_left.set(!newState1); }
+  doinker_left.set(!newState1);
+}
 
 void toggleClamp() { doinker_clamp.set(!doinker_clamp.value()); }
 
@@ -753,5 +760,4 @@ int main()
   colorDetect.setLightPower(100, percent);
 
   // THIS IS A WHILE LOOP
- 
 }
