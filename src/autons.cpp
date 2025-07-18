@@ -538,11 +538,11 @@ void redGoldAuton()
   drive_for_time(500, reverse, 10);
   chassis.drive_distance(14);
   chassis.turn_to_angle(0);
-  chassis.drive_max_voltage = 12;
-  chassis.turn_max_voltage = 12;
+  // chassis.drive_max_voltage = 12;
+  // chassis.turn_max_voltage = 12;
 
-  chassis.drive_to_point(48, -24);
-  chassis.turn_to_point(60, -36, 180);
+  // chassis.drive_to_point(48, -24);
+  // chassis.turn_to_point(60, -36, 180);
 }
 
 void blueGoldAuton()
@@ -660,11 +660,11 @@ void blueGoldAuton()
   drive_for_time(500, reverse, 10);
   chassis.drive_distance(14);
   chassis.turn_to_angle(0);
-  chassis.drive_max_voltage = 12;
-  chassis.turn_max_voltage = 12;
+  // chassis.drive_max_voltage = 12;
+  // chassis.turn_max_voltage = 12;
 
-  chassis.drive_to_point(-48, -24);
-  chassis.turn_to_point(-60, -36, 180);
+  // chassis.drive_to_point(-48, -24);
+  // chassis.turn_to_point(-60, -36, 180);
 }
 #endif
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
