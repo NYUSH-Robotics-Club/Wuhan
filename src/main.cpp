@@ -370,14 +370,14 @@ void autonomous(void)
     isRed = true;
     ringSortDisable = false;
     wallStakeFeedFwdDis = true;
-
+    auto_locked = false;
     redGoldAuton();
     break;
   case 1:
     isRed = false;
     wallStakeFeedFwdDis = true;
     ringSortDisable = false;
-
+    auto_locked = false;
     blueGoldAuton();
     break;
 #endif
