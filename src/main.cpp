@@ -192,20 +192,24 @@ void auto_selector()
 
     Brain.Screen.clearScreen();
 
-    if (Controller1.ButtonX.pressing() && !auto_locked) {
+    if (Controller1.ButtonX.pressing() && !auto_locked)
+    {
       auto_locked = true;
       Controller1.rumble(".-");
       odom_constants();
-      while (Controller1.ButtonX.pressing()) {
+      while (Controller1.ButtonX.pressing())
+      {
         wait(10, msec);
       }
-      //waitUntil(!chassis.Gyro.isCalibrating());
-      //Controller1.rumble("-.-");
-
-    } else if (Controller1.ButtonY.pressing() && auto_locked){
+      // waitUntil(!chassis.Gyro.isCalibrating());
+      // Controller1.rumble("-.-");
+    }
+    else if (Controller1.ButtonY.pressing() && auto_locked)
+    {
       auto_locked = false;
       Controller1.rumble("---");
-      while (Controller1.ButtonY.pressing()) {
+      while (Controller1.ButtonY.pressing())
+      {
         wait(10, msec);
       }
     }
@@ -407,8 +411,8 @@ void colorSort()
     ringColor = colorDetect.hue();
     // printf("hue = %.2f\n", ringColor);
     // conveyorPosition = conveyor.position(degrees);
-    bool ringIsRed = ringColor > 360 || ringColor < 20;
-    bool ringIsBlue = ringColor > 180 && ringColor < 260;
+    bool ringIsRed = ringColor > 345 || ringColor < 10;
+    bool ringIsBlue = ringColor > 200 && ringColor < 230;
 
     if ((ringIsRed && !isRed) || (ringIsBlue && isRed))
     {
@@ -730,7 +734,7 @@ int main()
 
   colorDetect.integrationTime(5);
   colorDetect.setLight(ledState::on);
-  colorDetect.setLightPower(50, percent);
+  colorDetect.setLightPower(100, percent);
 
   // THIS IS A WHILE LOOP
   pre_auton();
