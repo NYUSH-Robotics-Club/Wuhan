@@ -76,27 +76,20 @@ void redGreenAutonCenter()
   chassis.drive_max_voltage = 8;
   chassis.heading_max_voltage = 12;
 
+  // 夹盘子
   // chassis.set_heading(-30);
   roller.spin(fwd, 12, volt);
-  // doinker_left.set(true); // extend doinker
-  doinker_right.set(true);
+  doinker_left.set(true); // extend doinker
   doinker_clamp.set(true);
-  roller.spin(fwd, 12, volt);
-  conveyor.spin(fwd, 9, volt);
-  // chassis.drive_to_point(-14.2, -13.3);
-  chassis.drive_distance(30); // switched to drive_distance for better consistency | used to be 35
-  // doinker_left.set(false);    // clamp doinker
-  chassis.turn_to_point(12, -15);
-  chassis.drive_to_point(12, -15);
-  doinker_clamp.set(false);
-  doinker_right.set(false);
-  // roller.spin(reverse, 12, volt);
-  roller.stop();
-  conveyor.stop();
-
+  // chassis.drive_to_point(14.2, -13.3);
+  chassis.drive_distance(34); // switched to drive_distance for better consistency | used to be 35
+  // doinker_right.set(false);   // clamp doinker
+  doinker_left.set(false);
+  roller.spin(reverse, 12, volt);
   chassis.drive_max_voltage = 12;
+  //doinker_right.set(false);
   chassis.drive_to_point(30.1, -42.3);
-  doinker_right.set(true);
+  doinker_left.set(true);
   doinker_clamp.set(true);
   chassis.turn_to_point(24, 0);
   // chassis.drive_to_point(-38, -53);
@@ -104,29 +97,32 @@ void redGreenAutonCenter()
 
   chassis.drive_stop(hold);
 
-  chassis.drive_max_voltage = 8;
+  chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 4;
   chassis.drive_distance(2);
-  // doinker_left.set(true); // unclamp doinker
+  // doinker_right.set(true); // unclamp doinker
   wait(.3, sec);
   chassis.drive_distance(-8);
-  // doinker_left.set(false); // retract doinker
-  doinker_right.set(false);
-  chassis.turn_to_angle(chassis.get_absolute_heading() + 160);
+  doinker_left.set(false); // retract doinker
+  chassis.turn_to_angle(chassis.get_absolute_heading() - 160);
   chassis.drive_min_voltage = 3;
-  chassis.drive_max_voltage = 3.5;
+  chassis.drive_max_voltage = 4;
   chassis.drive_distance(-24);
 
-  // //grab & re-grab mogo
+  // 抓盘子
   mogoMech.set(true);
   wait(.1, sec); // grab mogo
   chassis.drive_distance(5);
   mogoMech.set(false);
   wait(.1, sec);
-  chassis.drive_distance(-5);
+  chassis.drive_distance(-8);
   mogoMech.set(true);
   wait(.1, sec);
 
+  // 将放环手臂举到90度
+  // wallStake.spin(fwd, 8, volt);
+  // wait(0.8, sec); // 等待机械臂移动到位
+  // wallStake.stop(hold);
   wsSpinToPosition(68, 250, 0, 5);
   chassis.drive_min_voltage = 0;
   chassis.drive_max_voltage = 9;
@@ -145,8 +141,8 @@ void redGreenAutonCenter()
   chassis.drive_to_point(57, -24);
   chassis.drive_max_voltage = 9;
 
-  // chassis.turn_to_point(60, -7.0);
-  // chassis.drive_to_point(60, -7.0);
+  // chassis.turn_to_point(-60, -6);
+  // chassis.drive_to_point(-60, -6);
   // wait(.3, sec);
   // chassis.drive_distance(-6);
   // wait(.3, sec);//wait for ring to flip over the top
@@ -168,13 +164,15 @@ void redGreenAutonCenter()
   chassis.drive_to_point(24, -24);
 
   // go to alliance stake
-  chassis.turn_to_point(-2, -60);
+  chassis.turn_to_point(0, -60);
 
-  wait(3.0, sec);
+  wait(3.8, sec);
+
+  // 将放环手臂打回正常位置
   wallStake.spin(reverse, 8, volt);
   wait(0.8, sec); // 等待机械臂回到初始位置
   wallStake.stop(hold);
-  chassis.drive_to_point(-2, -60);
+  chassis.drive_to_point(0, -60);
 
   wsState = 0;
   onR1Pressed();
@@ -185,48 +183,62 @@ void redGreenAutonCenter()
   chassis.turn_to_point(0, -72);
   drive_for_time(650, fwd, 6); // align with alliance stake
   // score, go left and right to align
-  chassis.drive_distance(-9.0);
+  chassis.drive_distance(-9.5);
   chassis.turn_to_point(0, -72);
-  wait(300, msec);
-  conveyor.spin(reverse, 2.5, volt);
-  wait(100, msec);
-
-  // put in scoring position
   pusher.set(true);
+  // waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
+  conveyor.spin(fwd, 2, volt);
+  ringSortDisable = true;
+  // wait(800, msec);
+  pusher.set(false);
+  conveyor.spin(reverse, 4, volt);
+  // put in scoring position
   wallStake.spin(fwd, 4.5, volt);
-
+  // wsSpinToPosition(80, 200, 0, 5);
   wait(1.6, sec);
-  wallStake.stop();
-
+  // wallStake.stop();
   chassis.set_turn_exit_conditions(2, 100, 400);
   chassis.turn_to_point(-6, -72);
   chassis.turn_to_point(6, -72);
   chassis.turn_to_point(0, -72);
   chassis.set_turn_exit_conditions(2, 100, 1000);
-
+  // /*
+  ringSortDisable = false;
+  thread wsThread;
+  wsThread = thread([]()
+                    {
+    wait(100,msec);
+    wsState = 0;
+    wsSpinToPosition(60, 200, 0, 5); });
+  pusher.set(true);
   drive_for_time(300, reverse, 7);
   chassis.turn_to_point(0, -24);
-
+  wsThread.interrupt();
+  wallStake.spin(reverse, 12, volt);
+  wait(400, msec);
+  wallStake.stop(coast);
   // touch the ladder near goal that gold bot left behind
   drive_for_time(1200, forward, 7);
   tipper.set(true);
 
   // intake.spin(fwd, 12 ,volt);
-  wallStake.spin(reverse, 12, volt);
-  // chassis.heading_max_voltage = 12;
+  // wallStake.spin(reverse, 12, volt);
+  // chassis.heading_max_voltage =12;
   // chassis.drive_to_point(-24, -18);
   // chassis.heading_max_voltage = 4;
   // chassis.turn_to_point(0, 0);
   // wallStake.spin(fwd, 8, volt);
-  wait(.6, sec);
-  wallStake.stop();
+  // wait(2.6, sec);
+  // wallStake.stop();
   // drive_for_time(600, fwd, 4);
+  wsState = 0;
+  onR1Pressed();
 
   // leave at end of auton
   chassis.drive_stop(vex::coast);
 
+  // */
   double endTime = Brain.timer(msec);
-
   printf("Autonomous finished in %.2f seconds\n", (endTime - startTime) / 1000);
 }
 
@@ -285,7 +297,7 @@ void blueGreenAutonCenter()
   // wallStake.spin(fwd, 8, volt);
   // wait(0.8, sec); // 等待机械臂移动到位
   // wallStake.stop(hold);
-  wsSpinToPosition(68, 250, 0, 3);
+  wsSpinToPosition(68, 250, 0, 5);
   chassis.drive_min_voltage = 0;
   chassis.drive_max_voltage = 9;
 
@@ -331,10 +343,10 @@ void blueGreenAutonCenter()
   wait(3.8, sec);
 
   // 将放环手臂打回正常位置
-  wallStake.spin(reverse, 8, volt);
+  /*wallStake.spin(reverse, 8, volt);
   wait(0.8, sec); // 等待机械臂回到初始位置
   wallStake.stop(hold);
-  chassis.drive_to_point(0, -60);
+  chassis.drive_to_point(0, -60);*/
 
   wsState = 0;
   onR1Pressed();

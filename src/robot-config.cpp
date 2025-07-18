@@ -42,7 +42,6 @@ digital_out tipper = digital_out(Brain.ThreeWirePort.D);
 digital_out doinker_clamp = digital_out(Brain.ThreeWirePort.E);
 
 digital_in doinkerSwitches = digital_in(Brain.ThreeWirePort.F);
-
 digital_out ringChuck = digital_out(Brain.ThreeWirePort.G); // not used
 //digital_in ringSwitch = digital_in(Brain.ThreeWirePort.);  // not used - changed from E to B to avoid conflict
 #endif

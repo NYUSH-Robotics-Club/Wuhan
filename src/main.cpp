@@ -198,7 +198,7 @@ void auto_selector()
       Controller1.rumble(".-");
       if (current_auton_selection == 0)
       {
-        chassis.set_coordinates(32.5, -40.8, 0);
+        chassis.set_coordinates(24, -48.8, 0);
       }
       else
       {
@@ -233,7 +233,7 @@ void auto_selector()
 #define NUM_AUTONS 2
       case 0:
         Brain.Screen.printAt(50, 50, "Red Right - RUSH CENTER (GREEN)");
-        chassis.set_coordinates(32.5, -40.8, 0);
+        chassis.set_coordinates(24, -48, 0);
         startingX = 40.5;
         startingY = -43.2;
         startingHeading = (360 - 44);
@@ -352,7 +352,7 @@ void autonomous(void)
   case 1:
     isRed = false;
     wallStakeFeedFwdDis = true; // BLUE GREEN CENTER
-    ringSortDisable = false;
+    ringSortDisable = true;
 
     blueGreenAutonCenter();
     break;
@@ -419,8 +419,8 @@ void colorSort()
     ringColor = colorDetect.hue();
     // printf("hue = %.2f\n", ringColor);
     // conveyorPosition = conveyor.position(degrees);
-    bool ringIsRed = ringColor > 360 || ringColor < 20;
-    bool ringIsBlue = ringColor > 180 && ringColor < 260;
+    bool ringIsRed = ringColor > 30 && ringColor < 50;//green one 10-30
+    bool ringIsBlue = ringColor > 195 && ringColor < 210;//
 
     if ((ringIsRed && !isRed) || (ringIsBlue && isRed))
     {
@@ -718,7 +718,7 @@ int main()
 
   thread colorSortThread = thread(colorSort);
   thread wsAutoHold = thread(wallStakeAutoHold);
-
+  pusher.set(true);
   //
   doinker_left.set(false);
   rotationWallStake.resetPosition();
@@ -743,14 +743,15 @@ int main()
   Controller1.ButtonRight.pressed(onRightPressed);
   Controller1.ButtonDown.pressed(onDownPressed);
   Controller1.ButtonA.pressed(onAPressed);
+  pre_auton();
 
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
 
   colorDetect.integrationTime(5);
   colorDetect.setLight(ledState::on);
-  colorDetect.setLightPower(50, percent);
+  colorDetect.setLightPower(100, percent);
 
   // THIS IS A WHILE LOOP
-  pre_auton();
+ 
 }
