@@ -73,7 +73,7 @@ void redGreenAutonCenter()
 {
   double startTime = Brain.timer(msec);
 
-  chassis.drive_max_voltage = 8;
+  chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
 
   // 夹盘子
@@ -104,7 +104,7 @@ void redGreenAutonCenter()
   wait(.3, sec);
   chassis.drive_distance(-8);
   doinker_left.set(false); // retract doinker
-  chassis.turn_to_angle(chassis.get_absolute_heading() - 160);
+  chassis.turn_to_angle(chassis.get_absolute_heading() - 200);
   chassis.drive_min_voltage = 3;
   chassis.drive_max_voltage = 4;
   chassis.drive_distance(-24);
@@ -247,7 +247,7 @@ void blueGreenAutonCenter()
 
   double startTime = Brain.timer(msec);
 
-  chassis.drive_max_voltage = 8;
+  chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
 
   // 夹盘子
