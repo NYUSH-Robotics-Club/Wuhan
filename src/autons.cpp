@@ -424,7 +424,7 @@ void blueGreenAutonOther()
 #ifdef GREEN
 void redGoldAuton()
 {
-
+  ringSortDisable = true;
   chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
   chassis.drive_timeout = 2000;
@@ -472,6 +472,7 @@ void redGoldAuton()
   chassis.drive_to_point(0, -49);
   mogoMech.set(true);
 
+  ringSortDisable = false;
   chassis.drive_min_voltage = 0;
   chassis.drive_max_voltage = 10;
   chassis.turn_max_voltage = 7;
@@ -550,6 +551,7 @@ void redGoldAuton()
 
 void blueGoldAuton()
 {
+  ringSortDisable = true;
   chassis.drive_max_voltage = 12;
   chassis.heading_max_voltage = 12;
   chassis.drive_timeout = 2000;
@@ -597,6 +599,7 @@ void blueGoldAuton()
   chassis.drive_to_point(0, -49);
   mogoMech.set(true);
 
+  ringSortDisable = false;
   chassis.drive_min_voltage = 0;
   chassis.drive_max_voltage = 10;
   chassis.turn_max_voltage = 7;
