@@ -337,7 +337,7 @@ void autonomous(void)
 #ifdef GREEN
   case 0:
     isRed = true;
-    ringSortDisable = true;
+    ringSortDisable = false;
     wallStakeFeedFwdDis = true;
     auto_locked = false;
 
@@ -354,7 +354,7 @@ void autonomous(void)
   case 1:
     isRed = false;
     wallStakeFeedFwdDis = true; // BLUE GREEN CENTER
-    ringSortDisable = true;
+    ringSortDisable = false;
     auto_locked = false;
 
     blueGreenAutonCenter();
@@ -424,7 +424,7 @@ void colorSort()
     // printf("hue = %.2f\n", ringColor);
     // conveyorPosition = conveyor.position(degrees);
     bool ringIsRed = ringColor > 30 && ringColor < 50;    // green one 10-30
-    bool ringIsBlue = ringColor > 195 && ringColor < 210; //
+    bool ringIsBlue = ringColor > 195 && ringColor < 220; //
 
     if ((ringIsRed && !isRed) || (ringIsBlue && isRed))
     {
@@ -750,7 +750,7 @@ int main()
   Controller1.ButtonRight.pressed(onRightPressed);
   Controller1.ButtonDown.pressed(onDownPressed);
   Controller1.ButtonA.pressed(onAPressed);
-  pre_auton();
+  
 
   Competition.drivercontrol(usercontrol);
   Competition.autonomous(autonomous);
@@ -760,4 +760,5 @@ int main()
   colorDetect.setLightPower(100, percent);
 
   // THIS IS A WHILE LOOP
+  pre_auton();
 }

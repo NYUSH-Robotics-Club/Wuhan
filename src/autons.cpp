@@ -283,7 +283,7 @@ void blueGreenAutonCenter()
   chassis.turn_to_angle(chassis.get_absolute_heading() - 160);
   chassis.drive_min_voltage = 3;
   chassis.drive_max_voltage = 4;
-  chassis.drive_distance(-23);
+  chassis.drive_distance(-24);
 
   // 抓盘子
   mogoMech.set(true);
@@ -315,7 +315,7 @@ void blueGreenAutonCenter()
   roller.spin(fwd, 12, volt);
   conveyor.spin(fwd, 9, volt);
 
-  chassis.drive_max_voltage = 3.5;
+  chassis.drive_max_voltage = 9;
   chassis.drive_to_point(-57, -24);
   chassis.drive_max_voltage = 9;
 
@@ -344,13 +344,13 @@ void blueGreenAutonCenter()
   // go to alliance stake
   chassis.turn_to_point(0, -60);
 
-  wait(3.8, sec);
+  wait(2, sec);
 
   // 将放环手臂打回正常位置
-  /*wallStake.spin(reverse, 8, volt);
+  wallStake.spin(reverse, 8, volt);
   wait(0.8, sec); // 等待机械臂回到初始位置
   wallStake.stop(hold);
-  chassis.drive_to_point(0, -60);*/
+  chassis.drive_to_point(0, -60);
 
   wsState = 0;
   onR1Pressed();
@@ -363,12 +363,12 @@ void blueGreenAutonCenter()
   // score, go left and right to align
   chassis.drive_distance(-9.5);
   chassis.turn_to_point(0, -72);
-  pusher.set(false);
+  pusher.set(true);
   // waitUntil(conveyor.current(amp) > 2.1 && conveyor.velocity(rpm) < 2);
   conveyor.spin(fwd, 2, volt);
   ringSortDisable = true;
   // wait(800, msec);
-  pusher.set(true);
+  pusher.set(false);
   conveyor.spin(reverse, 4, volt);
   // put in scoring position
   wallStake.spin(fwd, 4.5, volt);
@@ -388,7 +388,7 @@ void blueGreenAutonCenter()
     wait(100,msec);
     wsState = 0;
     wsSpinToPosition(60, 200, 0, 5); });
-  pusher.set(false);
+  pusher.set(true);
   drive_for_time(300, reverse, 7);
   chassis.turn_to_point(0, -24);
   wsThread.interrupt();
