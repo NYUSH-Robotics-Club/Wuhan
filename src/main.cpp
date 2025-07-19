@@ -540,10 +540,13 @@ void onRightPressed()
 {
 
   // tipper.set(!tipper.value());
-  autonomous();
+  // autonomous();
   // conveyor.spin(fwd, 2, volt);
   // wait(1000, msec);
   // conveyor.spin(reverse, 2, volt);
+  ringSortDisable = true;
+  Controller1.Screen.setCursor(3, 1);
+  Controller1.Screen.print("Sorting Disabled");
 }
 
 void wsSpinToPosition(double position, double kP, double kD, double tolerance)
