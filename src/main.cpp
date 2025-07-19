@@ -545,6 +545,8 @@ void onRightPressed()
   // wait(1000, msec);
   // conveyor.spin(reverse, 2, volt);
   ringSortDisable = true;
+  conveyor.stop();
+  roller.stop();
   Controller1.Screen.setCursor(3, 1);
   Controller1.Screen.print("Sorting Disabled");
 }
